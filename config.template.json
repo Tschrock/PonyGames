@@ -1,0 +1,11 @@
+{
+    "db": {
+        "dialect": "mysql|sqlite|postgres|mssql",
+        "host": "localhost",
+        "port": 3306,
+        "database": "database",
+        "username": "username",
+        "password": "password",
+        "storage": "path/to/database.sqlite (only for sqlite)"
+    }
+}
