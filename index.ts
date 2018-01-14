@@ -21,23 +21,6 @@ const debug = debugBuilder('myapp:server');
 
 const config = require('./config.json');
 
-/**
- * Setup Sequelize
- */
-
-const sequelize = new Sequelize({
-    dialect: config.db.dialect,
-    host: config.db.host,
-    port: config.db.port,
-    database: config.db.database,
-    username: config.db.username,
-    password: config.db.password,
-    storage: config.db.storage,
-    modelPaths: [__dirname + '/models']
-});
-//sequelize.sync();
-sequelize.sync({ force: true }).then(() => loadTestData());
-
 
 /**
  * Setup Express
@@ -85,6 +68,29 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
     res.render('error');
 });
 
+
+/**
+ * Setup Sequelize
+ */
+
+const sequelize = new Sequelize({
+    dialect: config.db.dialect,
+    host: config.db.host,
+    port: config.db.port,
+    database: config.db.database,
+    username: config.db.username,
+    password: config.db.password,
+    storage: config.db.storage,
+    modelPaths: [__dirname + '/models'],
+    logging: app.get('env') === 'development'
+});
+
+if (app.get('env') === 'development') {
+    sequelize.sync({ force: true }).then(() => loadTestData());
+}
+else {
+    sequelize.sync();
+}
 
 /**
  * Create HTTP server.
