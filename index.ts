@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-'user strict';
+'use strict';
 
 import * as express from 'express';
 import { Request, Response, NextFunction } from 'express';
