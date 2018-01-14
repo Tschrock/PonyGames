@@ -4,9 +4,18 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "start": "npm run build && node index.js"
   },
-  "author": "cyberpon3 <cyber@cyberpon3.net>",
+  "repository": {
+    "type": "git",
+    "url": "github.com/TSchrock/PonyGames.git"
+  },
+  "author": "CyberPon3 <cyber@cyberpon3.net>",
+  "contributors": [
+    "Eliot Partridge <bytewave@ponypwnage.com> (https://code.horse)"
+  ],
   "license": "MPL-2.0",
   "devDependencies": {
     "@types/body-parser": "^1.16.8",
