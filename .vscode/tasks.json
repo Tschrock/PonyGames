@@ -19,7 +19,8 @@
 				"args": [
 					"http://localhost:8080"
 				]
-			}
+			},
+			"problemMatcher": []
 		},
 		{
 			"type": "npm",
