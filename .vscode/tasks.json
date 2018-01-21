@@ -20,6 +20,20 @@
 					"http://localhost:8080"
 				]
 			},
+			"windows": {
+				"command": "cmd",
+				"args": [
+					"/c",
+					"start",
+					"https://localhost:8080"
+				]
+			},
+			"osx": {
+				"command": "open",
+				"args": [
+					"https://localhost:8080"
+				]
+			},
 			"problemMatcher": []
 		},
 		{
