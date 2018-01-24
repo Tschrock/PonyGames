@@ -55,7 +55,7 @@ export async function loadTestData() {
         ].map(s => createTag(s)));
 
         const teams = await Promise.all(createArr(20, t => Team.create({ name: faker.company.companyName() })));
-        const projects = await Promise.all(new Array(20).fill(0).map((t, i) => Project.create({ name: faker.commerce.productName(), teamId: teams[i].id })));
+        const projects = await Promise.all(new Array(20).fill(0).map((t, i) => Project.create({ name: faker.commerce.productName(), shortDescription: faker.company.catchPhrase(), description: faker.lorem.paragraph(6), teamId: teams[i].id })));
         const projectTags = await Promise.all(projects.map(p => Promise.all(getRandomTags(tagGroups).map(t => ProjectTag.create({ projectId: p.id, tagId: t.id })))));
 
     });
