@@ -82,7 +82,8 @@ const sequelize = new Sequelize({
     password: config.db.password,
     storage: config.db.storage,
     modelPaths: [__dirname + '/models'],
-    logging: app.get('env') === 'development'
+    logging: app.get('env') === 'development' ? console.log.bind(console) : false,
+    operatorsAliases: false
 });
 
 if (app.get('env') === 'development') {
