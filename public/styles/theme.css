@@ -1,0 +1,18 @@
+
+a.card,
+a.card:hover,
+a.card:active,
+a.card:visited {
+    text-decoration: inherit;
+    color: inherit;
+}
+
+a.card:hover {
+    color: #495057;
+    background-color: #f8f9fa;
+}
+
+a.card:active {
+    color: #212529;
+    background-color: #e9ecef;
+}

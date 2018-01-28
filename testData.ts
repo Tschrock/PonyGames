@@ -46,23 +46,36 @@ export async function loadTestData() {
         ].map(s => Promise.all(s.map(t => Tag.create({ key: t })))));
 
         const teams = await createArr(20, t => Team.create({
-            name: faker.company.companyName()
+            name: faker.company.companyName(),
+            shortDescription: faker.company.catchPhrase(),
+            description: faker.lorem.paragraphs(3)
         }));
 
         const projects = await createArr(teams.length, i => Project.create({
             name: faker.commerce.productName(),
             shortDescription: faker.company.catchPhrase(),
-            description: faker.lorem.paragraph(6),
+            description: faker.lorem.paragraphs(3),
             teamId: teams[i].id
         }));
 
-        const projectTags2 = await createArr(projects.length, i => Promise.all(
+        const projectTags = await createArr(projects.length, i => Promise.all(
             getRandomTags(tagGroups)
             .map(t => ProjectTag.create({
                 projectId: projects[i].id,
                 tagId: t.id
             }))
         ));
+
+        const developers = await createArr(teams.length * 4, i => Developer.create({
+            name: faker.name.findName(),
+            shortDescription: faker.company.catchPhrase(),
+            description: faker.lorem.paragraphs(2)
+        }));
+
+        const teamDevelopers = await createArr(Math.round(developers.length * 1.2), i => TeamDeveloper.create({
+            developerId: (_.sample(developers) as Developer).id,
+            teamId: (_.sample(teams) as Team).id
+        }));
 
     });
 }

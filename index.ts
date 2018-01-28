@@ -50,9 +50,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Serve dynamic content
 setupRoute('/', 'index');
-setupRoute('/projects?', 'project');
-//setupRoute('/team', 'team');
-//setupRoute('/developer', 'developer');
+setupRoute('/project', 'project');
+setupRoute('/team', 'team');
+setupRoute('/developer', 'developer');
 
 // Mark anything else as a 404
 app.use((req: Request, res: Response, next: NextFunction) => next(new HttpError_404_NotFound()));
