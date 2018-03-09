@@ -1,9 +1,8 @@
-import { Sequelize, Table, Column, Model, ForeignKey, BelongsTo, BelongsToMany } from 'sequelize-typescript';
+import { Sequelize, Table, Column, Model, ForeignKey, BelongsTo, HasMany } from 'sequelize-typescript';
 
 import { Team } from './Team';
 import { Developer } from './Developer';
 import { Role } from './Role';
-import { TeamDeveloperRole } from './TeamDeveloperRole';
 
 @Table({
     timestamps: true
@@ -13,21 +12,21 @@ export class TeamDeveloper extends Model<TeamDeveloper> {
     // Team
     @ForeignKey(() => Team)
     @Column
-    teamId: number;
+    teamId!: number;
     
     @BelongsTo(() => Team)
-    team: Team;
+    team!: Team;
 
     // Developer
     @ForeignKey(() => Developer)
     @Column
-    developerId: number;
+    developerId!: number;
     
     @BelongsTo(() => Developer)
-    developer: Developer;
+    developer!: Developer;
 
     // Roles
-    @BelongsToMany(() => Role, () => TeamDeveloperRole)
-    roles: Role[];
+    @HasMany(() => Role)
+    roles!: Role[];
 
 }

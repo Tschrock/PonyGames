@@ -9,15 +9,15 @@ export class Developer extends Model<Developer> {
 
     @AllowNull(false)
     @Column
-    name: string;
+    name!: string;
 
     @Column(Sequelize.TEXT)
-    shortDescription: string;
+    shortDescription!: string;
 
     @Column(Sequelize.TEXT)
-    description: string;
+    description!: string;
 
     @HasMany(() => TeamDeveloper)
-    teamDevelopers: TeamDeveloper[];
+    teamDevelopers!: TeamDeveloper[];
 
 }

@@ -8,7 +8,6 @@ import { Project } from './models/Project';
 import { Developer } from './models/Developer';
 import { TeamDeveloper } from './models/TeamDeveloper';
 import { Role } from './models/Role';
-import { TeamDeveloperRole } from './models/TeamDeveloperRole';
 import { Tag } from './models/Tag';
 import { ProjectTag } from './models/ProjectTag';
 

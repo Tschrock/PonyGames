@@ -10,17 +10,17 @@ export class Team extends Model<Team> {
 
     @AllowNull(false)
     @Column
-    name: string;
+    name!: string;
 
     @Column(Sequelize.TEXT)
-    shortDescription: string;
+    shortDescription!: string;
 
     @Column(Sequelize.TEXT)
-    description: string;
+    description!: string;
 
     @HasMany(() => Project)
-    projects: Project[];
+    projects!: Project[];
 
     @HasMany(() => TeamDeveloper)
-    teamDevelopers: TeamDeveloper[];
+    teamDevelopers!: TeamDeveloper[];
 }

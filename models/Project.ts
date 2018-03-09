@@ -11,23 +11,23 @@ export class Project extends Model<Project> {
 
     @AllowNull(false)
     @Column
-    name: string;
+    name!: string;
 
     @Column(Sequelize.TEXT)
-    shortDescription: string;
+    shortDescription!: string;
 
     @Column(Sequelize.TEXT)
-    description: string;
+    description!: string;
 
     @AllowNull(false)
     @ForeignKey(() => Team)
     @Column
-    teamId: number;
+    teamId!: number;
     
     @BelongsTo(() => Team)
-    team: Team;
+    team!: Team;
 
     @BelongsToMany(() => Tag, () => ProjectTag)
-    tags: Tag[];
+    tags!: Tag[];
 
 }

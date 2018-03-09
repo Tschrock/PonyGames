@@ -10,17 +10,17 @@ export class Tag extends Model<Tag> {
     // Name
     @AllowNull(false)
     @Column
-    key: string;
+    key!: string;
 
     // Color
     @Column
-    color: string;
+    color!: string;
 
     // Description
     @Column(Sequelize.TEXT)
-    description: string;
+    description!: string;
 
     @BelongsToMany(() => Project, () => ProjectTag)
-    projects: Project[];
+    projects!: Project[];
 
 }

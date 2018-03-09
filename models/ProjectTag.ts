@@ -11,11 +11,11 @@ export class ProjectTag extends Model<ProjectTag> {
     // Project
     @ForeignKey(() => Project)
     @Column
-    projectId: number;
+    projectId!: number;
 
     // Tag
     @ForeignKey(() => Tag)
     @Column
-    tagId: number;
+    tagId!: number;
 
 }
