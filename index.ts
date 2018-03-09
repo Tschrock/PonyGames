@@ -14,6 +14,7 @@ import { Sequelize } from 'sequelize-typescript';
 
 import { loadTestData } from './testData';
 import { HttpError_404_NotFound } from './lib/HttpError';
+import { timeRequest } from './lib/RequestTimer';
 
 const routesRoot = './routes/'
 const setupRoute = (route: string, routerLocation: string) => app.use(route, require(`${routesRoot}${routerLocation}`));
@@ -31,6 +32,9 @@ const app = express();
 // .pug view rendering
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
+
+// Preformance Loging
+app.use(timeRequest);
 
 // Favicon caching middleware
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));

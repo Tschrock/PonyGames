@@ -14,7 +14,7 @@ html(lang="en")
         link(rel="icon" type="image/png" href="/favicon.png")
 
         // Other
-        title= title || "Horse Games"
+        title= title || "Pony Games"
 
         // Bootstrap CSS
         +style("https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css")(
@@ -35,7 +35,24 @@ html(lang="en")
 
     body
 
-        block body
+        header
+            nav.navbar.navbar-dark.bg-dark.text-light
+                a.navbar-brand(href="/") Pony.Games
+                form.form-inline
+                    input.form-control(type="search",id="search",placeholder="Search...")
+
+        main
+            block body
+
+        footer.footer
+            if timer
+                .container-fluid.bg-dark.text-light.py-2
+                    span= `Routing: ${ timer.getDurationOf('routing').toFixed(1) }ms  |  `
+                    span= `Query: ${ timer.getDurationOf('db').toFixed(1) }ms  |  `
+                    span= `Processing: ${ (timer.getDurationOf('processing') - timer.getDurationOf('db')).toFixed(1) }ms  |  `
+                    span= `Rendering: ${ timer.getDurationOf('rendering').toFixed(1) }ms  |  `
+                    span= `Total: ${ timer.getDurationOf('request').toFixed(1) }ms`
+
 
         // Bootstrap JS
         script(

@@ -1,0 +1,13 @@
+
+mixin svgplaceholder(width, height)
+    img(src="data:image/svg+xml;charset=utf-8," + encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='0 0 ${width} ${height}'><defs><symbol id='a' viewBox='0 0 90 66' opacity='0.3'><path d='M85 5v56H5V5h80m5-5H0v66h90V0z'/><circle cx='18' cy='20' r='6'/><path d='M56 14L37 39l-8-6-17 23h67z'/></symbol></defs><use xlink:href='#a' width='20%' x='40%'/></svg>`))&attributes(attributes)
+
+mixin svgplaceholder-inline(width, height)
+    - svgplaceholder2_uid = (svgplaceholder2_uid || 0) + 1;
+    svg(viewBox=`0 0 ${width} ${height}`)&attributes(attributes)
+        defs
+            symbol(id=`svgplaceholder-${svgplaceholder2_uid}` viewBox='0 0 90 66' opacity='0.3')
+                path(d='M85 5v56H5V5h80m5-5H0v66h90V0z')
+                circle(cx='18' cy='20' r='6')
+                path(d='M56 14L37 39l-8-6-17 23h67z')
+        use(xlink:href=`#svgplaceholder-${svgplaceholder2_uid}` width='20%' x='40%')

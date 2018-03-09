@@ -1,23 +1,40 @@
 extends layout/main
+include components/svgplaceholder
 
 block content
-    h1 Horse Games
-    form
-        .form-group
-            input.form-control(type="text",id="search",placeholder="Search...")
-    .list-group.mb-5
-        if projects && projects.length
-            each project in projects
-                a.list-group-item.list-group-item-action.flex-column.align-items-start(href=`/project/${project.id}`)
-                    .d-flex.w-100.justify-content-between
-                        h5.mb-1= project.name
-                    p.mb-1= project.shortDescription
-                    span
+
+    h2.text-center.my-5 Grid
+
+    .card-flex-grid
+        each project in projects || []
+            .card
+                h5.card-header= project.name
+                    span.badge.badge-secondary.pull-right= `id:${project.id}`
+                +svgplaceholder(16,9)(class="card-img-top bg-light")
+                .card-body
+                    h5.card-title= project.name
+                    .mb-2
                         if project.tags && project.tags.length
                             each tag in project.tags
                                 |&nbsp;
                                 span.badge.badge-secondary.badge-pill= tag.key
-                        |&nbsp;
-                        span.badge.badge-primary= `id:${project.id}`
+                    p.card-text= project.shortDescription
+
+    h2.text-center.my-5 List
+
+    .list-group.mb-3
+        each project in projects || []
+            a.list-group-item.list-group-item-action.flex-column.align-items-start(href=`/project/${project.id}`)
+                .d-flex.w-100.justify-content-between
+                    h5.mb-1= project.name
+                p.mb-1= project.shortDescription
+                span
+                    if project.tags && project.tags.length
+                        each tag in project.tags
+                            |&nbsp;
+                            span.badge.badge-secondary.badge-pill= tag.key
+                    |&nbsp;
+                    span.badge.badge-primary= `id:${project.id}`
         else
             a.list-group-item.list-group-item-action.flex-column.align-items-start(href="#") No Results
+

@@ -1,4 +1,7 @@
 
+/* Linkable cards
+-------------------------------------------------- */
+
 a.card,
 a.card:hover,
 a.card:active,
@@ -15,4 +18,57 @@ a.card:hover {
 a.card:active {
     color: #212529;
     background-color: #e9ecef;
+}
+
+/* Responsive grid for cards
+-------------------------------------------------- */
+.card-flex-grid {
+    display: flex;
+    flex-wrap: wrap;
+    padding: .5em;
+}
+
+.card-flex-grid > .card {
+    flex: 1 0 100%;
+    margin: .5em;
+}
+
+@media screen and (min-width: 50em) {
+    .card-flex-grid > .card {
+        max-width: calc(50% -  1em);
+    }
+}
+
+@media screen and (min-width: 70em) {
+    .card-flex-grid > .card {
+        max-width: calc(33% - 1em);
+    }
+}
+
+@media screen and (min-width: 90em) {
+    .card-flex-grid > .card {
+        max-width: calc(25% - 1em);
+    }
+}
+
+@media screen and (min-width: 110em) {
+    .card-flex-grid > .card {
+        max-width: calc(20% - 1em);
+    }
+}
+
+
+/* Sticky footer styles
+-------------------------------------------------- */
+
+html, body{
+    height: 100%; 
+}
+body {
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+body > main {
+    flex: 1;
 }
