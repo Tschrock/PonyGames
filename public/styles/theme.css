@@ -1,7 +1,17 @@
 
-/* Linkable cards
+/* HTML Overrides
 -------------------------------------------------- */
 
+
+/* Bootstrap Overrides
+-------------------------------------------------- */
+.btn {
+    box-shadow: none !important;
+    cursor: pointer;
+}
+
+/* Linkable cards
+-------------------------------------------------- */
 a.card,
 a.card:hover,
 a.card:active,
@@ -25,7 +35,8 @@ a.card:active {
 .card-flex-grid {
     display: flex;
     flex-wrap: wrap;
-    padding: .5em;
+    margin-left: -.5em;
+    margin-right: -.5em;
 }
 
 .card-flex-grid > .card {
@@ -71,4 +82,76 @@ body {
 }
 body > main {
     flex: 1;
+}
+
+/* Card List Group
+-------------------------------------------------- */
+
+/* Card List */
+.card-list-group {
+    display: flex;
+    flex-direction: column;
+
+    margin: .5em 0;
+}
+.card-list-group .card {
+    flex-direction: row;
+}
+.card-list-group .card-img-top,
+.card-list-group .card-img-bottom {
+    width: 20%
+}
+
+.card-list-group .card-img-top {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-top-left-radius: calc(.25rem - 1px);
+    border-bottom-left-radius: calc(.25rem - 1px);
+}
+.card-list-group .card-img-bottom {
+    border-top-right-radius: calc(.25rem - 1px);
+    border-bottom-right-radius: calc(.25rem - 1px);
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+/* List Group */
+.card-list-group .card + .card {
+    margin-top: 0;
+    border-top: 0;
+}
+
+.card-list-group .card:first-child,
+.card-list-group .card:first-child .card-img-top {
+    border-bottom-left-radius: 0;
+}
+.card-list-group .card:first-child,
+.card-list-group .card:first-child .card-img-bottom {
+    border-bottom-right-radius: 0;
+}
+
+.card-list-group .card:last-child,
+.card-list-group .card:last-child .card-img-top {
+    border-top-left-radius: 0;
+}
+.card-list-group .card:last-child,
+.card-list-group .card:last-child .card-img-bottom {
+    border-top-right-radius: 0;
+}
+
+.card-list-group .card:only-child,
+.card-list-group .card:only-child .card-img-top {
+    border-top-left-radius: calc(.25rem - 1px);
+    border-bottom-left-radius: calc(.25rem - 1px);
+}
+.card-list-group .card:only-child,
+.card-list-group .card:only-child .card-img-bottom {
+    border-top-right-radius: calc(.25rem - 1px);
+    border-bottom-right-radius: calc(.25rem - 1px);
+}
+
+.card-list-group .card:not(:first-child):not(:last-child):not(:only-child),
+.card-list-group .card:not(:first-child):not(:last-child):not(:only-child) .card-img-top,
+.card-list-group .card:not(:first-child):not(:last-child):not(:only-child) .card-img-bottom {
+    border-radius: 0;
 }

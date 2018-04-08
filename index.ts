@@ -91,6 +91,7 @@ const sequelize = new Sequelize({
 });
 
 if (app.get('env') === 'development') {
+//    sequelize.sync();
     sequelize.sync({ force: true }).then(() => loadTestData());
 }
 else {

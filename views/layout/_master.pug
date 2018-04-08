@@ -1,6 +1,7 @@
 include ../components/fa
 include ../components/navItem
 include ../components/style
+- pageScripts = pageScripts || []
 
 doctype html
 html(lang="en")
@@ -23,8 +24,8 @@ html(lang="en")
         )
 
         // FontAwesome CSS
-        +style("https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css")(
-            integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN"
+        +style("https://use.fontawesome.com/releases/v5.0.9/css/all.css")(
+            integrity="sha384-5SOiIsAziJl6AWe0HWRKTXlfcSHKmYV4RBF18PPJ173Kzn7jzMyFuTtk8JA7QQG1"
             crossorigin="anonymous"
         )
 
@@ -70,3 +71,5 @@ html(lang="en")
             integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ"
             crossorigin="anonymous"
         )
+        each script in pageScripts || []
+            script(src=script)

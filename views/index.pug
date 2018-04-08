@@ -2,39 +2,33 @@ extends layout/main
 include components/svgplaceholder
 
 block content
+    
+    - pageScripts.push("/scripts/setclass.js");
+    .clearfix
+        .btn-group.btn-group-toggle.float-right(data-toggle="buttons")
+            label.btn.btn-outline-dark.active
+                input(type="radio" name="viewtypetoggle" autocomplete="off" checked data-target="#projectlist" data-setclass="card-flex-grid")
+                +fas.fa-th-large
+            label.btn.btn-outline-dark
+                input(type="radio" name="viewtypetoggle" autocomplete="off" data-target="#projectlist" data-setclass="card-list-group")
+                +fas.fa-list
 
-    h2.text-center.my-5 Grid
+    - var listView = true;
 
-    .card-flex-grid
+    div#projectlist(class= listView? "card-list-group" : "card-flex-grid")
         each project in projects || []
-            .card
-                h5.card-header= project.name
-                    span.badge.badge-secondary.pull-right= `id:${project.id}`
+            a.card(href=`/project/${project.id}`)
                 +svgplaceholder(16,9)(class="card-img-top bg-light")
                 .card-body
-                    h5.card-title= project.name
+                    h5.mb-1= project.name
+                    p.mb-1= project.shortDescription
                     .mb-2
                         if project.tags && project.tags.length
                             each tag in project.tags
-                                |&nbsp;
                                 span.badge.badge-secondary.badge-pill= tag.key
-                    p.card-text= project.shortDescription
-
-    h2.text-center.my-5 List
-
-    .list-group.mb-3
-        each project in projects || []
-            a.list-group-item.list-group-item-action.flex-column.align-items-start(href=`/project/${project.id}`)
-                .d-flex.w-100.justify-content-between
-                    h5.mb-1= project.name
-                p.mb-1= project.shortDescription
-                span
-                    if project.tags && project.tags.length
-                        each tag in project.tags
-                            |&nbsp;
-                            span.badge.badge-secondary.badge-pill= tag.key
-                    |&nbsp;
-                    span.badge.badge-primary= `id:${project.id}`
+                                |&nbsp;
+                        span.badge.badge-primary= `id:${project.id}`
         else
-            a.list-group-item.list-group-item-action.flex-column.align-items-start(href="#") No Results
-
+            a.card(href="#")
+                .card-body
+                    p.mb-1 No Results
