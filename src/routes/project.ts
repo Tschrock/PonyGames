@@ -1,38 +1,38 @@
 import { Router, Request, NextFunction } from 'express';
+import * as httpError from 'http-errors';
 
-import { HttpError_404_NotFound } from '../lib/HttpError';
+import { Project } from '../models/Project';
 import { Tag } from '../models/Tag';
 import { Team } from '../models/Team';
 import { Developer } from '../models/Developer';
 import { TeamDeveloper } from '../models/TeamDeveloper';
-import { Project } from '../models/Project';
 
 import { TimedResponse, MARKS } from '../lib/RequestTimer';
 
 const router = Router();
 
 /* GET project page. */
-router.get('/:developerId', function (req: Request, res: TimedResponse, next: NextFunction) {
+router.get('/:projectId', function (req: Request, res: TimedResponse, next: NextFunction) {
     res.locals.timer.markEnd(MARKS.ROUTING);
     res.locals.timer.markStart(MARKS.PROCESSING);
 
-    const developerId = +req.params.developerId;
-    if (!isNaN(developerId)) {
+    const projectId = +req.params.projectId;
+    if (!isNaN(projectId)) {
 
         res.locals.timer.recordPromise(MARKS.DB,
-            () => Developer.findById(developerId, {
-                include: [{ model: TeamDeveloper, include: [{ model: Team, include: [Project] }] }]
+            () => Project.findById(projectId, {
+                include: [{ model: Team, include: [{ model: TeamDeveloper, include: [Developer] }] }, Tag]
             })
         ).then(
-            developer => {
+            project => {
                 res.locals.timer.markEnd(MARKS.PROCESSING);
-                if (developer) {
+                if (project) {
                     res.locals.timer.recordFunction(MARKS.RENDERING,
-                        () => res.render('developer', { developer })
+                        () => res.render('project', { project })
                     );
                 }
                 else {
-                    next(new HttpError_404_NotFound());
+                    next(new httpError.NotFound());
                 }
             },
             error => {
@@ -43,7 +43,7 @@ router.get('/:developerId', function (req: Request, res: TimedResponse, next: Ne
     }
     else {
         res.locals.timer.markEnd(MARKS.PROCESSING);
-        next(new HttpError_404_NotFound());
+        next(new httpError.NotFound());
     }
 });
 

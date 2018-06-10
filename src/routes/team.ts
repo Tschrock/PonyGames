@@ -1,6 +1,6 @@
 import { Router, Request, NextFunction } from 'express';
+import * as httpError from 'http-errors';
 
-import { HttpError_404_NotFound } from '../lib/HttpError';
 import { Tag } from '../models/Tag';
 import { Team } from '../models/Team';
 import { Developer } from '../models/Developer';
@@ -32,7 +32,7 @@ router.get('/:teamId', function (req: Request, res: TimedResponse, next: NextFun
                     );
                 }
                 else {
-                    next(new HttpError_404_NotFound());
+                    next(new httpError.NotFound());
                 }
             },
             error => {
@@ -43,7 +43,7 @@ router.get('/:teamId', function (req: Request, res: TimedResponse, next: NextFun
     }
     else {
         res.locals.timer.markEnd(MARKS.PROCESSING);
-        next(new HttpError_404_NotFound());
+        next(new httpError.NotFound());
     }
 });
 

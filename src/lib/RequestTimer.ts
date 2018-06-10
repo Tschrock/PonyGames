@@ -14,6 +14,7 @@ interface TimerMark {
 
 export enum MARKS {
     REQUEST = 'request',
+    MIDDLEWARE = 'middleware',
     ROUTING = 'routing',
     PROCESSING = 'processing',
     DB = 'db',
@@ -88,7 +89,6 @@ export class RequestTimer {
 
 export function timeRequest(req: Request, res: TimedResponse, next: NextFunction) {
     res.locals.timer = new RequestTimer();
-
     res.locals.timer.markStart(MARKS.REQUEST);
     res.locals.timer.markStart(MARKS.ROUTING);
     res.on("finish", () => {
@@ -99,4 +99,16 @@ export function timeRequest(req: Request, res: TimedResponse, next: NextFunction
         console.log(res.locals.timer.getAllMarks())
     });
     next();
+}
+
+export function timeMiddleware(fn: (req: Request, res: TimedResponse, next: NextFunction) => void) {
+    const markName = `${MARKS.MIDDLEWARE}-${fn.name}`;
+    return (req: Request, res: TimedResponse, next: NextFunction) => {
+        res.locals.timer.markStart(markName);
+        const doNext: NextFunction = (rtn: any) => {
+            res.locals.timer.markEnd(markName);
+            next.apply(void 0, [rtn]);
+        }
+        fn.apply(void 0, [req, res, doNext]);
+    }
 }
