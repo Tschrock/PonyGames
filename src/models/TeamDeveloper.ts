@@ -1,32 +1,45 @@
-import { Sequelize, Table, Column, Model, ForeignKey, BelongsTo, HasMany } from 'sequelize-typescript';
+/*!
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+'use strict';
+
+import { Table, Column, Model, ForeignKey, BelongsTo, HasMany } from 'sequelize-typescript';
 
 import { Team } from './Team';
 import { Developer } from './Developer';
 import { Role } from './Role';
 
+/**
+ * A team developer.
+ */
 @Table({
     timestamps: true
 })
 export class TeamDeveloper extends Model<TeamDeveloper> {
 
-    // Team
+    /** The Id of the Team the Developer is on. */
     @ForeignKey(() => Team)
     @Column
-    teamId!: number;
-    
-    @BelongsTo(() => Team)
-    team!: Team;
+    public teamId!: number;
 
-    // Developer
+    /** The Team the Developer is on. */
+    @BelongsTo(() => Team)
+    public team!: Team;
+
+    /** The Id of the Developer. */
     @ForeignKey(() => Developer)
     @Column
-    developerId!: number;
-    
-    @BelongsTo(() => Developer)
-    developer!: Developer;
+    public developerId!: number;
 
+    /** The Developer. */
+    @BelongsTo(() => Developer)
+    public developer!: Developer;
+
+    /** The Roles the Developer has on this Team. */
     // Roles
     @HasMany(() => Role)
-    roles!: Role[];
+    public roles!: Role[];
 
 }

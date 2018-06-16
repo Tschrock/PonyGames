@@ -1,0 +1,10 @@
+{
+    "defaultSeverity": "error",
+    "extends": [
+        //"./tslint.normal.json"
+        "./tslint.paranoid.json"
+    ],
+    "jsRules": {},
+    "rules": {},
+    "rulesDirectory": []
+}

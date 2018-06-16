@@ -9,7 +9,7 @@
 			"request": "launch",
 			"name": "Build and Run",
 			"preLaunchTask": "npm: build",
-			"program": "${workspaceFolder}/dist/index.js",
+			"program": "${workspaceFolder}/dist/app.js",
 			"console": "internalConsole",
 			"internalConsoleOptions": "openOnSessionStart"
 		}

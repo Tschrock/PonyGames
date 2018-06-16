@@ -7,5 +7,8 @@
         "username": "username",
         "password": "password",
         "storage": "path/to/database.sqlite (only for sqlite)"
+    },
+    "web": {
+        "port": 8080
     }
 }

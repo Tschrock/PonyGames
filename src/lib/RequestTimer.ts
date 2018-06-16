@@ -1,15 +1,25 @@
-import { performance } from 'perf_hooks';
+/*!
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+'use strict';
+
+import { performance } from 'perf_hooks'; // tslint:disable-line:no-implicit-dependencies
 
 import { Request, Response, NextFunction } from 'express';
 
-export interface TimedResponse extends Response {
-    locals: { timer: RequestTimer, [x: string]: any };
+export interface ITimedResponse extends Response {
+    locals: {
+        timer: RequestTimer;
+        [x: string]: {};
+    };
 }
 
-interface TimerMark {
+interface ITimerMark {
     key: string;
     time: number;
-    type: 'start' | 'end'
+    type: 'start' | 'end';
 }
 
 export enum MARKS {
@@ -21,51 +31,89 @@ export enum MARKS {
     RENDERING = 'rendering'
 }
 
+/**
+ * Times a request.
+ */
 export class RequestTimer {
 
-    private timeline: Array<TimerMark> = [];
+    /** The current timeline. */
+    private readonly timeline: Array<ITimerMark> = [];
 
-    getAllMarks() {
+    /**
+     * Gets a copy of current timeline.
+     */
+    public getAllMarks(): Array<ITimerMark> {
         return this.timeline.map(({key, time, type}) => ({ key, time, type }));
     }
 
-    hasMark(key: string) {
+    /**
+     * Returns if the timeline has a mark with the given key.
+     * @param key The key of the mark to find in the timeline.
+     */
+    public hasMark(key: string) {
         return this.timeline.some(m => m.key === key);
     }
 
-    hasMarkOfType(key: string, type: 'start' | 'end') {
+    /**
+     * Returns if the timeline has a mark with the given key and type.
+     * @param key The key of the mark to find in the timeline.
+     * @param type The type of mark to find in the timeline.
+     */
+    public hasMarkOfType(key: string, type: 'start' | 'end') {
         return this.timeline.some(m => m.key === key && m.type === type);
     }
 
-    markStart(key: string) {
+    /**
+     * Makes a start mark with the given key.
+     * @param key The key of the mark to start.
+     */
+    public markStart(key: string) {
         this.timeline.push({ key, time: performance.now(), type: 'start' });
     }
 
-    markEnd(key: string) {
+    /**
+     * Makes an end mark with the given key.
+     * @param key The key of the mark to end.
+     */
+    public markEnd(key: string) {
         this.timeline.push({ key, time: performance.now(), type: 'end' });
     }
 
-    recordFunction<T>(key: string, func: () => T) {
+    /**
+     * Times a function and marks it's start and end times.
+     * @param key The key for the mark to record.
+     * @param func The function to record.
+     */
+    public recordFunction<T>(key: string, func: () => T) {
         this.markStart(key);
-        const rtn: T = func.call(null);
+        const rtn = func.call(null) as T;
         this.markEnd(key);
         return rtn;
     }
 
-    recordPromise<T>(key: string, func: () => PromiseLike<T>) {
+    /**
+     * Times a promise and marks it's start and end times.
+     * @param key The key for the mark to record.
+     * @param func A function that returs a promise to record.
+     */
+    public recordPromise<T>(key: string, func: () => PromiseLike<T>) {
         this.markStart(key);
         return func().then(
             rtn => {
                 this.markEnd(key);
                 return rtn;
             }
-        )
+        );
     }
 
-    getDurationOf(key: string) {
-        var totalDuration: number = 0;
-        var startItems: Array<TimerMark> = [];
-        for(let item of this.timeline) {
+    /**
+     * Returns the total duration of a key.
+     * @param key The key for the mark.
+     */
+    public getDurationOf(key: string) {
+        let totalDuration: number = 0;
+        const startItems: Array<ITimerMark> = [];
+        for(const item of this.timeline) {
             if(item.type === 'start' && item.key === key) {
                 startItems.push(item);
             }
@@ -76,18 +124,24 @@ export class RequestTimer {
                 }
             }
         }
-        
+
         const now = performance.now();
-        for(let item of startItems) {
+        for(const item of startItems) {
             totalDuration += now - item.time;
         }
-        
+
         return totalDuration;
     }
 
 }
 
-export function timeRequest(req: Request, res: TimedResponse, next: NextFunction) {
+/**
+ * Times an http request.
+ * @param req The Request.
+ * @param res The Response.
+ * @param next The Next function.
+ */
+export function timeRequest(req: Request, res: ITimedResponse, next: NextFunction) {
     res.locals.timer = new RequestTimer();
     res.locals.timer.markStart(MARKS.REQUEST);
     res.locals.timer.markStart(MARKS.ROUTING);
@@ -96,19 +150,23 @@ export function timeRequest(req: Request, res: TimedResponse, next: NextFunction
             res.locals.timer.markEnd(MARKS.ROUTING);
         }
         res.locals.timer.markEnd(MARKS.REQUEST);
-        console.log(res.locals.timer.getAllMarks())
+        console.log(res.locals.timer.getAllMarks());
     });
     next();
 }
 
-export function timeMiddleware(fn: (req: Request, res: TimedResponse, next: NextFunction) => void) {
+/**
+ * Times a middleware function.
+ * @param fn The middleware function.
+ */
+export function timeMiddleware(fn: (req: Request, res: ITimedResponse, next: NextFunction) => void) {
     const markName = `${MARKS.MIDDLEWARE}-${fn.name}`;
-    return (req: Request, res: TimedResponse, next: NextFunction) => {
+    return (req: Request, res: ITimedResponse, next: NextFunction) => {
         res.locals.timer.markStart(markName);
-        const doNext: NextFunction = (rtn: any) => {
+        const doNext: NextFunction = rtn => {
             res.locals.timer.markEnd(markName);
             next.apply(void 0, [rtn]);
-        }
+        };
         fn.apply(void 0, [req, res, doNext]);
-    }
+    };
 }

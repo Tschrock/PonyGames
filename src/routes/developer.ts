@@ -1,22 +1,32 @@
+/*!
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+'use strict';
+
 import { Router, Request, NextFunction } from 'express';
 import * as httpError from 'http-errors';
 
-import { Tag } from '../models/Tag';
 import { Team } from '../models/Team';
 import { Developer } from '../models/Developer';
 import { TeamDeveloper } from '../models/TeamDeveloper';
 import { Project } from '../models/Project';
 
-import { TimedResponse, MARKS } from '../lib/RequestTimer';
+import { ITimedResponse, MARKS } from '../lib/RequestTimer';
 
 const router = Router();
 
+interface IRouteParameters {
+    developerId: string;
+ }
+
 /* GET project page. */
-router.get('/:developerId', function (req: Request, res: TimedResponse, next: NextFunction) {
+router.get('/:developerId', (req: Request, res: ITimedResponse, next: NextFunction) => {
     res.locals.timer.markEnd(MARKS.ROUTING);
     res.locals.timer.markStart(MARKS.PROCESSING);
 
-    const developerId = +req.params.developerId;
+    const developerId = +(req.params as IRouteParameters).developerId;
     if (!isNaN(developerId)) {
 
         res.locals.timer.recordPromise(MARKS.DB,
@@ -39,7 +49,7 @@ router.get('/:developerId', function (req: Request, res: TimedResponse, next: Ne
                 res.locals.timer.markEnd(MARKS.PROCESSING);
                 next(error);
             }
-        )
+        );
     }
     else {
         res.locals.timer.markEnd(MARKS.PROCESSING);

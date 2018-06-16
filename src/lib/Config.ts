@@ -5,6 +5,8 @@
  */
 'use strict';
 
+import * as path from 'path';
+
 import { ISequelizeConfig } from 'sequelize-typescript';
 import yargs = require('yargs');
 
@@ -25,7 +27,7 @@ export function doConfig(): IConfig {
         // Config file
         .config(
             (() => {
-                try { return require('./config.json'); }
+                try { return require(path.join(process.cwd(), 'config.json')); }
                 catch(s) { return {}; }
             })() as {}
         )

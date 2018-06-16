@@ -1,4 +1,11 @@
-//import { Promise } from 'bluebird';
+/*!
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+'use strict';
+
+/* tslint:disable:no-implicit-dependencies no-magic-numbers*/
 
 import * as faker from 'faker';
 import * as _ from 'lodash';
@@ -7,22 +14,31 @@ import { Team } from './models/Team';
 import { Project } from './models/Project';
 import { Developer } from './models/Developer';
 import { TeamDeveloper } from './models/TeamDeveloper';
-import { Role } from './models/Role';
 import { Tag } from './models/Tag';
 import { ProjectTag } from './models/ProjectTag';
 
-
+/**
+ * Gets a random set of tags.
+ * @param tagGroups An array of tag groups.
+ */
 function getRandomTags(tagGroups: Array<Array<Tag>>) {
     return _.sampleSize(tagGroups, _.random(2, Math.floor(tagGroups.length * 0.7))).map(t => _.sample(t)) as Array<Tag>;
 }
 
-function createArr<T>(count: number, builderFunc: (index: number) => PromiseLike<T>) {
-    return Promise.all(new Array(count).fill(0).map((_, i) => builderFunc(i)));
+/**
+ * Creates an array.
+ * @param count The number of indexes to create.
+ * @param builderFunc A function to map for each index.
+ */
+async function createArr<T>(count: number, builderFunc: (index: number) => PromiseLike<T>) {
+    return Promise.all(new Array(count).fill(0).map((x, i) => builderFunc(i)));
 }
 
-
+/**
+ * Fills the database with randomly-generated test data.
+ */
 export async function loadTestData() {
-    return new Promise(async (resolve, reject) => {
+    return new Promise<void>(async (resolve, reject) => {
 
         const tagGroups = await Promise.all([
             ['2D', '2.5D', '3D'],
@@ -36,7 +52,7 @@ export async function loadTestData() {
             ['Kickstarted'],
             ['Open Source'],
             ['Steam Greenlit'],
-            ['Wine (Platnum)', 'Wine (Silver)', 'Wine (Bronse)', 'Wine (Garbage)'],
+            ['Wine (Platnum)', 'Wine (Silver)', 'Wine (Bronze)', 'Wine (Garbage)'],
             ['Side-Scrolling'],
             ['Keyboard and Mouse'],
             ['Gamepad'],
