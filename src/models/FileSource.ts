@@ -5,18 +5,41 @@
  */
 'use strict';
 
-import { Table, Column, Model, ForeignKey, BelongsTo, HasMany } from 'sequelize-typescript';
+import { Sequelize, Table, Column, Model, ForeignKey, BelongsTo } from 'sequelize-typescript';
 
 import { File } from './File';
-import { HashType } from './HashType';
 
 /**
- * A team developer.
+ * A File Source that can be used to download a File.
  */
 @Table({
     timestamps: true
 })
 export class FileSource extends Model<FileSource> {
 
+    /** The display name for this source. */
+    @Column
+    public name!: string;
+
+    /** The uri for this source */
+    @Column
+    public sourceUri!: string;
+
+    /** Whether or not the File Source is still active. */
+    @Column
+    public isActive!: boolean;
+
+    /** A message describing why the File Source is inactive. */
+    @Column(Sequelize.TEXT)
+    public inactiveMessage!: string;
+
+    /** The Id of the File this Source is for. */
+    @ForeignKey(() => File)
+    @Column
+    public fileId!: number;
+
+    /** The File this Source is for. */
+    @BelongsTo(() => File)
+    public file!: File;
 
 }

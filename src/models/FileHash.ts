@@ -11,7 +11,7 @@ import { File } from './File';
 import { HashType } from './HashType';
 
 /**
- * A team developer.
+ * A Hash for a File.
  */
 @Table({
     timestamps: true

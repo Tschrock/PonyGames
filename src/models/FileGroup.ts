@@ -10,7 +10,7 @@ import { File } from './File';
 
 
 /**
- * A downloadable file.
+ * A File Group.
  */
 @Table({
     timestamps: true

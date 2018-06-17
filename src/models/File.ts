@@ -11,9 +11,10 @@ import { Tag } from './Tag';
 import { FileTag } from './FileTag';
 import { FileHash } from './FileHash';
 import { FileGroup } from './FileGroup';
+import { FileSource } from './FileSource';
 
 /**
- * A downloadable file.
+ * A downloadable File.
  */
 @Table({
     timestamps: true
@@ -43,6 +44,10 @@ export class File extends Model<File> {
     /** The Hashes for this File. */
     @HasMany(() => FileHash)
     public fileHashes!: FileHash[];
+
+    /** The Sources for this File. */
+    @HasMany(() => FileSource)
+    public fileSources!: FileSource[];
 
     /** Whether or not the File is available for download. */
     @Column
