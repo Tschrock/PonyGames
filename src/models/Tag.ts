@@ -10,6 +10,9 @@ import { Sequelize, Table, Column, Model, AllowNull, BelongsToMany } from 'seque
 import { Project } from './Project';
 import { ProjectTag } from './ProjectTag';
 
+import { File } from './File';
+import { FileTag } from './FileTag';
+
 /**
  * A Tag.
  */
@@ -31,8 +34,12 @@ export class Tag extends Model<Tag> {
     @Column(Sequelize.TEXT)
     public description!: string;
 
-    /** The projects that have this Tag. */
+    /** The Projects that have this Tag. */
     @BelongsToMany(() => Project, () => ProjectTag)
     public projects!: Project[];
+
+    /** The Files that have this Tag. */
+    @BelongsToMany(() => File, () => FileTag)
+    public files!: File[];
 
 }
