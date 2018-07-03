@@ -1,5 +1,5 @@
-extends layout/main
-include components/svgplaceholder
+extends ../_layout/main
+include ../_components/svgplaceholder
 
 block content
     
@@ -17,7 +17,7 @@ block content
 
     div#projectlist(class= listView? "card-list-group" : "card-flex-grid")
         each project in projects || []
-            a.card(href=`/project/${project.id}`)
+            a.card(href=`/projects/${project.id}`)
                 +svgplaceholder(16,9)(class="card-img-top bg-light")
                 .card-body
                     h5.mb-1= project.name

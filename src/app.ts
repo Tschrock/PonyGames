@@ -20,6 +20,8 @@ import * as cookieParser from 'cookie-parser';
 
 import { Sequelize } from 'sequelize-typescript';
 
+import { useExpressServer } from "routing-controllers";
+
 import { timeRequest, timeMiddleware } from './lib/RequestTimer';
 import { doConfig } from './lib/Config';
 import { loadTestData } from './testData';
@@ -28,6 +30,7 @@ import { loadTestData } from './testData';
 const jsRoot = __dirname;
 const modelsRoot = path.join(jsRoot, 'models');
 const routesRoot = path.join(jsRoot, 'routes');
+const controllersRoot = path.join(jsRoot, 'controllers');
 const publicJsRoot = path.join(jsRoot, 'public');
 const serverRoot = path.join(jsRoot, '..');
 const publicRoot = path.join(serverRoot, 'public');
@@ -82,6 +85,11 @@ setupRoute('/', 'index');
 setupRoute('/project', 'project');
 setupRoute('/team', 'team');
 setupRoute('/developer', 'developer');
+
+// test
+useExpressServer(app, {
+    controllers: [path.join(controllersRoot, "*.js")]
+});
 
 // Everything else is a 404
 app.use((req, res, next) => next(new httpError.NotFound()));

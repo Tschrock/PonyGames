@@ -150,7 +150,7 @@ export function timeRequest(req: Request, res: ITimedResponse, next: NextFunctio
             res.locals.timer.markEnd(MARKS.ROUTING);
         }
         res.locals.timer.markEnd(MARKS.REQUEST);
-        console.log(res.locals.timer.getAllMarks());
+        // console.log(res.locals.timer.getAllMarks());
     });
     next();
 }

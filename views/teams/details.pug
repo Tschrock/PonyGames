@@ -1,4 +1,4 @@
-extends layout/main
+extends ../_layout/main
 
 block content
 
@@ -9,7 +9,7 @@ block content
     .row
         for teamDeveloper in team.teamDevelopers
             .col-lg-4.col-md-6
-                a.card.mb-3(href=`/developer/${ teamDeveloper.developer.id }`)
+                a.card.mb-3(href=`/developers/${ teamDeveloper.developer.id }`)
                     .card-body
                         h4.card-title= teamDeveloper.developer.name
                         p.card-text= teamDeveloper.developer.shortDescription
@@ -18,7 +18,7 @@ block content
     .row
         for project in team.projects
             .col-lg-4.col-md-6
-                a.card.mb-3(href=`/project/${ project.id }`)
+                a.card.mb-3(href=`/projects/${ project.id }`)
                     .card-body
                         h4.card-title= project.name
                         p.card-text= project.shortDescription

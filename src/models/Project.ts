@@ -33,7 +33,6 @@ export class Project extends Model<Project> {
     public description!: string;
 
     /** The Id of the development Team for the Project. */
-    @AllowNull(false)
     @ForeignKey(() => Team)
     @Column
     public teamId!: number;

@@ -1,0 +1,7 @@
+extends ../_layout/main
+
+block content
+    h1= project.name
+    p= project.description
+
+    a(href=`/teams/${project.teamId}`)= project.team.name

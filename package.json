@@ -2,11 +2,11 @@
   "name": "pony.games",
   "version": "0.0.1-prealpha",
   "description": "A game directory/archive.",
-  "main": "dist/app.js",
+  "main": "dist/app/index.js",
   "scripts": {
     "build": "tsc",
     "lint": "tslint --project .",
-    "start": "npm run build && node dist/app.js",
+    "start": "npm run build && node dist/app/index.js",
     "test": "mocha -r ts-node/register tests/*.ts"
   },
   "repository": {
@@ -14,15 +14,15 @@
     "url": "github.com/TSchrock/PonyGames.git"
   },
   "author": {
-      "name": "CyberPon3",
-      "email": "cyber@cyberpon3.net",
-      "url": "https://cyberpon3.net"
+    "name": "CyberPon3",
+    "email": "cyber@cyberpon3.net",
+    "url": "https://cyberpon3.net"
   },
   "contributors": [
     {
-        "name": "Eliot Partridge",
-        "email": "bytewave@ponypwnage.com",
-        "url": "https://code.horse"
+      "name": "Eliot Partridge",
+      "email": "bytewave@ponypwnage.com",
+      "url": "https://code.horse"
     }
   ],
   "license": "MPL-2.0",
@@ -52,6 +52,7 @@
     "mysql2": "^1.5.3",
     "pug": "^2.0.3",
     "reflect-metadata": "^0.1.12",
+    "routing-controllers": "^0.7.7",
     "sequelize": "^4.37.10",
     "sequelize-typescript": "^0.6.6-beta.1",
     "serve-favicon": "^2.5.0",
@@ -59,6 +60,6 @@
     "yargs": "^11.0.0"
   },
   "engines": {
-      "node": ">= 7.6.0"
+    "node": ">= 7.6.0"
   }
 }
