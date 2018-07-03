@@ -7,7 +7,7 @@
 
 // tslint:disable:prefer-function-over-method
 
-import { Controller, Get, Render, QueryParams, Param, Post, Delete, Put, Patch } from "routing-controllers";
+import { Controller, Get, Render, QueryParams, Param, Post, Delete, Put, Patch, Body, Redirect } from "routing-controllers";
 
 import { Project } from '../models/Project';
 import { Tag } from '../models/Tag';
@@ -40,21 +40,25 @@ class ProjectController {
     @Get("/:id(\\d+)")
     @Render("projects/details")
     public showProject(@Param('id') projectId: number) {
-        return Project.findById(projectId, { include: [ Tag, Team ]}).then(project => ({ project }));
+        return Project.findById(projectId, { include: [Tag, Team] }).then(project => ({ project }));
     }
 
     /** Gets the new project page. */
     @Get("/new")
     @Render("projects/new")
     public newProject() {
-        return { };
+        return {};
     }
 
     /** Gets the edit project page. */
     @Get("/:id(\\d+)/edit")
     @Render("projects/edit")
-    public editProject(@Param('id') projectId: number) {
-        return Project.findById(projectId, { include: [ Tag, Team ]}).then(project => ({ project }));
+    public async editProject(@Param('id') projectId: number) {
+        return Promise.all([
+            Project.findById(projectId, { include: [Tag, Team] }),
+            Team.findAll({}),
+            Tag.findAll({})
+        ]).then(([project, teams, tags]) => ({ project, teams, tags }));
     }
 
     /**
@@ -64,14 +68,31 @@ class ProjectController {
     /** Creates a project. */
     @Post("/")
     public createProject() {
-        return { };
+        return {};
     }
 
     /** Updates a project. */
     @Put("/:id(\\d+)")
     @Patch("/:id(\\d+)")
-    public updateProject(@Param('id') projectId: number) {
-        return Project.findById(projectId, { include: [ Tag, Team ]}).then(project => ({ project }));
+    @Redirect(":location")
+    public async updateProject(
+        @Param('id')
+        projectId: number,
+        @Body({ required: true, validate: true })
+        { name, shortDescription, description, teamId, tags }: Project
+    ) {
+
+        return Project
+            .findById(projectId)
+            .then(project => (project ? Promise.all([
+                project.update({ name, shortDescription, description, teamId }),
+                project.$set('tags', tags)
+            ]) : Promise.reject(new Error("Project Not Found"))))
+            .then(
+                success => ({ location: `/projects/${projectId}` }),
+                fail => ({ location: `/projects/${projectId}/edit` })
+            );
+
     }
 
     /** Deletes a project. */
@@ -79,7 +100,7 @@ class ProjectController {
     @Render("projects/details")
     public deleteProject(@Param('id') projectId: number) {
         return Project.findById(projectId).then(project => {
-            if(project) project.destroy();
+            if (project) project.destroy();
         });
     }
 

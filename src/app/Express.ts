@@ -17,6 +17,7 @@ import * as favicon from 'serve-favicon';
 import * as logger from 'morgan';
 import * as bodyParser from 'body-parser';
 import * as cookieParser from 'cookie-parser';
+import * as methodOverride from 'method-override';
 
 import { useExpressServer, RoutingControllersOptions } from "routing-controllers";
 
@@ -70,6 +71,8 @@ function setupController(app: express.Express, route: string, location: string, 
     });
 }
 
+interface IBody { _method?: string; }
+
 /**
  * Setup Express
  */
@@ -101,6 +104,16 @@ export function setupExpress() {
     app.use(timeMiddleware(express.static(publicJsRoot)));
     app.use(timeMiddleware(express.static(publicRoot)));
 
+    // Rewrite _method
+    app.use(methodOverride((req, res) => {
+        if (req.body && typeof req.body === 'object' && '_method' in (req.body as IBody)) {
+          const method = (req.body as IBody)._method;
+          delete (req.body as IBody)._method;
+          return method || req.method;
+        }
+        return req.method;
+      }));
+
     // Dynamic Content
 
     setupController(app, '/teams', 'TeamController');
@@ -110,18 +123,15 @@ export function setupExpress() {
 
     // Everything else is a 404
     app.use((req, res, next) => {
-        console.log('make404');
         next(new httpError.NotFound());
     });
 
     // Serve Error Page
     app.use((err: Error | httpError.HttpError, req: express.Request, res: express.Response, next: express.NextFunction) => {
-        console.log('error page');
         const errHttp = err instanceof httpError.HttpError ? err : httpError(err);
         errHttp.expose = isDev(app);
         res.status(errHttp.status);
         res.render('error', { error: errHttp });
-        console.log('end error page');
     });
 
     return app;

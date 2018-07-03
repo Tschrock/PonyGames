@@ -1,0 +1,30 @@
+extends ../_layout/main
+
+block content
+    form(action=".", method="post")
+        input(type="hidden", name="_method", value="PUT")
+        input(type="hidden", name="asdffasdf", value="hi")
+        .form-group
+            label(for="projectName") Project Name
+            input#projectName.form-control(type="text", name="name", placeholder="My Cool Project", value=project.name)
+        .form-group
+            label(for="projectShortDescription") Short Description
+            textarea#projectShortDescription.form-control(name="shortDescription", rows="3")= project.shortDescription
+        .form-group
+            label(for="projectDescription") Full Description
+            textarea#projectDescription.form-control(name="description", rows="10")= project.description
+        .form-group
+            label(for="projectTeam") Development Team
+            select#projectTeam.form-control(name="teamId")
+                each team in teams
+                    option(value=team.id selected=team.id==project.teamId)= team.name
+        .form-group
+            div
+                label(for="projectTags2") Tags
+            - var currentTagIds = project.tags.map(t => t.id);
+            each tag in tags
+                .form-check.form-check-inline
+                    input.form-check-input(type="checkbox", name="tags" id=`projectTag-${tag.id}` value=tag.id checked=currentTagIds.includes(tag.id))
+                    label.form-check-label(for=`projectTag-${tag.id}`)= tag.key
+
+        button.btn.btn-primary(type="submit") Save
