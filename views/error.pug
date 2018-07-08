@@ -1,6 +1,17 @@
 extends _layout/main
 
 block content
-  h1= message
-  h2= error.status
-  pre #{error.stack}
+    h1= `${statusCode}: ${errorData.message}`
+    if errorData.data
+        pre= JSON.stringify(errorData.data)
+    if errorData.stack
+        pre= errorData.stack
+    - var cb = errorData.causedBy
+    while !!cb
+        h2 Caused By:
+        h3= cb.message
+        if cb.data
+            pre= JSON.stringify(cb.data)
+        if cb.stack
+            pre= cb.stack
+        - var cb = cb.causedBy

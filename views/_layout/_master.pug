@@ -1,7 +1,6 @@
 include ../_components/fa
 include ../_components/navItem
 include ../_components/style
-- pageScripts = pageScripts || []
 
 doctype html
 html(lang="en")
@@ -23,6 +22,26 @@ html(lang="en")
             crossorigin="anonymous"
         )
 
+        // Bootstrap JS
+        script(
+            defer
+            src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+            crossorigin="anonymous"
+        )
+        script(
+            defer
+            src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+            integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+            crossorigin="anonymous"
+        )
+        script(
+            defer
+            src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"
+            integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T"
+            crossorigin="anonymous"
+        )
+
         // FontAwesome CSS
         +style("https://use.fontawesome.com/releases/v5.0.9/css/all.css")(
             integrity="sha384-5SOiIsAziJl6AWe0HWRKTXlfcSHKmYV4RBF18PPJ173Kzn7jzMyFuTtk8JA7QQG1"
@@ -31,6 +50,12 @@ html(lang="en")
 
         // Theme CSS
         +style("/styles/theme.css")
+
+        // Main JS
+        script(
+            defer
+            src="/scripts/main.js"
+        )
 
         block header
 
@@ -53,23 +78,3 @@ html(lang="en")
                     span= `Processing: ${ (timer.getDurationOf('processing') - timer.getDurationOf('db')).toFixed(1) }ms  |  `
                     span= `Rendering: ${ timer.getDurationOf('rendering').toFixed(1) }ms  |  `
                     span= `Total: ${ timer.getDurationOf('request').toFixed(1) }ms`
-
-
-        // Bootstrap JS
-        script(
-            src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-            crossorigin="anonymous"
-        )
-        script(
-            src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
-            integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
-            crossorigin="anonymous"
-        )
-        script(
-            src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"
-            integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T"
-            crossorigin="anonymous"
-        )
-        each script in pageScripts || []
-            script(src=script)

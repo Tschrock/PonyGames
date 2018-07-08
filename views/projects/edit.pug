@@ -1,9 +1,7 @@
 extends ../_layout/main
 
 block content
-    form(action=".", method="post")
-        input(type="hidden", name="_method", value="PUT")
-        input(type="hidden", name="asdffasdf", value="hi")
+    form.js-ajaxform(action=`/api/v1/projects/${project.id}`, method="put")
         .form-group
             label(for="projectName") Project Name
             input#projectName.form-control(type="text", name="name", placeholder="My Cool Project", value=project.name)
@@ -27,4 +25,5 @@ block content
                     input.form-check-input(type="checkbox", name="tags" id=`projectTag-${tag.id}` value=tag.id checked=currentTagIds.includes(tag.id))
                     label.form-check-label(for=`projectTag-${tag.id}`)= tag.key
 
-        button.btn.btn-primary(type="submit") Save
+        button.btn.btn-success(type="submit") Save
+        button.btn.btn-link(type="button") Cancel

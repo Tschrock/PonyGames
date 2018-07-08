@@ -15,7 +15,7 @@ import { Developer } from "../models/Developer";
 import { Project } from "../models/Project";
 import { ProjectTag } from "../models/ProjectTag";
 
-import { paginate, IPagenateQuery } from "../lib/FindHelpers";
+import { paginate, IPaginateOptions } from "../lib/FindHelper";
 import { Tag } from "../models/Tag";
 
 /** The Team Controller */
@@ -29,7 +29,7 @@ class TeamController {
     /** Gets the index page. */
     @Get("/")
     @Render("teams/index")
-    public showAllTeams(@QueryParams() queryParams: IPagenateQuery) {
+    public showAllTeams(@QueryParams() queryParams: IPaginateOptions) {
         return Team
             .findAll({
                 include: [],

@@ -13,6 +13,8 @@ import { modelsRoot } from "./Express";
 import { IConfig } from '../lib/Config';
 import { loadTestData } from '../testData';
 
+(Sequelize.Promise as {}) = global.Promise;
+
 /**
  * Setup Sequelize
  */

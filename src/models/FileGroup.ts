@@ -5,8 +5,9 @@
  */
 'use strict';
 
-import { Sequelize, Table, Column, Model, HasMany, BelongsToMany } from 'sequelize-typescript';
+import { Table, Column, Model, HasMany, ForeignKey, BelongsTo } from 'sequelize-typescript';
 import { File } from './File';
+import { Project } from './Project';
 
 
 /**
@@ -25,4 +26,12 @@ export class FileGroup extends Model<FileGroup> {
     @HasMany(() => File)
     public files!: File[];
 
+    /** The Id of the development Team for the Project. */
+    @ForeignKey(() => Project)
+    @Column
+    public projectId!: number;
+
+    /** The the development Team for the Project. */
+    @BelongsTo(() => Project)
+    public project!: Project;
 }

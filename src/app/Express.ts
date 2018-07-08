@@ -17,22 +17,25 @@ import * as favicon from 'serve-favicon';
 import * as logger from 'morgan';
 import * as bodyParser from 'body-parser';
 import * as cookieParser from 'cookie-parser';
-import * as methodOverride from 'method-override';
+import * as multer from "multer";
 
 import { useExpressServer, RoutingControllersOptions } from "routing-controllers";
 
 import { timeRequest, timeMiddleware } from '../lib/RequestTimer';
 import { NoNext } from '../lib/NoNext';
+import { ErrorHandler } from '../controllers/ErrorHandler';
 
 // Important Paths
 export const jsRoot = path.join(__dirname, '..');
 export const modelsRoot = path.join(jsRoot, 'models');
 export const routesRoot = path.join(jsRoot, 'routes');
 export const controllersRoot = path.join(jsRoot, 'controllers');
-export const publicJsRoot = path.join(jsRoot, 'public');
+export const publicJsRoot = path.join(jsRoot, 'client');
 export const serverRoot = path.join(jsRoot, '..');
 export const publicRoot = path.join(serverRoot, 'public');
 export const viewsRoot = path.join(serverRoot, 'views');
+
+export const formParser = multer({ storage: multer.memoryStorage() });
 
 // Helpers
 
@@ -62,16 +65,14 @@ const defaultOps = { classTransformer: false, defaultErrorHandler: false, middle
  * @param route The route to use.
  * @param location The location of the Router to use.
  */
-function setupController(app: express.Express, route: string, location: string, otherOptions?: RoutingControllersOptions){
+function useController(app: express.Express, route: string, location: string, otherOptions?: RoutingControllersOptions){
     useExpressServer(app, {
         ...defaultOps,
         routePrefix: route,
-        controllers: [require(path.join(controllersRoot, location))], // tslint:disable-line:no-unsafe-any
+        controllers: [require(path.join(controllersRoot, location)).default], // tslint:disable-line:no-unsafe-any
         ...otherOptions
     });
 }
-
-interface IBody { _method?: string; }
 
 /**
  * Setup Express
@@ -104,22 +105,14 @@ export function setupExpress() {
     app.use(timeMiddleware(express.static(publicJsRoot)));
     app.use(timeMiddleware(express.static(publicRoot)));
 
-    // Rewrite _method
-    app.use(methodOverride((req, res) => {
-        if (req.body && typeof req.body === 'object' && '_method' in (req.body as IBody)) {
-          const method = (req.body as IBody)._method;
-          delete (req.body as IBody)._method;
-          return method || req.method;
-        }
-        return req.method;
-      }));
-
     // Dynamic Content
 
-    setupController(app, '/teams', 'TeamController');
-    setupController(app, '/developers', 'DeveloperController');
-    setupController(app, '/projects', 'ProjectController');
-    setupController(app, '/', 'ProjectController');
+    useController(app, '/api/v1/projects', 'api/v1/ProjectJsonController');
+
+    useController(app, '/teams', 'TeamController');
+    useController(app, '/developers', 'DeveloperController');
+    useController(app, '/projects', 'ProjectController');
+    useController(app, '/', 'ProjectController');
 
     // Everything else is a 404
     app.use((req, res, next) => {
@@ -127,12 +120,8 @@ export function setupExpress() {
     });
 
     // Serve Error Page
-    app.use((err: Error | httpError.HttpError, req: express.Request, res: express.Response, next: express.NextFunction) => {
-        const errHttp = err instanceof httpError.HttpError ? err : httpError(err);
-        errHttp.expose = isDev(app);
-        res.status(errHttp.status);
-        res.render('error', { error: errHttp });
-    });
+    const eHandler = new ErrorHandler();
+    app.use(eHandler.error.bind(eHandler) as express.ErrorRequestHandler);
 
     return app;
 }

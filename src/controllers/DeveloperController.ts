@@ -11,7 +11,7 @@ import { Controller, Get, Render, QueryParams, Param, Post, Delete, Put, Patch }
 
 import { Developer } from '../models/Developer';
 
-import { paginate, IPagenateQuery } from "../lib/FindHelpers";
+import { paginate, IPaginateOptions } from "../lib/FindHelper";
 import { Team } from "../models/Team";
 import { TeamDeveloper } from "../models/TeamDeveloper";
 
@@ -26,7 +26,7 @@ class DeveloperController {
     /** Gets the index page. */
     @Get("/")
     @Render("developers/index")
-    public showAllDevelopers(@QueryParams() queryParams: IPagenateQuery) {
+    public showAllDevelopers(@QueryParams() queryParams: IPaginateOptions) {
         return Developer
             .findAll({
                 include: [{ model:TeamDeveloper, include:[Team] }],

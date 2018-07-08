@@ -7,103 +7,82 @@
 
 // tslint:disable:prefer-function-over-method
 
-import { Controller, Get, Render, QueryParams, Param, Post, Delete, Put, Patch, Body, Redirect } from "routing-controllers";
+import { Controller, Get, Render, QueryParams, Param } from "routing-controllers";
 
 import { Project } from '../models/Project';
 import { Tag } from '../models/Tag';
 
-import { paginate, IPagenateQuery } from "../lib/FindHelpers";
+import { IPaginateOptions } from "../lib/FindHelper";
 import { Team } from "../models/Team";
+import ProjectJsonController from "./api/v1/ProjectJsonController";
 
 /** The Project Controller */
 @Controller()
-class ProjectController {
+export default class ProjectController {
+
+    // ================= //
+    //       Pages       //
+    // ================= //
 
     /**
-     * Pages
+     * Project Index Page
+     * Shows projects with their tags, paginated and sorted by name.
      */
-
-    /** Gets the index page. */
     @Get("/")
     @Render("projects/index")
-    public showAllProjects(@QueryParams() queryParams: IPagenateQuery) {
-        return Project
-            .findAll({
-                include: [Tag],
-                order: [['name', 'ASC'], ['tags', 'key', 'DESC']],
-                ...paginate(queryParams)
-            })
-            .then(projects => ({ projects }));
+    public showAllProjects(@QueryParams() queryParams: IPaginateOptions) {
+
+        return ProjectJsonController.getAll(queryParams).then(projects => ({ projects }));
+
     }
 
-    /** Gets the project details page. */
+    /**
+     * Project Details Page
+     * Shows the details for a project.
+     */
     @Get("/:id(\\d+)")
     @Render("projects/details")
     public showProject(@Param('id') projectId: number) {
-        return Project.findById(projectId, { include: [Tag, Team] }).then(project => ({ project }));
-    }
 
-    /** Gets the new project page. */
-    @Get("/new")
-    @Render("projects/new")
-    public newProject() {
-        return {};
-    }
+        return ProjectJsonController.getOne(projectId).then(project => ({ project }));
 
-    /** Gets the edit project page. */
-    @Get("/:id(\\d+)/edit")
-    @Render("projects/edit")
-    public async editProject(@Param('id') projectId: number) {
-        return Promise.all([
-            Project.findById(projectId, { include: [Tag, Team] }),
-            Team.findAll({}),
-            Tag.findAll({})
-        ]).then(([project, teams, tags]) => ({ project, teams, tags }));
     }
 
     /**
-     * Handlers
+     * New Project Page
+     * Shows a form to create a new project.
      */
+    @Get("/new")
+    @Render("projects/new")
+    public async newProject() {
 
-    /** Creates a project. */
-    @Post("/")
-    public createProject() {
-        return {};
-    }
-
-    /** Updates a project. */
-    @Put("/:id(\\d+)")
-    @Patch("/:id(\\d+)")
-    @Redirect(":location")
-    public async updateProject(
-        @Param('id')
-        projectId: number,
-        @Body({ required: true, validate: true })
-        { name, shortDescription, description, teamId, tags }: Project
-    ) {
-
-        return Project
-            .findById(projectId)
-            .then(project => (project ? Promise.all([
-                project.update({ name, shortDescription, description, teamId }),
-                project.$set('tags', tags)
-            ]) : Promise.reject(new Error("Project Not Found"))))
-            .then(
-                success => ({ location: `/projects/${projectId}` }),
-                fail => ({ location: `/projects/${projectId}/edit` })
-            );
+        // Get and return all available teams and tags.
+        return Promise
+            .all([
+                Team.findAll(),
+                Tag.findAll()
+            ])
+            .then(([teams, tags]) => ({ teams, tags }));
 
     }
 
-    /** Deletes a project. */
-    @Delete("/:id(\\d+)")
-    @Render("projects/details")
-    public deleteProject(@Param('id') projectId: number) {
-        return Project.findById(projectId).then(project => {
-            if (project) project.destroy();
-        });
+    /**
+     * Edit Project Page
+     * Shows a form to edit a project.
+     */
+    @Get("/:id(\\d+)/edit")
+    @Render("projects/edit")
+    public async editProject(@Param('id') projectId: number) {
+
+        // Get and return the specified project and all available teams and tags.
+        return Promise
+            .all([
+                Project.findById(projectId, { include: [Tag, Team] }),
+                Team.findAll(),
+                Tag.findAll()
+            ])
+            .then(([project, teams, tags]) => ({ project, teams, tags }));
+
     }
 
 }
-
-export = ProjectController;

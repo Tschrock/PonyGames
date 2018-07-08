@@ -5,11 +5,12 @@
  */
 'use strict';
 
-import { Sequelize, Table, Column, Model, AllowNull, ForeignKey, BelongsTo, BelongsToMany } from 'sequelize-typescript';
+import { Sequelize, Table, Column, Model, AllowNull, ForeignKey, BelongsTo, BelongsToMany, HasMany, NotEmpty } from 'sequelize-typescript';
 
 import { Team } from './Team';
 import { Tag } from './Tag';
 import { ProjectTag } from './ProjectTag';
+import { FileGroup } from './FileGroup';
 
 /**
  * A Project.
@@ -21,7 +22,8 @@ export class Project extends Model<Project> {
 
     /** The Project's name. */
     @AllowNull(false)
-    @Column
+    @NotEmpty
+    @Column(Sequelize.STRING)
     public name!: string;
 
     /** A short description of the Project. */
@@ -34,7 +36,7 @@ export class Project extends Model<Project> {
 
     /** The Id of the development Team for the Project. */
     @ForeignKey(() => Team)
-    @Column
+    @Column(Sequelize.INTEGER)
     public teamId!: number;
 
     /** The the development Team for the Project. */
@@ -44,5 +46,9 @@ export class Project extends Model<Project> {
     /** The Project's Tags. */
     @BelongsToMany(() => Tag, () => ProjectTag)
     public tags!: Tag[];
+
+    /** The Project's File Groups */
+    @HasMany(() => FileGroup)
+    public fileGroups!: FileGroup[];
 
 }

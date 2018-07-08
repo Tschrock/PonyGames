@@ -8,7 +8,7 @@
 
 import { IFindOptions } from "sequelize-typescript";
 
-export interface IPagenateQuery {
+export interface IPaginateOptions {
     page?: number;
     perpage?: number;
 }
@@ -45,7 +45,7 @@ function tryInteger<T>(value: string | number | undefined, defaultValue: T) {
  * @param queryOptions The query object.
  * @param config The config options.
  */
-export function paginate<T>(query: IPagenateQuery, config?: IPaginateConfig): IFindOptions<T> {
+export function paginate<T>(query: IPaginateOptions, config?: IPaginateConfig): IFindOptions<T> {
     const options: IFindOptions<T> = {};
 
     const findConfig = {
