@@ -2,31 +2,17 @@ extends ../_layout/main
 include ../_components/svgplaceholder
 
 block content
-    
-    .clearfix
-        .btn-group.btn-group-toggle.float-right(data-toggle="buttons")
-            label.btn.btn-outline-dark.active
-                input(type="radio" name="viewtypetoggle" autocomplete="off" checked data-target="#projectlist" data-setclass="card-flex-grid")
-                +fas.fa-th-large
-            label.btn.btn-outline-dark
-                input(type="radio" name="viewtypetoggle" autocomplete="off" data-target="#projectlist" data-setclass="card-list-group")
-                +fas.fa-list
-
-    - var listView = true;
-
-    div#projectlist(class= listView? "card-list-group" : "card-flex-grid")
-        each project in projects || []
+    .card-grid
+        each project in (projects || [])
             a.card(href=`/projects/${project.id}`)
-                +svgplaceholder(16,9)(class="card-img-top bg-light")
+                +svgplaceholder(16,9)(class="card-img-top")
                 .card-body
-                    h5.mb-1= project.name
-                    p.mb-1= project.shortDescription
-                    .mb-2
-                        if project.tags && project.tags.length
-                            each tag in project.tags
-                                span.badge.badge-secondary.badge-pill= tag.key
-                                |&nbsp;
-                        span.badge.badge-primary= `id:${project.id}`
+                    h4= project.name
+                    p= project.shortDescription
+                .badges
+                    each tag in project.tags || []
+                        .badge.badge-secondary.badge-pill= tag.key
+                    .badge.badge-primary= `id:${project.id}`
         else
             a.card(href="#")
                 .card-body
