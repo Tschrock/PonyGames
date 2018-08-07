@@ -59,13 +59,19 @@ export function normalizeError(error: AnyError): HttpError {
         return error;
     }
     else if (error instanceof HttpError_HE) {
-        return new HttpError(error.status, error.message, undefined, error);
+        const err = new HttpError(error.status, error.message, undefined);
+        err.stack = error.stack;
+        return err;
     }
     else if (error instanceof HttpError_RC) {
-        return new HttpError(error.httpCode, error.message, undefined, error);
+        const err = new HttpError(error.httpCode, error.message, undefined);
+        err.stack = error.stack;
+        return err;
     }
     else {
-        return new HttpError(500, error.message, undefined, error);
+        const err = new HttpError(500, error.message, undefined);
+        err.stack = error.stack;
+        return err;
     }
 
 }
