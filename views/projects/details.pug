@@ -1,7 +1,72 @@
 extends ../_layout/main
+include ../_components/svgplaceholder
 
 block content
     h1= project.name
     p= project.description
 
-    a(href=`/teams/${project.teamId}`)= project.team.name
+    section
+        h2 Made By
+        a.card(href=`/teams/${project.teamId}`)
+            .card-body
+                h4= project.team.name
+
+    section
+        h2 Gallery
+        .card-grid
+            a.card(href=`#`)
+                +svgplaceholder(16,9)
+            a.card(href=`#`)
+                +svgplaceholder(16,9)
+            a.card(href=`#`)
+                +svgplaceholder(16,9)
+
+    section
+        h2 Links
+        .card-grid
+            a.card(href=`#`)
+                .card-body
+                    h4 Homepage
+                    p https://example.com
+            a.card(href=`#`)
+                .card-body
+                    h4 Facebook
+                    p https://example.com
+            a.card(href=`#`)
+                .card-body
+                    h4 Patreon
+                    p https://example.com
+            a.card(href=`#`)
+                .card-body
+                    h4 Discord
+                    p https://example.com
+            a.card(href=`#`)
+                .card-body
+                    h4 Github
+                    p https://example.com
+            a.card(href=`#`)
+                .card-body
+                    h4 Twitter
+                    p https://example.com
+            a.card(href=`#`)
+                .card-body
+                    h4 Kickstarter
+                    p https://example.com
+
+    section
+        h2 Files
+        .card-grid
+            a.card(href=`#`)
+                .card-body
+                    h4 Alpha Test 1
+                        +fas.fa-exclamation-circle
+                        +fab.fa-patreon
+            a.card(href=`#`)
+                .card-body
+                    h4 Beta Test 1
+            a.card(href=`#`)
+                .card-body
+                    h4 Beta Test 2
+
+    div.actions
+        a.btn(href=`/projects/${project.id}/edit`) Edit Project
