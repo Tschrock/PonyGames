@@ -37,6 +37,7 @@ html, body { margin: 0; padding: 0; height: 100%; }
 .card-grid > .card {
     width: 100%;
     max-width: 500px;
+    margin: 0;
     margin-left: auto;
     margin-right: auto;
 }
@@ -81,9 +82,8 @@ a.logo > .logo-text {
     text-align: center;
 }
 
-input {
-    font-size: 1em;
-    padding: 5px;
+section {
+    margin-bottom: 40px;
 }
 
 
@@ -91,6 +91,11 @@ input {
 -------------------------------------------------- */
 .card {
     border: 1px #ccc solid;
+    display: inline-block;
+    min-width: 200px;
+    min-height: 100px;
+    margin-bottom: 20px;
+    margin-right: 20px;
 }
 
 .card-body {
@@ -106,10 +111,6 @@ input {
 .card p {
     margin-top: 10px;
     margin-bottom: 10px;
-}
-
-.card-img-top {
-    background-color: #eee;
 }
 
 
@@ -164,6 +165,61 @@ a.card:active {
 }
 
 
+/* Alerts
+-------------------------------------------------- */
+.alert {
+    color: #383d41;
+    background-color: #e2e3e5;
+    border: 2px solid #d6d8db;
+    padding: .75rem 1.25rem;
+    margin-bottom: 1rem;
+}
+.alert-warning {
+    color: #856404;
+    background-color: #fff3cd;
+    border-color: #ffeeba;
+}
+.alert-danger {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+.alert-success {
+    color: #155724;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+}
+
+
+/* Forms
+-------------------------------------------------- */
+.form-group {
+    margin-bottom: 1em;
+}
+.form-group > label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.form-group > input,
+.form-group > textarea,
+.form-group > select,
+.form-group > select {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    width: 100%;
+    font-size: .9em;
+    padding: 8px;
+    resize: none;
+}
+
+.form-group .invalid {
+    background-color: #fff3cd;
+    border-color: #ffc000;
+}
+
+
+
 /* Responsive extras
 -------------------------------------------------- */
 
@@ -174,5 +230,9 @@ a.card:active {
     }
     .logo-text {
         display: none;
+    }
+    .form-group > input,
+    .form-group > textarea {
+        min-width: 100%;
     }
 }

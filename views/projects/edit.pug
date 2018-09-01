@@ -1,7 +1,7 @@
 extends ../_layout/main
 
 block content
-    form.js-ajaxform(action=`/api/v1/projects/${project.id}`, method="put")
+    form.js-ajaxform(action=`/api/v1/projects/${project.id}` method="put" data-success-location="..")
         .form-group
             label(for="projectName") Project Name
             input#projectName.form-control(type="text", name="name", placeholder="My Cool Project", value=project.name)
@@ -13,15 +13,14 @@ block content
             textarea#projectDescription.form-control(name="description", rows="10")= project.description
         .form-group
             label(for="projectTeam") Development Team
-            select#projectTeam.form-control(name="teamId")
+            select#projectTeam.form-control(name="teamId" data-value-type="number")
                 each team in teams
                     option(value=team.id selected=team.id==project.teamId)= team.name
         .form-group
-            div
-                label(for="projectTags2") Tags
+            label(for="projectTags2") Tags
             - var currentTagIds = project.tags.map(t => t.id);
             each tag in tags
-                .form-check.form-check-inline
+                .form-check.form-check-inline(data-value-type="number")
                     input.form-check-input(type="checkbox", name="tags" id=`projectTag-${tag.id}` value=tag.id checked=currentTagIds.includes(tag.id))
                     label.form-check-label(for=`projectTag-${tag.id}`)= tag.key
 
