@@ -55,7 +55,7 @@ export function paginate<T>(query: IPaginateOptions, config?: IPaginateConfig): 
         ...config
     };
 
-    options.limit = limitBetween(tryInteger(query.perpage, 0), findConfig.minPageSize, findConfig.maxPageSize);
+    options.limit = limitBetween(tryInteger(query.perpage, findConfig.defaultPageSize), findConfig.minPageSize, findConfig.maxPageSize);
 
     if(typeof query.page === 'undefined') {
         // page is missing, use default

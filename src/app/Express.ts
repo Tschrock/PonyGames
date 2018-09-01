@@ -53,7 +53,7 @@ export function isDev(app: express.Express) {
  * @param route The route to use.
  * @param location The location of the Router to use.
  */
-function setupRoute(app: express.Express, route: string, location: string){
+function setupRoute(app: express.Express, route: string, location: string) {
     app.use(route, require(path.join(routesRoot, location)) as express.Router);
 }
 
@@ -65,7 +65,7 @@ const defaultOps = { classTransformer: false, defaultErrorHandler: false, middle
  * @param route The route to use.
  * @param location The location of the Router to use.
  */
-function useController(app: express.Express, route: string, location: string, otherOptions?: RoutingControllersOptions){
+function useController(app: express.Express, route: string, location: string, otherOptions?: RoutingControllersOptions) {
     useExpressServer(app, {
         ...defaultOps,
         routePrefix: route,
