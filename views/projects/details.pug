@@ -6,6 +6,12 @@ block content
     p= project.description
 
     section
+        .badges
+            each tag in project.tags || []
+                .badge.badge-secondary.badge-pill= tag.key
+            .badge.badge-primary= `id:${project.id}`
+
+    section
         h2 Made By
         a.card(href=`/teams/${project.teamId}`)
             .card-body
