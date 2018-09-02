@@ -7,7 +7,7 @@
 
 import { Sequelize, Table, Column, Model, HasMany, AllowNull } from 'sequelize-typescript';
 
-import { TeamDeveloper } from './TeamDeveloper';
+import { TeamMember } from './TeamMember';
 
 /**
  * A Developer.
@@ -31,7 +31,7 @@ export class Developer extends Model<Developer> {
     public description!: string;
 
     /** The Team connections this Developer has. */
-    @HasMany(() => TeamDeveloper)
-    public teamDevelopers!: TeamDeveloper[];
+    @HasMany(() => TeamMember)
+    public TeamMembers!: TeamMember[];
 
 }

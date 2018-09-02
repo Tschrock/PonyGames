@@ -13,7 +13,7 @@ import { Developer } from '../models/Developer';
 
 import { paginate, IPaginateOptions } from "../lib/FindHelper";
 import { Team } from "../models/Team";
-import { TeamDeveloper } from "../models/TeamDeveloper";
+import { TeamMember } from "../models/TeamMember";
 
 /** The Developer Controller */
 @Controller()
@@ -29,7 +29,7 @@ class DeveloperController {
     public showAllDevelopers(@QueryParams() queryParams: IPaginateOptions) {
         return Developer
             .findAll({
-                include: [{ model:TeamDeveloper, include:[Team] }],
+                include: [{ model:TeamMember, include:[Team] }],
                 order: [['name', 'ASC']],
                 ...paginate(queryParams)
             })
@@ -40,7 +40,7 @@ class DeveloperController {
     @Get("/:id(\\d+)")
     @Render("developers/details")
     public showDeveloper(@Param('id') developerId: number) {
-        return Developer.findById(developerId, { include: [{ model:TeamDeveloper, include:[Team] }] }).then(developer => ({ developer }));
+        return Developer.findById(developerId, { include: [{ model:TeamMember, include:[Team] }] }).then(developer => ({ developer }));
     }
 
     /** Gets the new Developer page. */
@@ -54,7 +54,7 @@ class DeveloperController {
     @Get("/:id(\\d+)/edit")
     @Render("developers/edit")
     public editDeveloper(@Param('id') developerId: number) {
-        return Developer.findById(developerId, { include: [{ model:TeamDeveloper, include:[Team] }] }).then(developer => ({ developer }));
+        return Developer.findById(developerId, { include: [{ model:TeamMember, include:[Team] }] }).then(developer => ({ developer }));
     }
 
     /**
@@ -71,7 +71,7 @@ class DeveloperController {
     @Put("/:id(\\d+)")
     @Patch("/:id(\\d+)")
     public updateDeveloper(@Param('id') developerId: number) {
-        return Developer.findById(developerId, { include: [{ model:TeamDeveloper, include:[Team] }] }).then(developer => ({ developer }));
+        return Developer.findById(developerId, { include: [{ model:TeamMember, include:[Team] }] }).then(developer => ({ developer }));
     }
 
     /** Deletes a Developer. */

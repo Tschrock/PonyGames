@@ -19,10 +19,10 @@ import { NewProject } from "./params/NewProject";
 import { JsonErrorHandler } from "./JsonErrorHandler";
 import { validate } from "../../../lib/ValidationHelper";
 
-/** ProjectJsonController */
+/** ProjectsJsonController */
 @JsonController()
 @UseAfter(JsonErrorHandler)
-export default class ProjectJsonController {
+export default class ProjectsJsonController {
 
     // ============================== //
     //       Controller Methods       //
@@ -123,7 +123,7 @@ export default class ProjectJsonController {
      */
     @Get("/")
     public getProjects(@QueryParams() queryParams: IPaginateOptions) {
-        return ProjectJsonController.getAll(queryParams).then(projects => projects.map(p => ({
+        return ProjectsJsonController.getAll(queryParams).then(projects => projects.map(p => ({
             id: p.id,
             name: p.name,
             shortDescription:  p.shortDescription,
@@ -147,7 +147,7 @@ export default class ProjectJsonController {
      */
     @Get("/:id(\\d+)")
     public getProject(@Param('id') projectId: number) {
-        return ProjectJsonController.getOne(projectId).then(p => ({
+        return ProjectsJsonController.getOne(projectId).then(p => ({
             id: p.id,
             name: p.name,
             shortDescription:  p.shortDescription,
@@ -184,7 +184,7 @@ export default class ProjectJsonController {
         @Body() body: NewProject,
         @QueryParams() query: NewProject
     ) {
-        return ProjectJsonController.createOne({...query, ...body});
+        return ProjectsJsonController.createOne({...query, ...body});
     }
 
     /**
@@ -205,7 +205,7 @@ export default class ProjectJsonController {
         @Body() body: NewProject,
         @QueryParams() query: NewProject
     ) {
-        return ProjectJsonController.editOne(projectId, {...query, ...body});
+        return ProjectsJsonController.editOne(projectId, {...query, ...body});
     }
 
     /**
@@ -220,7 +220,7 @@ export default class ProjectJsonController {
     @Delete("/:id(\\d+)")
     @Post("/:id(\\d+)/delete")
     public deleteProject(@Param('id') projectId: number) {
-        return ProjectJsonController.deleteOne(projectId);
+        return ProjectsJsonController.deleteOne(projectId);
     }
 
 }

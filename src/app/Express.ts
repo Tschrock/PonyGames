@@ -107,12 +107,12 @@ export function setupExpress() {
 
     // Dynamic Content
 
-    useController(app, '/api/v1/projects', 'api/v1/ProjectJsonController');
+    useController(app, '/api/v1/projects', 'api/v1/ProjectsJsonController');
 
-    useController(app, '/teams', 'TeamController');
-    useController(app, '/developers', 'DeveloperController');
-    useController(app, '/projects', 'ProjectController');
-    useController(app, '/', 'ProjectController');
+    useController(app, '/teams', 'TeamsController');
+    useController(app, '/developers', 'DevelopersController');
+    useController(app, '/projects', 'ProjectsController');
+    useController(app, '/', 'ProjectsController');
 
     // Everything else is a 404
     app.use((req, res, next) => {

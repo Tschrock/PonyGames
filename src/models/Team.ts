@@ -8,7 +8,7 @@
 import { Sequelize, Table, Column, Model, HasMany, AllowNull } from 'sequelize-typescript';
 
 import { Project } from './Project';
-import { TeamDeveloper } from './TeamDeveloper';
+import { TeamMember } from './TeamMember';
 
 /**
  * A development Team.
@@ -36,6 +36,6 @@ export class Team extends Model<Team> {
     public projects!: Project[];
 
     /** The Developers who are on this Team. */
-    @HasMany(() => TeamDeveloper)
-    public teamDevelopers!: TeamDeveloper[];
+    @HasMany(() => TeamMember)
+    public members!: TeamMember[];
 }

@@ -7,12 +7,12 @@ block content
 
     h2.text-center Team Members
     .row
-        for teamDeveloper in team.teamDevelopers
+        for member in team.members
             .col-lg-4.col-md-6
-                a.card.mb-3(href=`/developers/${ teamDeveloper.developer.id }`)
+                a.card.mb-3(href=`/developers/${ member.developer.id }`)
                     .card-body
-                        h4.card-title= teamDeveloper.developer.name
-                        p.card-text= teamDeveloper.developer.shortDescription
+                        h4.card-title= member.developer.name
+                        p.card-text= member.developer.shortDescription
 
     h2.text-center Projects
     .row

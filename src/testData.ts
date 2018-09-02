@@ -13,7 +13,7 @@ import * as _ from 'lodash';
 import { Team } from './models/Team';
 import { Project } from './models/Project';
 import { Developer } from './models/Developer';
-import { TeamDeveloper } from './models/TeamDeveloper';
+import { TeamMember } from './models/TeamMember';
 import { Tag } from './models/Tag';
 import { ProjectTag } from './models/ProjectTag';
 
@@ -87,7 +87,7 @@ export async function loadTestData() {
             description: faker.lorem.paragraphs(2)
         }));
 
-        const teamDevelopers = await createArr(Math.round(developers.length * 1.2), i => TeamDeveloper.create({
+        const teamMembers = await createArr(Math.round(developers.length * 1.2), i => TeamMember.create({
             developerId: (_.sample(developers) as Developer).id,
             teamId: (_.sample(teams) as Team).id
         }));

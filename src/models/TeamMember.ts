@@ -5,11 +5,10 @@
  */
 'use strict';
 
-import { Table, Column, Model, ForeignKey, BelongsTo, HasMany } from 'sequelize-typescript';
+import { Table, Column, Model, ForeignKey, BelongsTo, AllowNull } from 'sequelize-typescript';
 
 import { Team } from './Team';
 import { Developer } from './Developer';
-import { Role } from './Role';
 
 /**
  * A team developer.
@@ -17,7 +16,7 @@ import { Role } from './Role';
 @Table({
     timestamps: true
 })
-export class TeamDeveloper extends Model<TeamDeveloper> {
+export class TeamMember extends Model<TeamMember> {
 
     /** The Id of the Team the Developer is on. */
     @ForeignKey(() => Team)
@@ -39,7 +38,8 @@ export class TeamDeveloper extends Model<TeamDeveloper> {
 
     /** The Roles the Developer has on this Team. */
     // Roles
-    @HasMany(() => Role)
-    public roles!: Role[];
+    @AllowNull(false)
+    @Column
+    public roles!: string;
 
 }

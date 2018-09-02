@@ -1,8 +1,8 @@
 /*!
-* This Source Code Form is subject to the terms of the Mozilla Public
-* License, v. 2.0. If a copy of the MPL was not distributed with this
-* file, You can obtain one at http://mozilla.org/MPL/2.0/.
-*/
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
 'use strict';
 
 // tslint:disable:prefer-function-over-method
@@ -14,11 +14,11 @@ import { Tag } from '../models/Tag';
 
 import { IPaginateOptions } from "../lib/FindHelper";
 import { Team } from "../models/Team";
-import ProjectJsonController from "./api/v1/ProjectJsonController";
+import ProjectsJsonController from "./api/v1/ProjectsJsonController";
 
 /** The Project Controller */
 @Controller()
-export default class ProjectController {
+export default class ProjectsController {
 
     // ================= //
     //       Pages       //
@@ -32,7 +32,7 @@ export default class ProjectController {
     @Render("projects/index")
     public showAllProjects(@QueryParams() queryParams: IPaginateOptions) {
 
-        return ProjectJsonController.getAll(queryParams).then(projects => ({ projects }));
+        return ProjectsJsonController.getAll(queryParams).then(projects => ({ projects }));
 
     }
 
@@ -44,7 +44,7 @@ export default class ProjectController {
     @Render("projects/details")
     public showProject(@Param('id') projectId: number) {
 
-        return ProjectJsonController.getOne(projectId).then(project => ({ project }));
+        return ProjectsJsonController.getOne(projectId).then(project => ({ project }));
 
     }
 
