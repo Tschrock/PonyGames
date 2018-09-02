@@ -108,6 +108,8 @@ export function setupExpress() {
     // Dynamic Content
 
     useController(app, '/api/v1/projects', 'api/v1/ProjectsJsonController');
+    useController(app, '/api/v1/teams', 'api/v1/TeamsJsonController');
+    useController(app, '/api/v1/developers', 'api/v1/DevelopersJsonController');
 
     useController(app, '/teams', 'TeamsController');
     useController(app, '/developers', 'DevelopersController');

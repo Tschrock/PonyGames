@@ -3,13 +3,14 @@ extends ../_layout/main
 block content
 
     h1= developer.name
+    p= developer.shortDescription
     p= developer.description
 
-    h2.text-center Teams
-    .row
-        for member in developer.members
-            .col-lg-4.col-md-6
-                a.card.mb-3(href=`/teams/${ member.team.id }`)
+    section
+        h2 Teams
+        .card-grid
+            for member in developer.teamMemberships
+                a.card(href=`/teams/${ member.team.id }`)
                     .card-body
                         h4.card-title= member.team.name
-                        p.card-text= member.team.shortDescription
+                        p.card-text= member.roles

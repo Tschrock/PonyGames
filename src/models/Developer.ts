@@ -32,6 +32,6 @@ export class Developer extends Model<Developer> {
 
     /** The Team connections this Developer has. */
     @HasMany(() => TeamMember)
-    public TeamMembers!: TeamMember[];
+    public teamMemberships!: TeamMember[];
 
 }

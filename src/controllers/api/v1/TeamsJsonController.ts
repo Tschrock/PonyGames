@@ -128,6 +128,7 @@ export default class TeamsJsonController {
                 developer: {
                     id: m.developer.id,
                     name: m.developer.name,
+                    shortDescription: m.developer.shortDescription,
                 },
                 roles: m.roles,
             })),
@@ -161,6 +162,7 @@ export default class TeamsJsonController {
                 developer: {
                     id: m.developer.id,
                     name: m.developer.name,
+                    shortDescription: m.developer.shortDescription,
                 },
                 roles: m.roles,
                 createdAt: m.createdAt,

@@ -89,7 +89,8 @@ export async function loadTestData() {
 
         const teamMembers = await createArr(Math.round(developers.length * 1.2), i => TeamMember.create({
             developerId: (_.sample(developers) as Developer).id,
-            teamId: (_.sample(teams) as Team).id
+            teamId: (_.sample(teams) as Team).id,
+            roles: faker.name.jobTitle()
         }));
 
     });

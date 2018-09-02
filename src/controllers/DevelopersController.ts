@@ -11,78 +11,57 @@ import { Controller, Get, Render, QueryParams, Param, Post, Delete, Put, Patch }
 
 import { Developer } from '../models/Developer';
 
-import { paginate, IPaginateOptions } from "../lib/FindHelper";
+import { IPaginateOptions } from "../lib/FindHelper";
 import { Team } from "../models/Team";
 import { TeamMember } from "../models/TeamMember";
+import DevelopersJsonController from "./api/v1/DevelopersJsonController";
 
 /** The Developer Controller */
 @Controller()
-class DeveloperController {
+export default class DeveloperController {
+
+    // ================= //
+    //       Pages       //
+    // ================= //
 
     /**
-     * Pages
+     * Developer Index Page
+     * Shows Developers, paginated and sorted by name.
      */
-
-    /** Gets the index page. */
     @Get("/")
     @Render("developers/index")
     public showAllDevelopers(@QueryParams() queryParams: IPaginateOptions) {
-        return Developer
-            .findAll({
-                include: [{ model:TeamMember, include:[Team] }],
-                order: [['name', 'ASC']],
-                ...paginate(queryParams)
-            })
-            .then(developers => ({ developers }));
+        return DevelopersJsonController.getAll(queryParams).then(developers => ({ developers }));
     }
 
-    /** Gets the Developer details page. */
+    /**
+     * Project Developer Page
+     * Shows the details for a Developer.
+     */
     @Get("/:id(\\d+)")
     @Render("developers/details")
     public showDeveloper(@Param('id') developerId: number) {
-        return Developer.findById(developerId, { include: [{ model:TeamMember, include:[Team] }] }).then(developer => ({ developer }));
+        return DevelopersJsonController.getOne(developerId).then(developer => ({ developer }));
     }
 
-    /** Gets the new Developer page. */
+    /**
+     * New Developer Page
+     * Shows a form to create a new Developer.
+     */
     @Get("/new")
     @Render("developers/new")
     public newDeveloper() {
         return { };
     }
 
-    /** Gets the edit Developer page. */
+    /**
+     * Edit Developer Page
+     * Shows a form to edit a Developer.
+     */
     @Get("/:id(\\d+)/edit")
     @Render("developers/edit")
     public editDeveloper(@Param('id') developerId: number) {
-        return Developer.findById(developerId, { include: [{ model:TeamMember, include:[Team] }] }).then(developer => ({ developer }));
-    }
-
-    /**
-     * Handlers
-     */
-
-    /** Creates a Developer. */
-    @Post("/")
-    public createDeveloper() {
-        return { };
-    }
-
-    /** Updates a Developer. */
-    @Put("/:id(\\d+)")
-    @Patch("/:id(\\d+)")
-    public updateDeveloper(@Param('id') developerId: number) {
-        return Developer.findById(developerId, { include: [{ model:TeamMember, include:[Team] }] }).then(developer => ({ developer }));
-    }
-
-    /** Deletes a Developer. */
-    @Delete("/:id(\\d+)")
-    @Render("developers/details")
-    public deleteDeveloper(@Param('id') developerId: number) {
-        return Developer.findById(developerId).then(developer => {
-            if(developer) developer.destroy();
-        });
+        return DevelopersJsonController.getOne(developerId).then(developer => ({ developer }));
     }
 
 }
-
-export = DeveloperController;

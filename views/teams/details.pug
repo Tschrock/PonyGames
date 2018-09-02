@@ -3,22 +3,24 @@ extends ../_layout/main
 block content
 
     h1= team.name
+    p= team.shortDescription
     p= team.description
 
-    h2.text-center Team Members
-    .row
-        for member in team.members
-            .col-lg-4.col-md-6
-                a.card.mb-3(href=`/developers/${ member.developer.id }`)
+
+    section
+        h2 Team Members
+        .card-grid
+            for member in team.members
+                a.card(href=`/developers/${ member.developer.id }`)
                     .card-body
                         h4.card-title= member.developer.name
-                        p.card-text= member.developer.shortDescription
+                        p.card-text= member.roles
 
-    h2.text-center Projects
-    .row
-        for project in team.projects
-            .col-lg-4.col-md-6
-                a.card.mb-3(href=`/projects/${ project.id }`)
+    section
+        h2 Projects
+        .card-grid
+            for project in team.projects
+                a.card(href=`/projects/${ project.id }`)
                     .card-body
                         h4.card-title= project.name
                         p.card-text= project.shortDescription
