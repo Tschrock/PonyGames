@@ -7,7 +7,7 @@
 
 // tslint:disable:prefer-function-over-method
 
-import { JsonController, Get, QueryParams, Param, Post, Delete, Put, Patch, Body, UseBefore, UseAfter } from "routing-controllers";
+import { JsonController, Get, QueryParams, Param, Post, Delete, Put, Patch, Body, UseAfter } from "routing-controllers";
 
 import { IPaginateOptions, paginate } from "../../../lib/FindHelper";
 import { Project } from "../../../models/Project";
@@ -16,7 +16,6 @@ import { File } from "../../../models/File";
 import { FileGroup } from "../../../models/FileGroup";
 import { Team } from "../../../models/Team";
 import { NewProject } from "./params/NewProject";
-import { formParser } from "../../../app/Express";
 import { JsonErrorHandler } from "./JsonErrorHandler";
 import { validate } from "../../../lib/ValidationHelper";
 
@@ -74,10 +73,11 @@ export default class ProjectJsonController {
         newProject = Object.assign(new NewProject(), newProject);
         return validate(newProject)
             .then(_ => {
-                const { tags, ...newProjectProps } = newProject;
+                console.log(newProject);
+                const { tagIds, ...newProjectProps } = newProject;
                 return Project
                     .create(newProjectProps)
-                    .then(project => project.$set('tags', tags)) as PromiseLike<Project>;
+                    .then(project => project.$set('tags', tagIds)) as PromiseLike<Project>;
             });
     }
 
@@ -90,11 +90,12 @@ export default class ProjectJsonController {
         editProject = Object.assign(new NewProject(), editProject);
         return validate(editProject)
             .then(_ => {
-                const { tags, ...editProjectProps } = editProject;
+                console.log(editProject);
+                const { tagIds, ...editProjectProps } = editProject;
                 return Project
                     .findById(id)
                     .then(project => (project as Project).update(editProjectProps))
-                    .then(project => tags ? project.$set('tags', tags) : project) as PromiseLike<Project>;
+                    .then(project => tagIds ? project.$set('tags', tagIds) : project) as PromiseLike<Project>;
             });
     }
 
@@ -115,53 +116,109 @@ export default class ProjectJsonController {
     /**
      * Project Index
      * Gets projects with their tags, paginated and sorted by name.
+     *
+     * Methods:
+     *  - GET /
+     *
      */
     @Get("/")
     public getProjects(@QueryParams() queryParams: IPaginateOptions) {
-        return ProjectJsonController.getAll(queryParams);
+        return ProjectJsonController.getAll(queryParams).then(projects => projects.map(p => ({
+            id: p.id,
+            name: p.name,
+            shortDescription:  p.shortDescription,
+            createdAt: p.createdAt,
+            updatedAt: p.updatedAt,
+            tags: p.tags.map(t => ({
+                id: t.id,
+                key: t.key,
+                color: t.color,
+            })),
+        })));
     }
 
     /**
      * Project Details
      * Gets the details for a project.
+     *
+     * Methods:
+     *  - GET /{id}
+     *
      */
     @Get("/:id(\\d+)")
     public getProject(@Param('id') projectId: number) {
-        return ProjectJsonController.getOne(projectId);
+        return ProjectJsonController.getOne(projectId).then(p => ({
+            id: p.id,
+            name: p.name,
+            shortDescription:  p.shortDescription,
+            description: p.description,
+            createdAt: p.createdAt,
+            updatedAt: p.updatedAt,
+            team: {
+                id: p.team.id,
+                name: p.team.name,
+                shortDescription: p.team.shortDescription,
+            },
+            tags: p.tags.map(t => ({
+                id: t.id,
+                key: t.key,
+                color: t.color,
+            })),
+            fileGroups: p.fileGroups.map(fg => ({
+                id: fg.id,
+                title: fg.title,
+            })),
+        }));
     }
 
     /**
      * Create Project
      * Creates a new project.
+     *
+     * Methods:
+     *  - POST /
+     *
      */
     @Post("/")
-    @UseBefore(formParser.none())
     public createProject(
-        @Body({ required: true }) newProject: NewProject
+        @Body() body: NewProject,
+        @QueryParams() query: NewProject
     ) {
-        return ProjectJsonController.createOne(newProject);
+        return ProjectJsonController.createOne({...query, ...body});
     }
 
     /**
      * Update Project
      * Updates a project.
+     *
+     * Methods:
+     *  - POST /{id}
+     *  - PUT /{id}
+     *  - PATCH /{id}
+     *
      */
+    @Post("/:id(\\d+)")
     @Put("/:id(\\d+)")
     @Patch("/:id(\\d+)")
-    @UseBefore(formParser.none())
     public updateProject(
         @Param('id') projectId: number,
-        @Body({ required: true }) newProject: NewProject
+        @Body() body: NewProject,
+        @QueryParams() query: NewProject
     ) {
-        console.log(newProject);
-        return ProjectJsonController.editOne(projectId, newProject);
+        return ProjectJsonController.editOne(projectId, {...query, ...body});
     }
 
     /**
      * Delete Project
      * Deletes a project.
+     *
+     * Methods:
+     *  - DELETE /{id}
+     *  - POST /{id}/delete
+     *
      */
     @Delete("/:id(\\d+)")
+    @Post("/:id(\\d+)/delete")
     public deleteProject(@Param('id') projectId: number) {
         return ProjectJsonController.deleteOne(projectId);
     }

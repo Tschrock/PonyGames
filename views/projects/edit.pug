@@ -1,7 +1,7 @@
 extends ../_layout/main
 
 block content
-    form.js-ajaxform(action=`/api/v1/projects/${project.id}` method="put" data-success-location="..")
+    form.js-ajaxform(action=`/api/v1/projects/${project.id}` method="put" data-success-location=".")
         .form-group
             label(for="projectName") Project Name
             input#projectName.form-control(type="text", name="name", placeholder="My Cool Project", value=project.name)
@@ -21,7 +21,7 @@ block content
             - var currentTagIds = project.tags.map(t => t.id);
             each tag in tags
                 .form-check.form-check-inline(data-value-type="number")
-                    input.form-check-input(type="checkbox", name="tags" id=`projectTag-${tag.id}` value=tag.id checked=currentTagIds.includes(tag.id))
+                    input.form-check-input(type="checkbox", name="tagIds" id=`projectTag-${tag.id}` value=tag.id checked=currentTagIds.includes(tag.id))
                     label.form-check-label(for=`projectTag-${tag.id}`)= tag.key
 
         button.btn.btn-success(type="submit") Save
