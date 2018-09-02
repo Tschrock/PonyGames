@@ -6,34 +6,34 @@
 
 'use strict';
 
-import { MaxLength, Min, IsDefined, IsString, IsNumber, Allow } from "class-validator";
+import { MaxLength, IsString, IsNumber, IsNotEmpty } from "class-validator";
+
+const SHORT_STRING_MAX_CHARS = 255;
 
 /** asdf */
 export class NewProject {
 
     /** asdf */
-    @Allow()
-    @MaxLength(255, { message: "Name must be less than $constraint1 characters." })
-    @IsDefined()
-    @IsString()
+    @MaxLength(SHORT_STRING_MAX_CHARS, { message: "Name must be less than $constraint1 characters." })
+    @IsNotEmpty({ message: "Project must have a Name." })
+    @IsString({ message: "Name must be a string." })
     public name!: string;
 
     /** asdf */
-    @MaxLength(255, { message: "Short Description must be less than $constraint1 characters." })
-    @IsString()
+    @MaxLength(SHORT_STRING_MAX_CHARS, { message: "Short Description must be less than $constraint1 characters." })
+    @IsString({ message: "Short Description must be a string." })
     public shortDescription!: string;
 
     /** asdf */
-    @IsString()
+    @IsString({ message: "Description must be a string." })
     public description!: string;
 
     /** asdf */
-    @Min(1)
-    @IsNumber()
+    @IsNumber({}, { message: "TeamId must be a number." })
     public teamId!: number;
 
     /** asdf */
-    @IsNumber({ }, { each: true })
-    public tags!: number[];
+    @IsNumber({ }, { each: true, message: "TagIds must be an array of numbers." })
+    public tagIds!: number[];
 
 }

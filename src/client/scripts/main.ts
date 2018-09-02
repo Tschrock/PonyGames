@@ -167,6 +167,12 @@ function showFormAlert(form: HTMLFormElement, type: AlertType, title: string, me
     alertBox.appendChild($new('h3', title));
     alertBox.appendChild($new('p', message));
     if (validationErrors && Array.isArray(validationErrors)) {
+
+        const messageListList = validationErrors.map(err => err.constraints ? Object.values(err.constraints) : []);
+        const messageList = Array.prototype.concat.call([], ...messageListList) as string[];
+        const listItems = messageList.map(m => $new('li', m));
+        alertBox.appendChild($new('ul', ...listItems));
+
         validationErrors.forEach(err => {
             const elements = form.elements.namedItem(err.property);
             if (elements instanceof Element) {
