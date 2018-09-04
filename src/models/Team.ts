@@ -7,6 +7,8 @@
 
 import { Sequelize, Table, Column, Model, HasMany, AllowNull } from 'sequelize-typescript';
 
+import { ENTITY_NAME_MAX_LENGTH, ENTITY_SHORT_DESCRIPTION_MAX_LENGTH } from '../lib/Constants';
+
 import { Project } from './Project';
 import { TeamMember } from './TeamMember';
 
@@ -20,11 +22,11 @@ export class Team extends Model<Team> {
 
     /** The Team's name. */
     @AllowNull(false)
-    @Column
+    @Column(Sequelize.STRING(ENTITY_NAME_MAX_LENGTH))
     public name!: string;
 
     /** A short description of the Team. */
-    @Column(Sequelize.TEXT)
+    @Column(Sequelize.STRING(ENTITY_SHORT_DESCRIPTION_MAX_LENGTH))
     public shortDescription!: string;
 
     /** A long description for the Team. */

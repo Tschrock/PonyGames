@@ -10,15 +10,14 @@
 import { JsonController, Get, QueryParams, Param, Post, Delete, Put, Patch, Body, UseAfter } from "routing-controllers";
 
 import { IPaginateOptions, paginate } from "../../../lib/FindHelper";
+import { validate } from "../../../lib/ValidationHelper";
+
 import { Developer } from "../../../models/Developer";
-import { Tag } from "../../../models/Tag";
-import { File } from "../../../models/File";
-import { FileGroup } from "../../../models/FileGroup";
+import { TeamMember } from "../../../models/TeamMember";
 import { Team } from "../../../models/Team";
+
 import { NewDeveloper } from "./params/NewDeveloper";
 import { JsonErrorHandler } from "./JsonErrorHandler";
-import { validate } from "../../../lib/ValidationHelper";
-import { TeamMember } from "../../../models/TeamMember";
 
 /** DevelopersJsonController */
 @JsonController()

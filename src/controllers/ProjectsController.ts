@@ -30,7 +30,7 @@ export default class ProjectsController {
      */
     @Get("/")
     @Render("projects/index")
-    public showAllProjects(@QueryParams() queryParams: IPaginateOptions) {
+    public async showAllProjects(@QueryParams() queryParams: IPaginateOptions) {
 
         return ProjectsJsonController.getAll(queryParams).then(projects => ({ projects }));
 
@@ -42,7 +42,7 @@ export default class ProjectsController {
      */
     @Get("/:id(\\d+)")
     @Render("projects/details")
-    public showProject(@Param('id') projectId: number) {
+    public async showProject(@Param('id') projectId: number) {
 
         return ProjectsJsonController.getOne(projectId).then(project => ({ project }));
 

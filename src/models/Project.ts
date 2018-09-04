@@ -7,6 +7,8 @@
 
 import { Sequelize, Table, Column, Model, AllowNull, ForeignKey, BelongsTo, BelongsToMany, HasMany, NotEmpty } from 'sequelize-typescript';
 
+import { ENTITY_NAME_MAX_LENGTH, ENTITY_SHORT_DESCRIPTION_MAX_LENGTH } from '../lib/Constants';
+
 import { Team } from './Team';
 import { Tag } from './Tag';
 import { ProjectTag } from './ProjectTag';
@@ -23,11 +25,11 @@ export class Project extends Model<Project> {
     /** The Project's name. */
     @AllowNull(false)
     @NotEmpty
-    @Column(Sequelize.STRING)
+    @Column(Sequelize.STRING(ENTITY_NAME_MAX_LENGTH))
     public name!: string;
 
     /** A short description of the Project. */
-    @Column(Sequelize.TEXT)
+    @Column(Sequelize.STRING(ENTITY_SHORT_DESCRIPTION_MAX_LENGTH))
     public shortDescription!: string;
 
     /** A long description for the Project. */

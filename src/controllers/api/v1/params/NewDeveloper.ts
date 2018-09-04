@@ -8,23 +8,23 @@
 
 import { MaxLength, IsString, IsNotEmpty } from "class-validator";
 
-const SHORT_STRING_MAX_CHARS = 255;
+import { ENTITY_NAME_MAX_LENGTH, ENTITY_SHORT_DESCRIPTION_MAX_LENGTH } from '../../../../lib/Constants';
 
-/** asdf */
+/** A new or edited Developer */
 export class NewDeveloper {
 
-    /** asdf */
-    @MaxLength(SHORT_STRING_MAX_CHARS, { message: "Name must be less than $constraint1 characters." })
+    /** The Developer's name */
+    @MaxLength(ENTITY_NAME_MAX_LENGTH, { message: "Name must be less than $constraint1 characters." })
     @IsNotEmpty({ message: "Developer must have a Name." })
     @IsString({ message: "Name must be a string." })
     public name!: string;
 
-    /** asdf */
-    @MaxLength(SHORT_STRING_MAX_CHARS, { message: "Short Description must be less than $constraint1 characters." })
+    /** A short description for the Developer */
+    @MaxLength(ENTITY_SHORT_DESCRIPTION_MAX_LENGTH, { message: "Short Description must be less than $constraint1 characters." })
     @IsString({ message: "Short Description must be a string." })
     public shortDescription!: string;
 
-    /** asdf */
+    /** A full description for the Developer */
     @IsString({ message: "Description must be a string." })
     public description!: string;
 

@@ -30,7 +30,7 @@ export default class DeveloperController {
      */
     @Get("/")
     @Render("developers/index")
-    public showAllDevelopers(@QueryParams() queryParams: IPaginateOptions) {
+    public async showAllDevelopers(@QueryParams() queryParams: IPaginateOptions) {
         return DevelopersJsonController.getAll(queryParams).then(developers => ({ developers }));
     }
 
@@ -40,7 +40,7 @@ export default class DeveloperController {
      */
     @Get("/:id(\\d+)")
     @Render("developers/details")
-    public showDeveloper(@Param('id') developerId: number) {
+    public async showDeveloper(@Param('id') developerId: number) {
         return DevelopersJsonController.getOne(developerId).then(developer => ({ developer }));
     }
 
@@ -60,7 +60,7 @@ export default class DeveloperController {
      */
     @Get("/:id(\\d+)/edit")
     @Render("developers/edit")
-    public editDeveloper(@Param('id') developerId: number) {
+    public async editDeveloper(@Param('id') developerId: number) {
         return DevelopersJsonController.getOne(developerId).then(developer => ({ developer }));
     }
 

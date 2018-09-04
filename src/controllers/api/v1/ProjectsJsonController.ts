@@ -10,14 +10,16 @@
 import { JsonController, Get, QueryParams, Param, Post, Delete, Put, Patch, Body, UseAfter } from "routing-controllers";
 
 import { IPaginateOptions, paginate } from "../../../lib/FindHelper";
+import { validate } from "../../../lib/ValidationHelper";
+
 import { Project } from "../../../models/Project";
 import { Tag } from "../../../models/Tag";
-import { File } from "../../../models/File";
 import { FileGroup } from "../../../models/FileGroup";
+import { File } from "../../../models/File";
 import { Team } from "../../../models/Team";
+
 import { NewProject } from "./params/NewProject";
 import { JsonErrorHandler } from "./JsonErrorHandler";
-import { validate } from "../../../lib/ValidationHelper";
 
 /** ProjectsJsonController */
 @JsonController()
@@ -145,8 +147,8 @@ export default class ProjectsJsonController {
      *  - GET /{id}
      *
      */
-    @Get("/:id(\\d+)")
-    public getProject(@Param('id') projectId: number) {
+    @Get("/:projectId(\\d+)")
+    public getProject(@Param('projectId') projectId: number) {
         return ProjectsJsonController.getOne(projectId).then(p => ({
             id: p.id,
             name: p.name,
@@ -197,11 +199,11 @@ export default class ProjectsJsonController {
      *  - PATCH /{id}
      *
      */
-    @Post("/:id(\\d+)")
-    @Put("/:id(\\d+)")
-    @Patch("/:id(\\d+)")
+    @Post("/:projectId(\\d+)")
+    @Put("/:projectId(\\d+)")
+    @Patch("/:projectId(\\d+)")
     public updateProject(
-        @Param('id') projectId: number,
+        @Param('projectId') projectId: number,
         @Body() body: NewProject,
         @QueryParams() query: NewProject
     ) {
@@ -217,9 +219,9 @@ export default class ProjectsJsonController {
      *  - POST /{id}/delete
      *
      */
-    @Delete("/:id(\\d+)")
-    @Post("/:id(\\d+)/delete")
-    public deleteProject(@Param('id') projectId: number) {
+    @Delete("/:projectId(\\d+)")
+    @Post("/:projectId(\\d+)/delete")
+    public deleteProject(@Param('projectId') projectId: number) {
         return ProjectsJsonController.deleteOne(projectId);
     }
 

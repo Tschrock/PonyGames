@@ -11,7 +11,7 @@ import { Controller, Get, Render, QueryParams, Param } from "routing-controllers
 
 import { Team } from '../models/Team';
 
-import { paginate, IPaginateOptions } from "../lib/FindHelper";
+import { IPaginateOptions } from "../lib/FindHelper";
 import TeamsJsonController from "./api/v1/TeamsJsonController";
 
 /** The Team Controller */
@@ -28,7 +28,7 @@ export default class TeamsController {
      */
     @Get("/")
     @Render("teams/index")
-    public showAllTeams(@QueryParams() queryParams: IPaginateOptions) {
+    public async showAllTeams(@QueryParams() queryParams: IPaginateOptions) {
         return TeamsJsonController.getAll(queryParams).then(teams => ({ teams }));
     }
 
@@ -38,7 +38,7 @@ export default class TeamsController {
      */
     @Get("/:id(\\d+)")
     @Render("teams/details")
-    public showTeam(@Param('id') teamId: number) {
+    public async showTeam(@Param('id') teamId: number) {
         return TeamsJsonController.getOne(teamId).then(team => ({ team }));
     }
 
@@ -58,7 +58,7 @@ export default class TeamsController {
      */
     @Get("/:id(\\d+)/edit")
     @Render("teams/edit")
-    public editTeam(@Param('id') teamId: number) {
+    public async editTeam(@Param('id') teamId: number) {
         return Team.findById(teamId, { include: []}).then(team => ({ team }));
     }
 

@@ -10,13 +10,15 @@
 import { JsonController, Get, QueryParams, Param, Post, Delete, Put, Patch, Body, UseAfter } from "routing-controllers";
 
 import { IPaginateOptions, paginate } from "../../../lib/FindHelper";
+import { validate } from "../../../lib/ValidationHelper";
+
 import { Team } from "../../../models/Team";
+import { TeamMember } from "../../../models/TeamMember";
+import { Developer } from "../../../models/Developer";
+import { Project } from "../../../models/Project";
+
 import { NewTeam } from "./params/NewTeam";
 import { JsonErrorHandler } from "./JsonErrorHandler";
-import { validate } from "../../../lib/ValidationHelper";
-import { Project } from "../../../models/Project";
-import { Developer } from "../../../models/Developer";
-import { TeamMember } from "../../../models/TeamMember";
 
 /** TeamJsonController */
 @JsonController()
@@ -143,8 +145,8 @@ export default class TeamsJsonController {
      *  - GET /{id}
      *
      */
-    @Get("/:id(\\d+)")
-    public getTeam(@Param('id') teamId: number) {
+    @Get("/:teamId(\\d+)")
+    public getTeam(@Param('teamId') teamId: number) {
         return TeamsJsonController.getOne(teamId).then(t => ({
             id: t.id,
             name: t.name,
@@ -197,11 +199,11 @@ export default class TeamsJsonController {
      *  - PATCH /{id}
      *
      */
-    @Post("/:id(\\d+)")
-    @Put("/:id(\\d+)")
-    @Patch("/:id(\\d+)")
+    @Post("/:teamId(\\d+)")
+    @Put("/:teamId(\\d+)")
+    @Patch("/:teamId(\\d+)")
     public updateTeam(
-        @Param('id') teamId: number,
+        @Param('teamId') teamId: number,
         @Body() body: NewTeam,
         @QueryParams() query: NewTeam
     ) {
@@ -217,9 +219,9 @@ export default class TeamsJsonController {
      *  - POST /{id}/delete
      *
      */
-    @Delete("/:id(\\d+)")
-    @Post("/:id(\\d+)/delete")
-    public deleteTeam(@Param('id') teamId: number) {
+    @Delete("/:teamId(\\d+)")
+    @Post("/:teamId(\\d+)/delete")
+    public deleteTeam(@Param('teamId') teamId: number) {
         return TeamsJsonController.deleteOne(teamId);
     }
 

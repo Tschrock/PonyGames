@@ -6,34 +6,36 @@
 
 'use strict';
 
-import { MaxLength, IsString, IsNumber, IsNotEmpty } from "class-validator";
+import { MaxLength, IsString, IsNotEmpty, IsInt, IsPositive } from "class-validator";
 
-const SHORT_STRING_MAX_CHARS = 255;
+import { ENTITY_NAME_MAX_LENGTH, ENTITY_SHORT_DESCRIPTION_MAX_LENGTH } from '../../../../lib/Constants';
 
-/** asdf */
+/** A new or edited Project */
 export class NewProject {
 
-    /** asdf */
-    @MaxLength(SHORT_STRING_MAX_CHARS, { message: "Name must be less than $constraint1 characters." })
+    /** The name of the Project */
+    @MaxLength(ENTITY_NAME_MAX_LENGTH, { message: "Name must be less than $constraint1 characters." })
     @IsNotEmpty({ message: "Project must have a Name." })
     @IsString({ message: "Name must be a string." })
     public name!: string;
 
-    /** asdf */
-    @MaxLength(SHORT_STRING_MAX_CHARS, { message: "Short Description must be less than $constraint1 characters." })
+    /** A short description for the Project */
+    @MaxLength(ENTITY_SHORT_DESCRIPTION_MAX_LENGTH, { message: "Short Description must be less than $constraint1 characters." })
     @IsString({ message: "Short Description must be a string." })
     public shortDescription!: string;
 
-    /** asdf */
+    /** A full description for the project */
     @IsString({ message: "Description must be a string." })
     public description!: string;
 
-    /** asdf */
-    @IsNumber({}, { message: "TeamId must be a number." })
+    /** The team that's working on the project */
+    @IsInt({ message: "TeamId must be a positive integer." })
+    @IsPositive({ message: "TeamId must be a positive integer." })
     public teamId!: number;
 
-    /** asdf */
-    @IsNumber({ }, { each: true, message: "TagIds must be an array of numbers." })
+    /** The tags for the project */
+    @IsInt({ each: true, message: "TagIds must be an array of positive integers." })
+    @IsPositive({ each: true, message: "TagIds must be an array of positive integers." })
     public tagIds!: number[];
 
 }
