@@ -1,0 +1,15 @@
+extends ../_layout/main
+
+block content
+
+    form.js-ajaxform(action=`/api/v1/teammember/${teammember.id}` method="put" data-success-location="..")
+        .form-group
+            label(for="teamMemberTeam") Development Team
+            select#teamMemberTeam.form-control(name="teamId" data-value-type="number")
+                each team in teams
+                    option(value=team.id selected=team.id==teammember.teamId)= team.name
+        .form-group
+            label(for="teamMemberDeveloper") Developer
+            select#teamMemberDeveloper.form-control(name="developerId" data-value-type="number")
+                each developer in developers
+                    option(value=developer.id selected=developer.id==teammember.developerId)= developer.name

@@ -107,10 +107,17 @@ export function setupExpress() {
 
     // Dynamic Content
 
+    // API
     useController(app, '/api/v1/projects', 'api/v1/ProjectsJsonController');
     useController(app, '/api/v1/teams', 'api/v1/TeamsJsonController');
+    useController(app, '/api/v1/teammembers', 'api/v1/TeamMembersJsonController');
     useController(app, '/api/v1/developers', 'api/v1/DevelopersJsonController');
 
+    /// API-Extras
+    useController(app, '/api/v1/teams/:teamId(\\d+)/members', 'api/v1/TeamMembersJsonController');
+    useController(app, '/api/v1/developers/:developerId(\\d+)/memberships', 'api/v1/TeamMembersJsonController');
+
+    // Website
     useController(app, '/teams', 'TeamsController');
     useController(app, '/developers', 'DevelopersController');
     useController(app, '/projects', 'ProjectsController');
