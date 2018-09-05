@@ -14,6 +14,7 @@ export interface IConfig extends yargs.Arguments {
     db: ISequelizeConfig;
     web: {
         port: number;
+        cookieSecret: string;
     };
 }
 
@@ -70,7 +71,11 @@ export function doConfig(): IConfig {
                 describe: "The port to run the webserver on.",
                 type: 'number',
                 default: 8080
-            }
+            },
+            'web.cookieSecret': {
+                describe: "The secret key for cookie storage.",
+                type: 'string'
+            },
         })
 
         // Enable help

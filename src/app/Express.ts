@@ -8,44 +8,43 @@
 
 
 // Imports
-import * as path from 'path';
+import { join as joinPath } from 'path';
+import { randomBytes } from 'crypto';
 
-import * as httpError from 'http-errors';
+import { NotFound } from 'http-errors';
 
 import * as express from 'express';
-import * as favicon from 'serve-favicon';
 import * as logger from 'morgan';
-import * as bodyParser from 'body-parser';
-import * as cookieParser from 'cookie-parser';
-import * as multer from "multer";
+
+import * as processFavicon from 'serve-favicon';
+import { json as processJson, urlencoded as processUrlEncoded } from 'body-parser';
+import * as processCookies from 'cookie-parser';
+import * as processSessions from "express-session";
+
+/** asdf */
+
+import createSequelizeStore = require("connect-session-sequelize");
+const SequelizeStore = createSequelizeStore(processSessions.Store);
 
 import { useExpressServer, RoutingControllersOptions } from "routing-controllers";
 
 import { timeRequest, timeMiddleware } from '../lib/RequestTimer';
 import { NoNext } from '../lib/NoNext';
+import { IConfig } from '../lib/Config';
 import { ErrorHandler } from '../controllers/ErrorHandler';
+import { Sequelize } from 'sequelize';
 
 // Important Paths
-export const jsRoot = path.join(__dirname, '..');
-export const modelsRoot = path.join(jsRoot, 'models');
-export const routesRoot = path.join(jsRoot, 'routes');
-export const controllersRoot = path.join(jsRoot, 'controllers');
-export const publicJsRoot = path.join(jsRoot, 'client');
-export const serverRoot = path.join(jsRoot, '..');
-export const publicRoot = path.join(serverRoot, 'public');
-export const viewsRoot = path.join(serverRoot, 'views');
-
-export const formParser = multer({ storage: multer.memoryStorage() });
+export const jsRoot = joinPath(__dirname, '..');
+export const modelsRoot = joinPath(jsRoot, 'models');
+export const routesRoot = joinPath(jsRoot, 'routes');
+export const controllersRoot = joinPath(jsRoot, 'controllers');
+export const publicJsRoot = joinPath(jsRoot, 'client');
+export const serverRoot = joinPath(jsRoot, '..');
+export const publicRoot = joinPath(serverRoot, 'public');
+export const viewsRoot = joinPath(serverRoot, 'views');
 
 // Helpers
-
-/**
- * Gets if the app is in a development environment.
- * @param app The Express app.
- */
-export function isDev(app: express.Express) {
-    return app.get('env') === 'development';
-}
 
 /**
  * `require()`s and adds a router for the given route.
@@ -54,7 +53,7 @@ export function isDev(app: express.Express) {
  * @param location The location of the Router to use.
  */
 function setupRoute(app: express.Express, route: string, location: string) {
-    app.use(route, require(path.join(routesRoot, location)) as express.Router);
+    app.use(route, require(joinPath(routesRoot, location)) as express.Router);
 }
 
 const defaultOps = { classTransformer: false, defaultErrorHandler: false, middlewares: [NoNext] };
@@ -69,7 +68,7 @@ function useController(app: express.Express, route: string, location: string, ot
     useExpressServer(app, {
         ...defaultOps,
         routePrefix: route,
-        controllers: [require(path.join(controllersRoot, location)).default], // tslint:disable-line:no-unsafe-any
+        controllers: [require(joinPath(controllersRoot, location)).default], // tslint:disable-line:no-unsafe-any
         ...otherOptions
     });
 }
@@ -77,9 +76,13 @@ function useController(app: express.Express, route: string, location: string, ot
 /**
  * Setup Express
  */
-export function setupExpress() {
+export function setupExpress(options: IConfig, sequelizeDb: Sequelize) {
 
     const app = express();
+
+    // Enable proxy handling
+    // app.set('trust proxy', '127.0.0.1');
+    app.set('trust proxy', 1);
 
     // Pug View Rendering
     app.set('views', viewsRoot);
@@ -92,14 +95,32 @@ export function setupExpress() {
     app.use(timeMiddleware(logger('dev')));
 
     // Favicon Caching
-    app.use(timeMiddleware(favicon(path.join(publicRoot, 'favicon.ico'))));
+    app.use(timeMiddleware(processFavicon(joinPath(publicRoot, 'favicon.ico'))));
 
     // Request Body Parsing
-    app.use(timeMiddleware(bodyParser.json()));
-    app.use(timeMiddleware(bodyParser.urlencoded({ extended: false })));
+    app.use(timeMiddleware(processJson()));
+    app.use(timeMiddleware(processUrlEncoded({ extended: false })));
 
     // Cookie Parsing
-    app.use(timeMiddleware(cookieParser()));
+
+    const cookieSecret = options.web.cookieSecret || randomBytes(20).toString('hex');
+    app.use(timeMiddleware(processCookies(cookieSecret)));
+
+    // Sessions
+    app.use(processSessions({
+        cookie: {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'lax',
+        },
+        secret: cookieSecret,
+        store: new SequelizeStore({
+            db: sequelizeDb,
+        }),
+        resave: false,
+        proxy: true,
+        saveUninitialized: true,
+    }));
 
     // Static Content
     app.use(timeMiddleware(express.static(publicJsRoot)));
@@ -125,7 +146,7 @@ export function setupExpress() {
 
     // Everything else is a 404
     app.use((req, res, next) => {
-        next(new httpError.NotFound());
+        next(new NotFound());
     });
 
     // Serve Error Page

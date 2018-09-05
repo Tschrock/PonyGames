@@ -9,14 +9,15 @@
 import { doConfig } from '../lib/Config';
 import { setupHttp } from './Http';
 import { setupSequelize } from './Sequelize';
-import { isDev, setupExpress } from './Express';
+import { setupExpress } from './Express';
+import { isDev } from '../lib/Constants';
 
 // Get the Config
 const options = doConfig();
 
 // Setup Components
-const app = setupExpress();
-setupSequelize(options, isDev(app));
-setupHttp(options, app);
+const sequelizeDb = setupSequelize(options, isDev);
+const expressApp =  setupExpress(options, sequelizeDb);
+const httpServer =  setupHttp(options, expressApp);
 
 console.log('App started.');

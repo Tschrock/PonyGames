@@ -6,6 +6,8 @@
 
 'use strict';
 
+export const isDev = process.env.NODE_ENV !== 'production';
+
 export const SHORT_STRING_MAX_LENGTH = 255;
 export const MEDIUM_STRING_MAX_LENGTH = 1024;
 export const LONG_STRING_MAX_LENGTH = 4096;

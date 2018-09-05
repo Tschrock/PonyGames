@@ -11,7 +11,7 @@ import { Middleware, ExpressErrorMiddlewareInterface } from "routing-controllers
 import { Request, Response, NextFunction, Express } from "express";
 
 import { AnyError, HttpError, normalizeError } from "../lib/HttpError";
-import { isDev } from "../app/Express";
+import { isDev } from "../lib/Constants";
 
 /** General Error Handler */
 @Middleware({ type: "after" })
@@ -22,7 +22,7 @@ export class ErrorHandler implements ExpressErrorMiddlewareInterface {
         const httpError: HttpError = normalizeError(error);
         response.status(httpError.statusCode).render('error', {
             statusCode: httpError.statusCode,
-            errorData: httpError.toResponseObject(isDev(request.app as Express))
+            errorData: httpError.toResponseObject(isDev)
         });
     }
 
