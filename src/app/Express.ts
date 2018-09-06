@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 /*!
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -12,19 +11,17 @@ import { join as joinPath } from 'path';
 import { randomBytes } from 'crypto';
 
 import { NotFound } from 'http-errors';
+import { Sequelize } from 'sequelize';
+import { Authenticator } from 'passport';
 
 import * as express from 'express';
 import * as logger from 'morgan';
-
 import * as processFavicon from 'serve-favicon';
 import { json as processJson, urlencoded as processUrlEncoded } from 'body-parser';
 import * as processCookies from 'cookie-parser';
 import * as processSessions from "express-session";
-
-/** asdf */
-
 import createSequelizeStore = require("connect-session-sequelize");
-const SequelizeStore = createSequelizeStore(processSessions.Store);
+const tSequelizeStore = createSequelizeStore(processSessions.Store);
 
 import { useExpressServer, RoutingControllersOptions } from "routing-controllers";
 
@@ -32,7 +29,7 @@ import { timeRequest, timeMiddleware } from '../lib/RequestTimer';
 import { NoNext } from '../lib/NoNext';
 import { IConfig } from '../lib/Config';
 import { ErrorHandler } from '../controllers/ErrorHandler';
-import { Sequelize } from 'sequelize';
+
 
 // Important Paths
 export const jsRoot = joinPath(__dirname, '..');
@@ -73,10 +70,12 @@ function useController(app: express.Express, route: string, location: string, ot
     });
 }
 
+const DEFAULT_COOKIE_SECRET_RANDOM_BYTES = 20;
+
 /**
  * Setup Express
  */
-export function setupExpress(options: IConfig, sequelizeDb: Sequelize) {
+export function setupExpress(options: IConfig, sequelizeDb: Sequelize, passport: Authenticator<express.Handler, express.Handler>) {
 
     const app = express();
 
@@ -103,7 +102,7 @@ export function setupExpress(options: IConfig, sequelizeDb: Sequelize) {
 
     // Cookie Parsing
 
-    const cookieSecret = options.web.cookieSecret || randomBytes(20).toString('hex');
+    const cookieSecret = options.web.cookieSecret || randomBytes(DEFAULT_COOKIE_SECRET_RANDOM_BYTES).toString('hex');
     app.use(timeMiddleware(processCookies(cookieSecret)));
 
     // Sessions
@@ -114,13 +113,25 @@ export function setupExpress(options: IConfig, sequelizeDb: Sequelize) {
             sameSite: 'lax',
         },
         secret: cookieSecret,
-        store: new SequelizeStore({
+        store: new tSequelizeStore({
             db: sequelizeDb,
         }),
         resave: false,
         proxy: true,
         saveUninitialized: true,
     }));
+
+    // Authentication
+    app.use(passport.initialize());
+    app.use(passport.session());
+
+    app.get('/login', (req, res) => res.render('login'));
+    app.get('/login/twitter', passport.authenticate('twitter'));
+    app.get('/auth/twitter/callback', passport.authenticate('twitter', {
+        successRedirect: '/',
+        failureRedirect: '/login',
+    }) as express.RequestHandler);
+
 
     // Static Content
     app.use(timeMiddleware(express.static(publicJsRoot)));

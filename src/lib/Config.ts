@@ -13,8 +13,15 @@ import yargs = require('yargs');
 export interface IConfig extends yargs.Arguments {
     db: ISequelizeConfig;
     web: {
+        domain: string;
         port: number;
         cookieSecret: string;
+        auth: {
+            twitter: {
+                consumerKey: string;
+                consumerSecret: string;
+            };
+        };
     };
 }
 
@@ -72,8 +79,20 @@ export function doConfig(): IConfig {
                 type: 'number',
                 default: 8080
             },
+            'web.domain': {
+                describe: "The domain the server is being run from.",
+                type: 'string'
+            },
             'web.cookieSecret': {
                 describe: "The secret key for cookie storage.",
+                type: 'string'
+            },
+            'web.auth.twitter.consumerKey': {
+                describe: "The consumer key for twitter auth.",
+                type: 'string'
+            },
+            'web.auth.twitter.consumerSecret': {
+                describe: "The consumer secret for twitter auth.",
                 type: 'string'
             },
         })

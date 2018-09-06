@@ -9,7 +9,14 @@
         "storage": "path/to/database.sqlite (only for sqlite)"
     },
     "web": {
+        "domain": "yourdomain.example.com",
         "port": 8080,
-        "cookieSecret": "super sekrit"
+        "cookieSecret": "super sekrit",
+        "auth": {
+            "twitter": {
+                "consumerKey": "the key",
+                "consumerSecret": "the sekrit"
+            }
+        }
     }
 }
