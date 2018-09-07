@@ -11,7 +11,7 @@ import { Team } from './Team';
 import { Developer } from './Developer';
 
 /**
- * A team developer.
+ * A team member.
  */
 @Table({
     timestamps: true

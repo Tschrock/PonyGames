@@ -5,14 +5,15 @@
  */
 'use strict';
 
-import { Sequelize, Table, Column, Model, BelongsTo, AllowNull, ForeignKey, IsNumeric } from 'sequelize-typescript';
+import { Sequelize, Table, Column, Model, BelongsTo, AllowNull, ForeignKey, IsNumeric, HasMany } from 'sequelize-typescript';
 
 import { ENTITY_NAME_MAX_LENGTH } from '../lib/Constants';
 
 import { Developer } from './Developer';
+import { UserSocialProfile } from './UserSocialProfile';
 
 /**
- * A Developer.
+ * A User.
  */
 @Table({
     timestamps: true
@@ -29,17 +30,17 @@ export class User extends Model<User> {
     @Column(Sequelize.STRING(ENTITY_NAME_MAX_LENGTH))
     public name!: string;
 
-    /** The User's Twitter Id. */
-    @Column
-    public twitterId!: string;
-
-    /** The connected Developer Id. */
+    /** The Id of the User's Developer Profile. */
     @ForeignKey(() => Developer)
     @Column
     public developerId!: number;
 
-    /** The connected Developer. */
+    /** The User's Developer Profile. */
     @BelongsTo(() => Developer)
     public developer!: Developer;
+
+    /** The User's SocialProfiles */
+    @HasMany(() => UserSocialProfile)
+    public socialProfiles!: UserSocialProfile[];
 
 }

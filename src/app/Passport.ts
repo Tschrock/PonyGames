@@ -10,7 +10,53 @@ import { Strategy as TwitterStrategy } from 'passport-twitter';
 import { Sequelize } from 'sequelize';
 
 import { IConfig } from '../lib/Config';
+import { UserSocialProfile } from '../models/UserSocialProfile';
 import { User } from '../models/User';
+
+export interface IProfile {
+    id: string | number;
+    username: string;
+    displayName: string;
+}
+
+/**
+ * Gets the user associated with a profile.
+ * @param profile A person's Passport profile.
+ */
+export async function getOrCreateUser(sequelizeDb: Sequelize, profile: IProfile): Promise<User> {
+    const { id, displayName, username } = profile;
+
+    if (!id) throw new Error("Social profile is missing an Id.");
+    if (!displayName) throw new Error("Social profile is missing a Display Name.");
+    if (!username) throw new Error("Social profile is missing a Username.");
+
+    return sequelizeDb.transaction(transaction =>
+        UserSocialProfile.findOrCreate({
+            transaction,
+            limit: 1,
+            where: { externalId: id },
+            defaults: { externalId: id, displayName, username },
+            include: [User],
+        }).then(
+            ([socialProfile, wasCreated]) => {
+                if (socialProfile.user) {
+                    return socialProfile.user;
+                }
+                else {
+                    return User.create(
+                        {
+                            
+                        },
+                        {
+                            transaction,
+                        }
+                    );
+                }
+            }
+        )
+    );
+}
+
 
 /**
  * Sets up Passport for user logins.
@@ -28,25 +74,7 @@ export function setupPassport(options: IConfig, sequelizeDb: Sequelize) {
                 callbackURL: `https://${options.web.domain}/auth/twitter/callback`
             },
             (token, tokenSecret, profile, onDone) => {
-                // In this example, the user's Twitter profile is supplied as the user
-                // record.  In a production-quality application, the Twitter profile should
-                // be associated with a user record in the application's database, which
-                // allows for account linking and authentication with other identity
-                // providers.
-                console.log("New Twitter Login with Profile:");
-                console.log(profile);
-                User.findOrCreate({
-                    where:  { twitterId: profile.id },
-                    limit: 1,
-                    defaults: {
-                        twitterId: profile.id,
-                        name: profile.displayName,
-                        username: profile.username
-                    }
-                }).then(
-                    user => onDone(null, user[0]),
-                    onDone
-                );
+                //
             }
         )
     );
