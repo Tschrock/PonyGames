@@ -29,6 +29,7 @@ import { timeRequest, timeMiddleware } from '../lib/RequestTimer';
 import { NoNext } from '../lib/NoNext';
 import { IConfig } from '../lib/Config';
 import { ErrorHandler } from '../controllers/ErrorHandler';
+import { DEFAULT_COOKIE_SECRET_RANDOM_BYTES } from '../lib/Constants';
 
 
 // Important Paths
@@ -53,7 +54,8 @@ function setupRoute(app: express.Express, route: string, location: string) {
     app.use(route, require(joinPath(routesRoot, location)) as express.Router);
 }
 
-const defaultOps = { classTransformer: false, defaultErrorHandler: false, middlewares: [NoNext] };
+const defaultControllerOptions = { classTransformer: false, defaultErrorHandler: false, middlewares: [NoNext] };
+const defaultAuthOptions = { successRedirect: '/', failureRedirect: '/login' };
 
 /**
  * `require()`s and adds a controller for the given route.
@@ -63,14 +65,17 @@ const defaultOps = { classTransformer: false, defaultErrorHandler: false, middle
  */
 function useController(app: express.Express, route: string, location: string, otherOptions?: RoutingControllersOptions) {
     useExpressServer(app, {
-        ...defaultOps,
+        ...defaultControllerOptions,
         routePrefix: route,
         controllers: [require(joinPath(controllersRoot, location)).default], // tslint:disable-line:no-unsafe-any
         ...otherOptions
     });
 }
 
-const DEFAULT_COOKIE_SECRET_RANDOM_BYTES = 20;
+function setupAuthRoutes(app: express.Express, passport: Authenticator, provider: string) {
+    app.get(`/login/${provider}`, passport.authenticate(provider));
+    app.get(`/auth/${provider}/callback`, passport.authenticate(provider, defaultAuthOptions) as express.RequestHandler);
+}
 
 /**
  * Setup Express
@@ -80,8 +85,7 @@ export function setupExpress(options: IConfig, sequelizeDb: Sequelize, passport:
     const app = express();
 
     // Enable proxy handling
-    // app.set('trust proxy', '127.0.0.1');
-    app.set('trust proxy', 1);
+    if(options.web.protocol === 'proxy') app.set('trust proxy', 1);
 
     // Pug View Rendering
     app.set('views', viewsRoot);
@@ -109,7 +113,7 @@ export function setupExpress(options: IConfig, sequelizeDb: Sequelize, passport:
     app.use(processSessions({
         cookie: {
             httpOnly: true,
-            secure: true,
+            secure: options.web.protocol === 'proxy' || options.web.protocol === 'https',
             sameSite: 'lax',
         },
         secret: cookieSecret,
@@ -117,7 +121,7 @@ export function setupExpress(options: IConfig, sequelizeDb: Sequelize, passport:
             db: sequelizeDb,
         }),
         resave: false,
-        proxy: true,
+        proxy: options.web.protocol === 'proxy',
         saveUninitialized: true,
     }));
 
@@ -126,12 +130,10 @@ export function setupExpress(options: IConfig, sequelizeDb: Sequelize, passport:
     app.use(passport.session());
 
     app.get('/login', (req, res) => res.render('login'));
-    app.get('/login/twitter', passport.authenticate('twitter'));
-    app.get('/auth/twitter/callback', passport.authenticate('twitter', {
-        successRedirect: '/',
-        failureRedirect: '/login',
-    }) as express.RequestHandler);
-
+    app.get('/settings', (req, res) => res.render('settings/index', { user: req.user }));
+    
+    if (options.web.auth.twitter) setupAuthRoutes(app, passport, 'twitter');
+    if (options.web.auth.github) setupAuthRoutes(app, passport, 'github');
 
     // Static Content
     app.use(timeMiddleware(express.static(publicJsRoot)));

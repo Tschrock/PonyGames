@@ -41,6 +41,7 @@ export function setupSequelize(options: IConfig, isDev: boolean) {
 
     if (isDev) {
         sequelize.sync({ force: true }).then(loadTestData);
+        // sequelize.sync();
     }
     else {
         sequelize.sync();

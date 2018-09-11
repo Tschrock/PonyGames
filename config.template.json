@@ -9,6 +9,7 @@
         "storage": "path/to/database.sqlite (only for sqlite)"
     },
     "web": {
+        "protocol": "http|https|proxy",
         "domain": "yourdomain.example.com",
         "port": 8080,
         "cookieSecret": "super sekrit",
@@ -16,6 +17,10 @@
             "twitter": {
                 "consumerKey": "the key",
                 "consumerSecret": "the sekrit"
+            },
+            "githup": {
+                "clientID": "the id",
+                "clientSecret": "the sekrit"
             }
         }
     }

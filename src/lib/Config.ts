@@ -11,18 +11,24 @@ import { ISequelizeConfig } from 'sequelize-typescript';
 import yargs = require('yargs');
 
 export interface IConfig extends yargs.Arguments {
-    db: ISequelizeConfig;
+    db: ISequelizeConfig,
     web: {
-        domain: string;
-        port: number;
-        cookieSecret: string;
+        protocol: 'http' | 'https' | 'proxy',
+        domain: string,
+        port: number,
+        cookieSecret: string,
         auth: {
-            twitter: {
-                consumerKey: string;
-                consumerSecret: string;
-            };
-        };
-    };
+            twitter?: {
+                consumerKey: string,
+                consumerSecret: string,
+            },
+            github?: {
+                clientID: string,
+                clientSecret: string,
+            },
+            [key: string]: any
+        },
+    },
 }
 
 /**
@@ -83,6 +89,11 @@ export function doConfig(): IConfig {
                 describe: "The domain the server is being run from.",
                 type: 'string'
             },
+            'web.protocol': {
+                describe: "The protocol to run the server with.",
+                type: 'string',
+                choices: ['http', 'https', 'proxy']
+            },
             'web.cookieSecret': {
                 describe: "The secret key for cookie storage.",
                 type: 'string'
@@ -93,6 +104,14 @@ export function doConfig(): IConfig {
             },
             'web.auth.twitter.consumerSecret': {
                 describe: "The consumer secret for twitter auth.",
+                type: 'string'
+            },
+            'web.auth.github.clientID': {
+                describe: "The client id for github auth.",
+                type: 'string'
+            },
+            'web.auth.github.clientSecret': {
+                describe: "The client secret for github auth.",
                 type: 'string'
             },
         })

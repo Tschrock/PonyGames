@@ -1,0 +1,34 @@
+extends ../_layout/main
+
+block content
+    section
+        h1= `Hello ${user.name}! `
+            small= `(@${user.username})`
+    
+    section
+        h2 Linked Developer Profile:
+        .card-grid
+            if user.developer
+                a.card(href=`/developers/${user.developerId}`)
+                    .card-body
+                        h4= user.developer.name
+                        p= user.developer.shortDescription
+            else
+                a.card(href=`#`)
+                    .card-body
+                        h4 None
+    
+    section
+        h2 Linked Social Profiles:
+        .card-grid
+            for profile in user.socialProfiles
+                .card
+                    .card-body
+                        h4.card-title= profile.provider
+                        p.card-text= profile.displayName
+                        p.card-text= `@${profile.username}`
+                        p.card-text= profile.externalId
+            else
+                a.card(href=`#`)
+                    .card-body
+                        h4 None

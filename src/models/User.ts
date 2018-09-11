@@ -5,7 +5,7 @@
  */
 'use strict';
 
-import { Sequelize, Table, Column, Model, BelongsTo, AllowNull, ForeignKey, IsNumeric, HasMany } from 'sequelize-typescript';
+import { Sequelize, Table, Column, Model, BelongsTo, AllowNull, ForeignKey, IsNumeric, HasMany, Unique } from 'sequelize-typescript';
 
 import { ENTITY_NAME_MAX_LENGTH } from '../lib/Constants';
 
@@ -21,6 +21,7 @@ import { UserSocialProfile } from './UserSocialProfile';
 export class User extends Model<User> {
 
     /** The User's username. */
+    @Unique
     @AllowNull(false)
     @Column(Sequelize.STRING(ENTITY_NAME_MAX_LENGTH))
     public username!: string;
