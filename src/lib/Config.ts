@@ -11,24 +11,24 @@ import { ISequelizeConfig } from 'sequelize-typescript';
 import yargs = require('yargs');
 
 export interface IConfig extends yargs.Arguments {
-    db: ISequelizeConfig,
+    db: ISequelizeConfig;
     web: {
-        protocol: 'http' | 'https' | 'proxy',
-        domain: string,
-        port: number,
-        cookieSecret: string,
+        protocol: 'http' | 'https' | 'proxy';
+        domain: string;
+        port: number;
+        cookieSecret: string;
         auth: {
             twitter?: {
-                consumerKey: string,
-                consumerSecret: string,
-            },
+                consumerKey: string;
+                consumerSecret: string;
+            };
             github?: {
-                clientID: string,
-                clientSecret: string,
-            },
-            [key: string]: any
-        },
-    },
+                clientID: string;
+                clientSecret: string;
+            };
+            [key: string]: any;
+        };
+    };
 }
 
 /**

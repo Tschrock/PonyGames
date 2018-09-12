@@ -79,7 +79,7 @@
         //
         // TS Only
         // Requires Type Info
-        "await-promise": true, // Warns for an awaited value that is not a Promise.
+        "await-promise": [true, "Bluebird"], // Warns for an awaited value that is not a Promise.
         "ban-comma-operator": true, // Disallows the comma operator to be used.
         "ban": false, // Bans the use of specific functions or global methods.
         // Has Fixer

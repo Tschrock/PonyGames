@@ -72,8 +72,14 @@ function useController(app: express.Express, route: string, location: string, ot
     });
 }
 
+/**
+ * Sets up the auth routes for a provider.
+ * @param app The express app.
+ * @param passport The Passport instance.
+ * @param provider The name of the auth provider.
+ */
 function setupAuthRoutes(app: express.Express, passport: Authenticator, provider: string) {
-    app.get(`/login/${provider}`, passport.authenticate(provider));
+    app.get(`/login/${provider}`, passport.authenticate(provider) as express.RequestHandler);
     app.get(`/auth/${provider}/callback`, passport.authenticate(provider, defaultAuthOptions) as express.RequestHandler);
 }
 
@@ -131,7 +137,7 @@ export function setupExpress(options: IConfig, sequelizeDb: Sequelize, passport:
 
     app.get('/login', (req, res) => res.render('login'));
     app.get('/settings', (req, res) => res.render('settings/index', { user: req.user }));
-    
+
     if (options.web.auth.twitter) setupAuthRoutes(app, passport, 'twitter');
     if (options.web.auth.github) setupAuthRoutes(app, passport, 'github');
 
