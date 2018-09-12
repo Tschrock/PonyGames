@@ -50,9 +50,13 @@ export function ArraySymetricDiff<T>(leftArr: Array<T>, rightArr: Array<T>): Arr
  * @param promise The promise.
  * @param callback The callback.
  */
-export function Promise2Callback<T, Q = void>(promise: PromiseLike<T>, callback: (err: Error | null, rtn?: T) => Q) {
-    promise.then(
-        result => callback(null, result),
-        error => callback(error, void 0)
-    )
+export async function Promise2Callback<T, Q = void>(promise: Promise<T>, callback: (err: Error | null, rtn?: T) => Q) {
+    let result;
+    try {
+        result = await promise;
+    }
+    catch (err) {
+        return callback(err as Error, void 0);
+    }
+    return callback(null, result);
 }
