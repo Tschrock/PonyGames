@@ -14,7 +14,6 @@ Pony.Games
 
 [![Dependencies][dependencies-badge]][dependencies-link]
 [![Dev Dependencies][dev-dependencies-badge]][dev-dependencies-link]
-[![Peer Dependencies][peer-dependencies-badge]][peer-dependencies-link]
 [![Vulnerabilities][vulnerabilities-badge]][vulnerabilities-link]
 [![Build][build-badge]][build-link]
 [![Tests][tests-badge]][tests-link]
@@ -45,9 +44,6 @@ Pony.Games
 
 [dev-dependencies-badge]: https://david-dm.org/tschrock/ponygames/dev-status.svg
 [dev-dependencies-link]: https://david-dm.org/tschrock/ponygames?type=dev
-
-[peer-dependencies-badge]: https://img.shields.io/david/peer/tschrock/ponygames.svg
-[peer-dependencies-link]: https://david-dm.org/tschrock/ponygames?type=dev
 
 [vulnerabilities-badge]: https://snyk.io/test/github/tschrock/ponygames/badge.svg
 [vulnerabilities-link]: https://snyk.io/test/github/tschrock/ponygames
