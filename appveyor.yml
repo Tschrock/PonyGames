@@ -16,4 +16,18 @@ install:
 build_script:
 - npm run build
 test_script:
-- npm run test
+- node --version
+- npm --version
+- npm run coverage
+cache:
+- node_modules -> package.json
+matrix:
+  fast_finish: true
+for:
+-
+  matrix:
+    only:
+      - image: Ubuntu1804
+        nodejs_version: 10
+  on_success:
+  - npm run coveralls-upload

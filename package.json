@@ -7,10 +7,11 @@
         "build": "tsc",
         "lint": "tslint --project .",
         "start": "npm run build && node dist/app/index.js",
-        "startts": "ts-node dist/app/index.js",
+        "start-ts": "ts-node dist/app/index.js",
         "test": "mocha",
-        "cover": "nyc npm test",
-        "coveralls": "npm run cover && nyc report --reporter=text-lcov | coveralls"
+        "coverage": "nyc npm test",
+        "coveralls-upload": "nyc report --reporter=text-lcov | coveralls",
+        "coveralls": "npm run coverage && npm run coveralls-upload"
     },
     "repository": {
         "type": "git",
