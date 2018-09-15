@@ -10,13 +10,13 @@ import * as path from 'path';
 import { ISequelizeConfig } from 'sequelize-typescript';
 import yargs = require('yargs');
 
-export interface IConfig extends yargs.Arguments {
-    db: ISequelizeConfig;
+export interface IConfig extends Partial<yargs.Arguments> {
+    db?: ISequelizeConfig;
     web: {
         protocol: 'http' | 'https' | 'proxy';
         domain: string;
         port: number;
-        cookieSecret: string;
+        cookieSecret?: string;
         auth: {
             twitter?: {
                 consumerKey: string;
