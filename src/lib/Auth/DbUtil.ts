@@ -5,28 +5,16 @@
  */
 'use strict';
 
-import { Profile, Strategy } from 'passport';
+import { Profile } from 'passport';
 import { Sequelize } from 'sequelize-typescript';
 import { Transaction, UniqueConstraintError } from 'sequelize';
 
-import { UserSocialProfile } from '../models/UserSocialProfile';
-import { User } from '../models/User';
-import { ArrayLeftDiff, GetPsuedoRandomInt, Promise2Callback } from './Util';
-import { USERNAME_RANDOMIZER_MAX } from './Constants';
-import { IConfig } from './Config';
+import { UserSocialProfile } from '../../models/UserSocialProfile';
+import { User } from '../../models/User';
+import { GetPsuedoRandomInt } from '../Util';
+import { USERNAME_RANDOMIZER_MAX } from '../Constants';
+import { checkProfileData } from './PassportUtil';
 
-/**
- * Checks that a profile is valid and throws if not.
- * @param passportProfile The profile data from passport.
- */
-export function checkProfileData(passportProfile: Profile) {
-    const { provider, id, username, displayName } = passportProfile;
-
-    if (!provider) throw new Error("Social profile is missing a provider.");
-    if (!id) throw new Error("Social profile is missing an Id.");
-    if (!username) throw new Error("Social profile is missing a Username.");
-    if (!displayName) throw new Error("Social profile is missing a Display Name.");
-}
 
 /**
  * Updates a user's Social Profile with the profile data from passport.
@@ -125,54 +113,4 @@ export async function getOrCreateUser(sequelizeDb: Sequelize, passportProfile: P
             return newUser;
         }
     });
-}
-
-type VerifyDone = (error: Error | null, user?: User) => void;
-type DeserializeDone = VerifyDone;
-type SerializeDone = (error: Error | null, userId?: number) => void;
-type VerifyFunction = (token: string, tokenSecret: string, profile: Profile, onDone: VerifyDone) => void;
-
-/**
- * Creates a new verify function.
- * @param sequelizeDb The Sequelize db to use.
- */
-export function buildVerifyFunction(sequelizeDb: Sequelize): VerifyFunction {
-    return (token, tokenSecret, profile: Profile, onDone: VerifyDone) => Promise2Callback<User>(
-        getOrCreateUser(sequelizeDb, profile),
-        onDone
-    );
-}
-
-/**
- * Serializes a user.
- * @param user The user.
- * @param onDone A function to call once the user is serialized.
- */
-export function serializeUser(user: User, onDone: SerializeDone) {
-    onDone(null, user.id as number);
-}
-
-/**
- * Deserializes a user.
- * @param id The user's id.
- * @param onDone A function to call once the user is deserialized.
- */
-export function deserializeUser(id: number, onDone: DeserializeDone) {
-    Promise2Callback<User>(
-        User.findById(id, { rejectOnEmpty: true, include: [UserSocialProfile] }) as PromiseLike<User> as Promise<User>,
-        onDone
-    ).catch();
-}
-
-/**
- * Gets the auth options for a provider.
- * @param options The app's config options.
- * @param provider The auth provider to get options for.
- */
-export function getAuthOptions<T>(options: IConfig, provider: string): T {
-    const protocol = options.web.protocol === 'proxy' ? 'https' : options.web.protocol;
-    return {
-        ...options.web.auth[provider],
-        callbackURL: `${protocol}://${options.web.domain}/auth/${provider}/callback`
-    };
 }

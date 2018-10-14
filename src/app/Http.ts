@@ -10,7 +10,7 @@ import * as http from 'http';
 import * as debugBuilder from 'debug';
 import { Express } from 'express';
 
-import { IConfig } from '../lib/Config';
+import { IConfig } from '../lib/IConfig';
 
 /**
  * Setup the http server.

@@ -27,7 +27,7 @@ import { useExpressServer, RoutingControllersOptions } from "routing-controllers
 
 import { timeRequest, timeMiddleware } from '../lib/RequestTimer';
 import { NoNext } from '../lib/NoNext';
-import { IConfig } from '../lib/Config';
+import { IConfig } from '../lib/IConfig';
 import { ErrorHandler } from '../controllers/ErrorHandler';
 import { DEFAULT_COOKIE_SECRET_RANDOM_BYTES } from '../lib/Constants';
 
@@ -91,7 +91,7 @@ export function setupExpress(options: IConfig, sequelizeDb: Sequelize, passport:
     const app = express();
 
     // Enable proxy handling
-    if(options.web.protocol === 'proxy') app.set('trust proxy', 1);
+    app.set('trust proxy', 1);
 
     // Pug View Rendering
     app.set('views', viewsRoot);
@@ -101,25 +101,25 @@ export function setupExpress(options: IConfig, sequelizeDb: Sequelize, passport:
     app.use(timeRequest);
 
     // Request Logging
-    app.use(timeMiddleware(logger('dev')));
+    app.use(logger('dev'));
 
     // Favicon Caching
-    app.use(timeMiddleware(processFavicon(joinPath(publicRoot, 'favicon.ico'))));
+    app.use(processFavicon(joinPath(publicRoot, 'favicon.ico')));
 
     // Request Body Parsing
-    app.use(timeMiddleware(processJson()));
-    app.use(timeMiddleware(processUrlEncoded({ extended: false })));
+    app.use(processJson());
+    app.use(processUrlEncoded({ extended: false }));
 
     // Cookie Parsing
 
     const cookieSecret = options.web.cookieSecret || randomBytes(DEFAULT_COOKIE_SECRET_RANDOM_BYTES).toString('hex');
-    app.use(timeMiddleware(processCookies(cookieSecret)));
+    app.use(processCookies(cookieSecret));
 
     // Sessions
     app.use(processSessions({
         cookie: {
             httpOnly: true,
-            secure: options.web.protocol === 'proxy' || options.web.protocol === 'https',
+            secure: true,
             sameSite: 'lax',
         },
         secret: cookieSecret,
@@ -127,7 +127,7 @@ export function setupExpress(options: IConfig, sequelizeDb: Sequelize, passport:
             db: sequelizeDb,
         }),
         resave: false,
-        proxy: options.web.protocol === 'proxy',
+        proxy: true,
         saveUninitialized: true,
     }));
 
@@ -138,12 +138,12 @@ export function setupExpress(options: IConfig, sequelizeDb: Sequelize, passport:
     app.get('/login', (req, res) => res.render('login'));
     app.get('/settings', (req, res) => res.render('settings/index', { user: req.user }));
 
-    if (options.web.auth.twitter) setupAuthRoutes(app, passport, 'twitter');
-    if (options.web.auth.github) setupAuthRoutes(app, passport, 'github');
+    setupAuthRoutes(app, passport, 'twitter');
+    setupAuthRoutes(app, passport, 'github');
 
     // Static Content
-    app.use(timeMiddleware(express.static(publicJsRoot)));
-    app.use(timeMiddleware(express.static(publicRoot)));
+    app.use(express.static(publicJsRoot));
+    app.use(express.static(publicRoot));
 
     // Dynamic Content
 
@@ -164,9 +164,7 @@ export function setupExpress(options: IConfig, sequelizeDb: Sequelize, passport:
     useController(app, '/', 'ProjectsController');
 
     // Everything else is a 404
-    app.use((req, res, next) => {
-        next(new NotFound());
-    });
+    app.use((req, res, next) => next(new NotFound()));
 
     // Serve Error Page
     const eHandler = new ErrorHandler();

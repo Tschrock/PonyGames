@@ -6,13 +6,36 @@
 'use strict';
 
 import { Sequelize } from 'sequelize-typescript';
-import { Authenticator } from 'passport';
+import { Authenticator, Strategy } from 'passport';
 
-import { Strategy as TwitterStrategy } from 'passport-twitter';
-import { Strategy as GithubStrategy } from 'passport-github';
 
-import { serializeUser, deserializeUser, buildVerifyFunction, getAuthOptions } from '../lib/Auth';
-import { IConfig } from '../lib/Config';
+import { serializeUser, deserializeUser, buildVerifyFunction } from '../lib/Auth/PassportUtil';
+import { IConfig, IWebConfig } from '../lib/IConfig';
+import { OAuthManager } from '../lib/Auth/OAuthManager';
+
+/**
+ * Gets the root url for the configured webserver.
+ * @param webconfig The webserver config.
+ */
+export function getWebsiteRootUrl(webconfig: IWebConfig) {
+    return `https://${webconfig.domain}`
+}
+
+/**
+ * Builds an oauth callback url.
+ * @param provider The name of the oauth provider.
+ */
+export function buildCallbackUrl(provider: string) {
+    return `/auth/${provider}/callback`
+}
+
+/**
+ * Builds an oauth login url.
+ * @param provider The name of the oauth provider.
+ */
+export function buildLoginUrl(provider: string) {
+    return `/login/${provider}`
+}
 
 
 /**
@@ -22,24 +45,32 @@ import { IConfig } from '../lib/Config';
  */
 export function setupPassport(options: IConfig, sequelizeDb: Sequelize) {
 
+    // Create a new Pasport instance
     const passport = new Authenticator() as object as Authenticator;
+
+    // Build a verify function that uses the given sequelizeDb as a backend
     const verifyFunction = buildVerifyFunction(sequelizeDb);
 
-    if (options.web.auth.twitter) {
-        passport.use(new TwitterStrategy(
-            getAuthOptions(options, 'twitter'),
-            verifyFunction
-        ));
-    }
+    // Get the web root for our callback urls
+    const webRoot = getWebsiteRootUrl(options.web);
 
-    if (options.web.auth.github) {
-        passport.use(new GithubStrategy(
-            getAuthOptions(options, 'github'),
-            verifyFunction
-        ));
-    }
+    // Load all configured providers
+    const authMgr = new OAuthManager();
+    const providers = authMgr.loadAll(options.oauth);
+    
+    // Build the strategy for each provider
+    const strategies = providers.map(p => p.buildStrategy(
+        webRoot + buildCallbackUrl(p.id),
+        verifyFunction
+    ));
 
+    // Load the strategies into Passport
+    strategies.forEach(s => passport.use(s));
+
+    // Set up the user serializer
     passport.serializeUser(serializeUser);
+    
+    // Set up the user deserializer
     passport.deserializeUser(deserializeUser);
 
     return passport;

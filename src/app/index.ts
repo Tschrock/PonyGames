@@ -7,7 +7,6 @@
 'use strict';
 
 import { doConfig } from '../lib/Config';
-import { isDev } from '../lib/Constants';
 
 import { setupSequelize } from './Sequelize';
 import { setupPassport } from './Passport';
@@ -18,7 +17,7 @@ import { setupHttp } from './Http';
 const options = doConfig();
 
 // Setup Components
-const sequelizeDb = setupSequelize(options, isDev);
+const sequelizeDb = setupSequelize(options);
 const passportAuth = setupPassport(options, sequelizeDb);
 const expressApp =  setupExpress(options, sequelizeDb, passportAuth);
 const httpServer =  setupHttp(options, expressApp);

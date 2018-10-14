@@ -19,13 +19,15 @@ Pony.Games
 [![Tests][tests-badge]][tests-link]
 [![Coverage][coverage-badge]][coverage-link]
 
- 
 ----------
 
 </div>
 
+
 *boop*
 
+
+<!-- Link References -->
 
 [website-badge]: https://img.shields.io/website-up-down-green-red/https/beta.pony.games.svg?label=🌐%20website
 [website-link]: https://beta.pony.games

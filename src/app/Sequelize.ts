@@ -9,15 +9,14 @@ import * as debugBuilder from 'debug';
 import { Sequelize } from 'sequelize-typescript';
 
 import { modelsRoot } from "./Express";
-import { IConfig } from '../lib/Config';
-import { loadTestData } from '../testData';
+import { IConfig } from '../lib/IConfig';
 
 (Sequelize.Promise as {}) = global.Promise;
 
 /**
  * Setup Sequelize
  */
-export function setupSequelize(options: IConfig, isDev: boolean) {
+export function setupSequelize(options: IConfig) {
 
     // Setup debug
     const debugDb = debugBuilder('db');
@@ -38,14 +37,8 @@ export function setupSequelize(options: IConfig, isDev: boolean) {
         // User Config
         ...options.db
     });
-
-    if (isDev) {
-        sequelize.sync({ force: true }).then(loadTestData);
-        // sequelize.sync();
-    }
-    else {
-        sequelize.sync();
-    }
+    
+    sequelize.sync();
 
     return sequelize;
 }
