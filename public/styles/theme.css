@@ -6,6 +6,16 @@
 html, body { margin: 0; padding: 0; height: 100%; }
 
 
+/* Bootstrap Overrides
+-------------------------------------------------- */
+.navbar-dark .navbar-nav .nav-link {
+    color: #fff;
+}
+.card {
+    border: 1px #ccc solid;
+    border-radius: 0;
+}
+
 /* Flexbox
 -------------------------------------------------- */
 .flex {
@@ -60,6 +70,9 @@ body {
 header, footer { 
     background-color: #212529;
     color: white;
+}
+
+footer {
     padding: 10px;
 }
 
@@ -67,90 +80,13 @@ main {
     padding: 15px;
 }
 
-a.logo {
-    color: white;
-    text-decoration: none;
-    font-size: 1.2em;
-    padding: 10px;
-    margin: -5px;
-    text-align: center;
-}
-a.logo > .logo-icon {
-    margin-right: 5px;
-}
-a.logo > .logo-text {
-    text-align: center;
-}
-
 section {
     margin-bottom: 40px;
 }
 
-.user-menu {
-    margin-left: 10px;
+.actions > .btn {
+    margin: 0 5px;
 }
-
-.user-menu .user-icon {
-    font-size: 30px;
-    margin-right: -10px;
-}
-
-header > nav > a {
-    color: white;
-    text-decoration: none;
-    padding: 10px;
-}
-
-/* Dropdowns
--------------------------------------------------- */
-.dropdown {
-
-}
-.dropdown-toggle {
-    text-decoration: inherit;
-    color: inherit;
-}
-.dropdown-content {
-    position: absolute;
-    top: 40px;
-    right: 0px;
-    background-color: white;
-    padding: 10px;
-    min-width: 200px;
-    border: solid #ccc 1px;
-    display: none;
-}
-.dropdown-content.open {
-    display: block;
-}
-
-
-/* Cards
--------------------------------------------------- */
-.card {
-    border: 1px #ccc solid;
-    display: inline-block;
-    min-width: 200px;
-    min-height: 100px;
-    margin-bottom: 20px;
-    margin-right: 20px;
-}
-
-.card-body {
-    margin: 15px;
-}
-
-.card h1,
-.card h2,
-.card h3,
-.card h4,
-.card h5,
-.card h6,
-.card p {
-    margin-top: 10px;
-    margin-bottom: 10px;
-}
-
 
 /* Linkable cards
 -------------------------------------------------- */
@@ -163,106 +99,12 @@ a.card:visited {
 }
 
 a.card:hover {
-    border-color: #212529;
+    border-color: #768692;
 }
 
 a.card:active {
     border-color: #000;
 }
-
-
-/* Badges
--------------------------------------------------- */
-.badge {
-    display: inline-block;
-    padding: .25em .4em;
-    font-size: 75%;
-    font-weight: 700;
-    line-height: 1;
-    text-align: center;
-    white-space: nowrap;
-    vertical-align: baseline;
-    border-radius: .25rem;
-    margin: 2px;
-}
-.badge-pill {
-    padding-right: .6em;
-    padding-left: .6em;
-    border-radius: 10rem;
-}
-.badge-primary {
-    color: #fff;
-    background-color: #007bff;
-}
-.badge-secondary {
-    color: #fff;
-    background-color: #6c757d;
-}
-.badges {
-    margin: 13px;
-}
-
-
-/* Alerts
--------------------------------------------------- */
-.alert {
-    color: #383d41;
-    background-color: #e2e3e5;
-    border: 2px solid #d6d8db;
-    padding: .75rem 1.25rem;
-    margin-bottom: 1rem;
-}
-.alert-warning {
-    color: #856404;
-    background-color: #fff3cd;
-    border-color: #ffeeba;
-}
-.alert-danger {
-    color: #721c24;
-    background-color: #f8d7da;
-    border-color: #f5c6cb;
-}
-.alert-success {
-    color: #155724;
-    background-color: #d4edda;
-    border-color: #c3e6cb;
-}
-
-
-/* Forms
--------------------------------------------------- */
-
-input,
-textarea,
-select,
-select {
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-size: .9em;
-    padding: 8px;
-    resize: none;
-}
-
-.form-group {
-    margin-bottom: 1em;
-}
-.form-group > label {
-    display: block;
-    font-weight: bold;
-    margin-bottom: 5px;
-}
-
-.form-group > input,
-.form-group > textarea,
-.form-group > select,
-.form-group > select {
-    width: 100%;
-}
-
-.form-group .invalid {
-    background-color: #fff3cd;
-    border-color: #ffc000;
-}
-
 
 
 /* Responsive extras
@@ -275,9 +117,5 @@ select {
     }
     .logo-text {
         display: none;
-    }
-    .form-group > input,
-    .form-group > textarea {
-        min-width: 100%;
     }
 }

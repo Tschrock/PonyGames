@@ -9,10 +9,10 @@ block content
                 .card-body
                     h4= project.name
                     p= project.shortDescription
-                .badges
-                    each tag in project.tags || []
-                        .badge.badge-secondary.badge-pill= tag.key
-                    .badge.badge-primary= `id:${project.id}`
+                    .badges
+                        each tag in project.tags || []
+                            .badge.badge-secondary.badge-pill= tag.key
+                        .badge.badge-primary= `id:${project.id}`
         else
             a.card(href="#")
                 .card-body

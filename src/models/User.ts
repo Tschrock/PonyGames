@@ -44,4 +44,9 @@ export class User extends Model<User> {
     @HasMany(() => UserSocialProfile)
     public socialProfiles!: UserSocialProfile[];
 
+    public can(action: string, entity: unknown) {
+        // TODO: Fix this crap
+        return this.socialProfiles.some(p => p.provider === 'twitter' && (p.username === 'CyberPon3' || p.username === 'BytewaveMLP'));
+    }
+
 }

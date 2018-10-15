@@ -1,5 +1,6 @@
 extends ../_layout/main
 include ../_components/svgplaceholder
+include ../_components/entityActions
 
 block content
     h1= project.name
@@ -76,5 +77,4 @@ block content
                 .card-body
                     h4 Beta Test 2
 
-    div.actions
-        a.btn(href=`/projects/${project.id}/edit`) Edit Project
+    +entityActions("Project", project)

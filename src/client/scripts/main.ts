@@ -277,15 +277,3 @@ $on("submit", ".js-ajaxform", e => {
 
 });
 
-/*----------- Components -----------*/
-
-$on("click", ".dropdown-toggle", e => {
-    const dropdownToggle = e.target as HTMLFormElement;
-    const dropdown = closest(dropdownToggle, '.dropdown');
-    if (dropdown) {
-        const content = dropdown.querySelector('.dropdown-content');
-        if (content) {
-            content.classList.toggle('open');
-        }
-    }
-});

@@ -1,0 +1,11 @@
+
+mixin entityActions(entityName, entity)
+    .actions
+        if CurrentUser && CurrentUser.can('edit', entity)
+            a.btn.btn-secondary(href=`${entity.id}/edit`) Edit #{entityName}
+
+        if CurrentUser && CurrentUser.can('create', entity)
+            a.btn.btn-secondary(href=`new?copy=${entity.id}`) Clone #{entityName}
+
+        if CurrentUser && CurrentUser.can('delete', entity)
+            a.btn.btn-danger(href=`${entity.id}/delete`) Delete #{entityName}
