@@ -2,17 +2,17 @@ extends ../_layout/main
 
 block content
     section
-        h1= `Hello ${user.name}! `
-            small= `(@${user.username})`
+        h1= `Hello ${CurrentUser.name}! `
+            small= `(@${CurrentUser.username})`
     
     section
         h2 Linked Developer Profile:
         .card-grid
-            if user.developer
-                a.card(href=`/developers/${user.developerId}`)
+            if CurrentUser.developer
+                a.card(href=`/developers/${CurrentUser.developerId}`)
                     .card-body
-                        h4= user.developer.name
-                        p= user.developer.shortDescription
+                        h4= CurrentUser.developer.name
+                        p= CurrentUser.developer.shortDescription
             else
                 a.card(href=`#`)
                     .card-body
@@ -21,7 +21,7 @@ block content
     section
         h2 Linked Social Profiles:
         .card-grid
-            for profile in user.socialProfiles
+            for profile in CurrentUser.socialProfiles
                 .card
                     .card-body
                         h4.card-title= profile.provider

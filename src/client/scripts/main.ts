@@ -21,6 +21,11 @@ const $new = (type: string, ...content: (string | HTMLElement)[]) => {
     return e;
 };
 
+function closest(el: HTMLElement, selector: string) {
+    var next: HTMLElement | null = el;
+    while (next = next.parentElement) if (next.matches(selector)) return next;
+    return null;
+  }
 /*----------- HTTP Helpers -----------*/
 
 /**
@@ -82,11 +87,11 @@ function getFormFieldValue(field: FormControlElement): FormJsonDataType | Array<
  * Gets the formatted Value for an element
  * @param element The element
  */
-function getFormattedValue(element: HTMLElement & {value: string}): FormJsonDataType {
+function getFormattedValue(element: HTMLElement & { value: string }): FormJsonDataType {
     let definedType;
-    for(let e: HTMLElement | Element |  null = element; e; e = e.parentElement) {
-        if('dataset' in e && (definedType = e.dataset["valueType"])) break;
-        if(e.tagName === 'form') break;
+    for (let e: HTMLElement | Element | null = element; e; e = e.parentElement) {
+        if ('dataset' in e && (definedType = e.dataset["valueType"])) break;
+        if (e.tagName === 'form') break;
     }
     switch (definedType) {
         case "number":
@@ -116,7 +121,7 @@ function jsonifyForm(form: HTMLFormElement): object {
         if (
             ('name' in field && field.name)
             && ('disabled' in field && !field.disabled)
-            && ( !(field instanceof HTMLInputElement && field.type === 'checkbox') || field.checked)
+            && (!(field instanceof HTMLInputElement && field.type === 'checkbox') || field.checked)
         ) {
             const newValue = getFormFieldValue(field);
 
@@ -235,7 +240,7 @@ $on("submit", ".js-ajaxform", e => {
                         break;
                 }
                 const successLocation = form.dataset["successLocation"];
-                if(successLocation) window.location.replace(successLocation);
+                if (successLocation) window.location.replace(successLocation);
             }
             else {
                 // Try to parse the error data
@@ -272,22 +277,15 @@ $on("submit", ".js-ajaxform", e => {
 
 });
 
-// /**
-//  * A promisified XMLHttpRequest using json.
-//  * @param method The HTTP method.
-//  * @param action The URI to request.
-//  * @param data Optional data to include with the request.
-//  */
-// async function doJSONRequest(method?: string | null, action?: string | null, data?: FormData) {
-//     return new Promise<Event>((resolve, reject) => {
-//         const xhr = new XMLHttpRequest();
-//         xhr.responseType = 'json';
-//         xhr.open(method || 'GET', action || '.');
-//         xhr.onload = (eLoad: Event) => {
-//             if (xhr.status >= 200 && xhr.status < 300) resolve(eLoad);
-//             else reject(eLoad);
-//         };
-//         xhr.onerror = reject;
-//         xhr.send(data);
-//     });
-// }
+/*----------- Components -----------*/
+
+$on("click", ".dropdown-toggle", e => {
+    const dropdownToggle = e.target as HTMLFormElement;
+    const dropdown = closest(dropdownToggle, '.dropdown');
+    if (dropdown) {
+        const content = dropdown.querySelector('.dropdown-content');
+        if (content) {
+            content.classList.toggle('open');
+        }
+    }
+});

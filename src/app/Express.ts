@@ -134,13 +134,19 @@ export function setupExpress(options: IConfig, sequelizeDb: Sequelize, passport:
     // Authentication
     app.use(passport.initialize());
     app.use(passport.session());
-
-    app.get('/login', (req, res) => res.render('login'));
-    app.get('/settings', (req, res) => res.render('settings/index', { user: req.user }));
-
+    
     setupAuthRoutes(app, passport, 'twitter');
     setupAuthRoutes(app, passport, 'github');
-
+    
+    // Provide CurrentUser in all views
+    app.use((req, res, next) => {
+        res.locals.CurrentUser = req.user;
+        next();
+    });
+    
+    app.get('/login', (req, res) => res.render('login'));
+    app.get('/settings', (req, res) => res.render('settings/index'));
+    
     // Static Content
     app.use(express.static(publicJsRoot));
     app.use(express.static(publicRoot));

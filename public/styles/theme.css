@@ -86,6 +86,44 @@ section {
     margin-bottom: 40px;
 }
 
+.user-menu {
+    margin-left: 10px;
+}
+
+.user-menu .user-icon {
+    font-size: 30px;
+    margin-right: -10px;
+}
+
+header > nav > a {
+    color: white;
+    text-decoration: none;
+    padding: 10px;
+}
+
+/* Dropdowns
+-------------------------------------------------- */
+.dropdown {
+
+}
+.dropdown-toggle {
+    text-decoration: inherit;
+    color: inherit;
+}
+.dropdown-content {
+    position: absolute;
+    top: 40px;
+    right: 0px;
+    background-color: white;
+    padding: 10px;
+    min-width: 200px;
+    border: solid #ccc 1px;
+    display: none;
+}
+.dropdown-content.open {
+    display: block;
+}
+
 
 /* Cards
 -------------------------------------------------- */

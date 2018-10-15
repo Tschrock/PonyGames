@@ -38,9 +38,24 @@ html(lang="en")
                     span.logo-icon
                         +fas.fa-fw.fa-gamepad
                     span.logo-text Pony Games
+
                 .flex-grow
+
                 form.flex.flex-center(role="search")
                     input(type="search", id="search", name="q" placeholder="Search...")
+
+                if CurrentUser
+                    .flex.flex-center.dropdown
+                        a.dropdown-toggle(href="#")
+                            +fas.fa-fw.fa-lg.fa-user-circle
+                            = CurrentUser.name
+                            +fas.fa-fw.fa-caret-down
+                        ul.dropdown-content
+                            li
+                                a(href="/settings") Settings
+                
+                else
+                    a(href="/login") Login
 
         main.flex-grow
             block layout
