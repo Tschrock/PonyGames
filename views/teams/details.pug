@@ -4,7 +4,7 @@ include ../_components/entityActions
 block content
 
     h1= team.name
-    p= team.shortDescription
+    p= team.summary
     p= team.description
 
 
@@ -24,6 +24,6 @@ block content
                 a.card(href=`/projects/${ project.id }`)
                     .card-body
                         h4.card-title= project.name
-                        p.card-text= project.shortDescription
+                        p.card-text= project.summary
 
     +entityActions("Team", team)

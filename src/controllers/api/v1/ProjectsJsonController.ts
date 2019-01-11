@@ -3,13 +3,11 @@
 * License, v. 2.0. If a copy of the MPL was not distributed with this
 * file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
-'use strict';
 
-// tslint:disable:prefer-function-over-method
+import { Router, Get, Post, Delete, Put, Patch, HttpError, ParseJson, ValidateCsrf } from "cp3-express-decorators";
+import { Request, Response, NextFunction } from "express";
 
-import { JsonController, Get, QueryParams, Param, Post, Delete, Put, Patch, Body, UseAfter } from "routing-controllers";
-
-import { IPaginateOptions, paginate } from "../../../lib/FindHelper";
+import { paginate } from "../../../lib/FindHelper";
 import { validate } from "../../../lib/ValidationHelper";
 
 import { Project } from "../../../models/Project";
@@ -19,53 +17,64 @@ import { File } from "../../../models/File";
 import { Team } from "../../../models/Team";
 
 import { NewProject } from "./params/NewProject";
-import { JsonErrorHandler } from "./JsonErrorHandler";
 
-/** ProjectsJsonController */
-@JsonController()
-@UseAfter(JsonErrorHandler)
-export default class ProjectsJsonController {
+import { TeamsJsonController } from "./TeamsJsonController";
+import { TeamMembersJsonController } from "./TeamMembersJsonController";
+
+/**
+ * The controller for the v1 Projects API.
+ */
+export class ProjectsJsonController extends Router {
+
+    // ========================== //
+    //      JSON Formatting       //
+    // ========================== //
+
+    public static getShortJsonObject(project: Project) {
+        return {
+            id: project.id,
+            name: project.name,
+            summary: project.summary,
+        };
+    }
+
+    public static getMediumJsonObject(project: Project) {
+        return {
+            id: project.id,
+            name: project.name,
+            summary: project.summary,
+            tags: project.tags ? project.tags.map(t => ({
+                id: t.id,
+                key: t.key,
+                color: t.color,
+            })) : [],
+        };
+    }
+
+    public static getFullJsonObject(project: Project) {
+        return {
+            id: project.id,
+            name: project.name,
+            summary: project.summary,
+            description: project.description,
+            createdAt: project.createdAt,
+            updatedAt: project.updatedAt,
+            team: project.team ? TeamsJsonController.getShortJsonObject(project.team) : null,
+            tags: project.tags ? project.tags.map(t => ({
+                id: t.id,
+                key: t.key,
+                color: t.color,
+            })) : [],
+            fileGroups: project.fileGroups ? project.fileGroups.map(fg => ({
+                id: fg.id,
+                title: fg.title,
+            })) : [],
+        };
+    }
 
     // ============================== //
     //       Controller Methods       //
     // ============================== //
-
-    /**
-     * Gets all projects.
-     * @param pageOptions Options for paginating the results.
-     */
-    public static getAll(pageOptions: IPaginateOptions): PromiseLike<Project[]> {
-
-        return Project
-            .findAll({
-                include: [Tag],
-                order: [['name', 'ASC'], ['tags', 'key', 'DESC']],
-                ...paginate(pageOptions)
-            });
-
-    }
-
-    /**
-     * Gets a single project.
-     * @param id The project's id.
-     */
-    public static getOne(id: number): PromiseLike<Project> {
-
-        return Project.findById(
-            id,
-            {
-                include: [
-                    Tag,
-                    Team,
-                    {
-                        model: FileGroup,
-                        include: [File]
-                    }
-                ]
-            }
-        );
-
-    }
 
     /**
      * Creates a new project.
@@ -124,19 +133,20 @@ export default class ProjectsJsonController {
      *
      */
     @Get("/")
-    public getProjects(@QueryParams() queryParams: IPaginateOptions) {
-        return ProjectsJsonController.getAll(queryParams).then(projects => projects.map(p => ({
-            id: p.id,
-            name: p.name,
-            shortDescription:  p.shortDescription,
-            createdAt: p.createdAt,
-            updatedAt: p.updatedAt,
-            tags: p.tags.map(t => ({
-                id: t.id,
-                key: t.key,
-                color: t.color,
-            })),
-        })));
+    public async getProjects(req: Request, res: Response, next: NextFunction) {
+
+        const projects = await Project.findAll({
+            include: [Tag],
+            order: [['name', 'ASC'], ['tags', 'key', 'DESC']],
+            ...paginate(req.query)
+        });
+
+        const projectsJSON = projects.map(ProjectsJsonController.getMediumJsonObject);
+
+        res.format({
+            json: () => res.json(projectsJSON)
+        });
+
     }
 
     /**
@@ -148,29 +158,21 @@ export default class ProjectsJsonController {
      *
      */
     @Get("/:projectId(\\d+)")
-    public getProject(@Param('projectId') projectId: number) {
-        return ProjectsJsonController.getOne(projectId).then(p => ({
-            id: p.id,
-            name: p.name,
-            shortDescription:  p.shortDescription,
-            description: p.description,
-            createdAt: p.createdAt,
-            updatedAt: p.updatedAt,
-            team: {
-                id: p.team.id,
-                name: p.team.name,
-                shortDescription: p.team.shortDescription,
-            },
-            tags: p.tags.map(t => ({
-                id: t.id,
-                key: t.key,
-                color: t.color,
-            })),
-            fileGroups: p.fileGroups.map(fg => ({
-                id: fg.id,
-                title: fg.title,
-            })),
-        }));
+    public async getProject(req: Request, res: Response, next: NextFunction) {
+
+        const project = await Project.findById(
+            +req.params['projectId'],
+            { include: [Tag, Team, { model: FileGroup, include: [File] }] }
+        );
+
+        if (!project) return next(new HttpError(404, "That Project does not exist."));
+
+        const projectJSON = ProjectsJsonController.getFullJsonObject(project);
+
+        res.format({
+            json: () => res.json(projectJSON)
+        });
+
     }
 
     /**
@@ -182,11 +184,27 @@ export default class ProjectsJsonController {
      *
      */
     @Post("/")
-    public createProject(
-        @Body() body: NewProject,
-        @QueryParams() query: NewProject
-    ) {
-        return ProjectsJsonController.createOne({...query, ...body});
+    @ParseJson()
+    @ValidateCsrf()
+    public async createProject(req: Request, res: Response, next: NextFunction) {
+
+        if (!req.user) return next(new HttpError(401, "Unauthorized"));
+        if (!req.user.can('create', Project)) return next(new HttpError(403, "You do not have permission to create a Project."));
+
+        const newProjectData = Object.assign(new NewProject(), req.body);
+
+        await validate(newProjectData);
+
+        const { tagIds, ...newProject } = newProjectData;
+        const project = await Project.create({ ...newProject }, { include: [Tag] });
+        const taggedProject = await project.$set("tagIds", tagIds);
+
+        const projectJSON = ProjectsJsonController.getFullJsonObject(taggedProject);
+
+        res.format({
+            json: () => res.json(projectJSON)
+        });
+
     }
 
     /**
@@ -202,12 +220,31 @@ export default class ProjectsJsonController {
     @Post("/:projectId(\\d+)")
     @Put("/:projectId(\\d+)")
     @Patch("/:projectId(\\d+)")
-    public updateProject(
-        @Param('projectId') projectId: number,
-        @Body() body: NewProject,
-        @QueryParams() query: NewProject
-    ) {
-        return ProjectsJsonController.editOne(projectId, {...query, ...body});
+    @ParseJson()
+    @ValidateCsrf()
+    public async updateProject(req: Request, res: Response, next: NextFunction) {
+
+        if (!req.user) return next(new HttpError(401, "Unauthorized"));
+
+        const project = await Project.findById(+req.params['projectId']);
+
+        if (!project) return next(new HttpError(404, "That Project does not exist."));
+        if (!req.user.can('edit', Project)) return next(new HttpError(403, "You do not have permission to edit this Project."));
+
+        const newProjectData = Object.assign(new NewProject(), req.body);
+
+        await validate(newProjectData);
+
+        const { tagIds, ...newProject } = newProjectData;
+
+        const editedProject = await project.update({ ...newProject });
+        const editedProject2 = await editedProject.$set("tagIds", tagIds);
+
+        const projectJSON = ProjectsJsonController.getFullJsonObject(editedProject2);
+        res.format({
+            json: () => res.json(projectJSON)
+        });
+
     }
 
     /**
@@ -221,8 +258,22 @@ export default class ProjectsJsonController {
      */
     @Delete("/:projectId(\\d+)")
     @Post("/:projectId(\\d+)/delete")
-    public deleteProject(@Param('projectId') projectId: number) {
-        return ProjectsJsonController.deleteOne(projectId);
+    @ParseJson()
+    @ValidateCsrf()
+    public async deleteProject(req: Request, res: Response, next: NextFunction) {
+
+
+        if (!req.user) return next(new HttpError(401, "Unauthorized"));
+
+        const project = await Project.findById(+req.params['projectId']);
+
+        if (!project) return next(new HttpError(404, "That Project does not exist."));
+        if (!req.user.can('edit', Project)) return next(new HttpError(403, "You do not have permission to edit this Project."));
+
+        await project.destroy();
+
+        res.status(204).send();
+
     }
 
 }

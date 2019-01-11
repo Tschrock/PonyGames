@@ -3,22 +3,19 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-'use strict';
 
-// tslint:disable:prefer-function-over-method
-
-import { Controller, Get, Render, QueryParams, Param, Params } from "routing-controllers";
+import { Router, Get, HttpError } from "cp3-express-decorators";
+import { Request, Response, NextFunction } from "express";
 
 import { validate } from "../lib/ValidationHelper";
 
 import { NewTeamMember } from "./api/v1/params/NewTeamMember";
-import TeamMembersJsonController from "./api/v1/TeamMembersJsonController";
 import { Team } from "../models/Team";
 import { Developer } from "../models/Developer";
+import { TeamMember } from "../models/TeamMember";
 
 /** The TeamMember Controller */
-@Controller()
-export default class TeamMemberController {
+export class TeamMemberController extends Router {
 
     // ================= //
     //       Pages       //
@@ -37,21 +34,22 @@ export default class TeamMemberController {
      * Shows a form to create a new TeamMember.
      */
     @Get("/new")
-    @Render("teamMembers/new")
-    public async newTeamMember(
-        @Params() route: NewTeamMember,
-        @QueryParams() query: NewTeamMember,
-    ) {
-        const prefillPars = Object.assign(new NewTeamMember(), { ...route, ...query });
+    public async getNewTeamMember(req: Request, res: Response, next: NextFunction) {
 
-        // Get and return all available teams and developers.
-        return Promise
-            .all([
-                Team.findAll(),
-                Developer.findAll(),
-                validate(prefillPars).then(_ => prefillPars, e => ({})),
-            ])
-            .then(([teams, developers, prefill]) => ({ teams, developers, prefill}));
+        if (!req.user) res.redirect('/login');
+        if (!req.user.can('create', TeamMember)) return next(new HttpError(403, "You do not have permission to create a TeamMember."));
+
+        const prefillPars = Object.assign(new NewTeamMember(), { ...req.params, ...req.query });
+
+        const [teams, developers, prefill] = await Promise.all([
+            Team.findAll(),
+            Developer.findAll(),
+            validate(prefillPars).then(_ => prefillPars, e => ({})),
+        ]);
+
+        res.format({
+            html: () => res.render('teamMembers/new', { teams, developers, prefill })
+        });
 
     }
 
@@ -59,17 +57,23 @@ export default class TeamMemberController {
      * Edit TeamMember Page
      * Shows a form to edit a TeamMember.
      */
-    @Get("/:id(\\d+)/edit")
-    @Render("teamMembers/edit")
-    public async editTeamMember(@Param('id') teamMemberId: number) {
+    @Get("/:teamMemberId(\\d+)/edit")
+    public async editTeamMember(req: Request, res: Response, next: NextFunction) {
 
-        return Promise
-            .all([
-                TeamMembersJsonController.getOne(teamMemberId),
-                Team.findAll(),
-                Developer.findAll(),
-            ])
-            .then(([teammember, teams, developers]) => ({ teammember, teams, developers }));
+        if (!req.user) return res.redirect('/login');
+
+        const [teammember, teams, developers] = await Promise.all([
+            TeamMember.findById(+req.params["teamMemberId"]),
+            Team.findAll(),
+            Developer.findAll(),
+        ]);
+
+        if (!teammember) return next(new HttpError(404, "That Team Member does not exist."))
+        if (!req.user.can('edit', teammember)) return next(new HttpError(403, "You do not have permission to edit this Team Member."));
+
+        res.format({
+            html: () => res.render('teammembers/edit', { teammember, teams, developers })
+        });
 
     }
 

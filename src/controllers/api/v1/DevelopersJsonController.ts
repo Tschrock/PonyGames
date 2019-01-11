@@ -3,11 +3,11 @@
 * License, v. 2.0. If a copy of the MPL was not distributed with this
 * file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
-'use strict';
 
-// tslint:disable:prefer-function-over-method
 
-import { JsonController, Get, QueryParams, Param, Post, Delete, Put, Patch, Body, UseAfter } from "routing-controllers";
+
+import { Router, Get, Post, Delete, Put, Patch, UseBefore, UseAfter } from "cp3-express-decorators";
+import { Request, Response, NextFunction } from "express";
 
 import { IPaginateOptions, paginate } from "../../../lib/FindHelper";
 import { validate } from "../../../lib/ValidationHelper";
@@ -17,26 +17,60 @@ import { TeamMember } from "../../../models/TeamMember";
 import { Team } from "../../../models/Team";
 
 import { NewDeveloper } from "./params/NewDeveloper";
-import { JsonErrorHandler } from "./JsonErrorHandler";
+
+import { TeamMembersJsonController } from "./TeamMembersJsonController";
 
 /** DevelopersJsonController */
-@JsonController()
-@UseAfter(JsonErrorHandler)
-export default class DevelopersJsonController {
+export class DevelopersJsonController extends Router {
+
+    // ========================== //
+    //      JSON Formatting       //
+    // ========================== //
+
+    public static getShortJsonObject(developer: Developer) {
+        return {
+            id: developer.id,
+            name: developer.name,
+            summary: developer.summary,
+        };
+    }
+
+    public static getMediumJsonObject(developer: Developer) {
+        return {
+            id: developer.id,
+            name: developer.name,
+            summary: developer.summary,
+            teamMemberships: developer.teamMemberships ? developer.teamMemberships.map(TeamMembersJsonController.getShortJsonObject) : [],
+        };
+    }
+
+    public static getFullJsonObject(developer: Developer) {
+        return {
+            id: developer.id,
+            name: developer.name,
+            summary: developer.summary,
+            description: developer.description,
+            createdAt: developer.createdAt,
+            updatedAt: developer.updatedAt,
+            teamMemberships: developer.teamMemberships ? developer.teamMemberships.map(TeamMembersJsonController.getMediumJsonObject) : [],
+        };
+    }
 
     // ============================== //
     //       Controller Methods       //
     // ============================== //
 
+    private static DefaultInclude = [{ model: TeamMember, include: [Team] }];
+
     /**
      * Gets all developers.
      * @param pageOptions Options for paginating the results.
      */
-    public static getAll(pageOptions: IPaginateOptions): PromiseLike<Developer[]> {
+    public static async getAll(pageOptions: IPaginateOptions): Promise<Developer[]> {
 
         return Developer
             .findAll({
-                include: [{ model:TeamMember, include:[Team] }],
+                include: this.DefaultInclude,
                 order: [['name', 'ASC']],
                 ...paginate(pageOptions)
             });
@@ -47,14 +81,9 @@ export default class DevelopersJsonController {
      * Gets a single developer.
      * @param id The developer's id.
      */
-    public static getOne(id: number): PromiseLike<Developer> {
+    public static async getOne(id: number): Promise<Developer | null> {
 
-        return Developer.findById(
-            id,
-            {
-                include: [{ model:TeamMember, include:[Team] }]
-            }
-        );
+        return Developer.findById(id, { include: this.DefaultInclude });
 
     }
 
@@ -66,7 +95,6 @@ export default class DevelopersJsonController {
         newDeveloper = Object.assign(new NewDeveloper(), newDeveloper);
         return validate(newDeveloper)
             .then(_ => {
-                console.log(newDeveloper);
                 const { ...newDeveloperProps } = newDeveloper;
                 return Developer
                     .create(newDeveloperProps) as PromiseLike<Developer>;
@@ -113,11 +141,11 @@ export default class DevelopersJsonController {
      *
      */
     @Get("/")
-    public getDevelopers(@QueryParams() queryParams: IPaginateOptions) {
-        return DevelopersJsonController.getAll(queryParams).then(developers => developers.map(p => ({
+    public getDevelopers(req: Request, res: Response, next: NextFunction) {
+        return DevelopersJsonController.getAll(req.query).then(developers => developers.map(p => ({
             id: p.id,
             name: p.name,
-            shortDescription:  p.shortDescription,
+            summary: p.summary,
             createdAt: p.createdAt,
             updatedAt: p.updatedAt,
             teamMemberships: p.teamMemberships.map(tm => ({
@@ -126,7 +154,7 @@ export default class DevelopersJsonController {
                 team: {
                     id: tm.team.id,
                     name: tm.team.name,
-                    shortDescription: tm.team.shortDescription,
+                    summary: tm.team.summary,
                 },
             })),
         })));
@@ -141,25 +169,28 @@ export default class DevelopersJsonController {
      *
      */
     @Get("/:id(\\d+)")
-    public getDeveloper(@Param('id') developerId: number) {
-        return DevelopersJsonController.getOne(developerId).then(p => ({
-            id: p.id,
-            name: p.name,
-            shortDescription:  p.shortDescription,
-            createdAt: p.createdAt,
-            updatedAt: p.updatedAt,
-            teamMemberships: p.teamMemberships.map(tm => ({
-                id: tm.id,
-                roles: tm.roles,
-                createdAt: tm.createdAt,
-                updatedAt: tm.updatedAt,
-                team: {
-                    id: tm.team.id,
-                    name: tm.team.name,
-                    shortDescription: tm.team.shortDescription,
-                },
-            })),
-        }));
+    public getDeveloper(req: Request, res: Response, next: NextFunction) {
+        return DevelopersJsonController.getOne(+req.params.id).then(d => {
+            if (d) return {
+                id: d.id,
+                name: d.name,
+                summary: d.summary,
+                createdAt: d.createdAt,
+                updatedAt: d.updatedAt,
+                teamMemberships: d.teamMemberships.map(tm => ({
+                    id: tm.id,
+                    roles: tm.roles,
+                    createdAt: tm.createdAt,
+                    updatedAt: tm.updatedAt,
+                    team: {
+                        id: tm.team.id,
+                        name: tm.team.name,
+                        summary: tm.team.summary,
+                    },
+                })),
+            }
+            else return null;
+        });
     }
 
     /**
@@ -171,11 +202,8 @@ export default class DevelopersJsonController {
      *
      */
     @Post("/")
-    public createDeveloper(
-        @Body() body: NewDeveloper,
-        @QueryParams() query: NewDeveloper
-    ) {
-        return DevelopersJsonController.createOne({...query, ...body});
+    public createDeveloper(req: Request, res: Response, next: NextFunction) {
+        return DevelopersJsonController.createOne({ ...req.query, ...req.body });
     }
 
     /**
@@ -191,12 +219,8 @@ export default class DevelopersJsonController {
     @Post("/:id(\\d+)")
     @Put("/:id(\\d+)")
     @Patch("/:id(\\d+)")
-    public updateDeveloper(
-        @Param('id') developerId: number,
-        @Body() body: NewDeveloper,
-        @QueryParams() query: NewDeveloper
-    ) {
-        return DevelopersJsonController.editOne(developerId, {...query, ...body});
+    public updateDeveloper(req: Request, res: Response, next: NextFunction) {
+        return DevelopersJsonController.editOne(+req.params.id, { ...req.query, ...req.body });
     }
 
     /**
@@ -210,8 +234,8 @@ export default class DevelopersJsonController {
      */
     @Delete("/:id(\\d+)")
     @Post("/:id(\\d+)/delete")
-    public deleteDeveloper(@Param('id') developerId: number) {
-        return DevelopersJsonController.deleteOne(developerId);
+    public deleteDeveloper(req: Request, res: Response, next: NextFunction) {
+        return DevelopersJsonController.deleteOne(+req.params.id);
     }
 
 }

@@ -1,0 +1,29 @@
+extends ./_layout/main
+include ./_components/svgplaceholder
+
+block header
+    +svgplaceholder-underlay(10,3).banner
+        h1 Pony.Games
+
+block content
+    .container
+        if featuredProject
+            section
+                h1 Featured Game
+                .card
+                    div(class="card-img-top")
+                        +svgplaceholder(10,1)
+                    .card-header
+                        h1= featuredProject.name
+        section
+            h1 Games
+            .card-grid
+                each project in (projects || [])
+                    a.card(href=`/projects/${project.id}`)
+                        +svgplaceholder(5,7)(class="card-img-top")
+                        .card-header
+                            h1= project.name
+                else
+                    a.card(href="#")
+                        .card-body
+                            p.mb-1 No Results

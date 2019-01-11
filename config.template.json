@@ -1,4 +1,9 @@
 {
+    "web": {
+        "domain": "yourdomain.example.com",
+        "port": 8080,
+        "cookieSecret": "super sekrit"
+    },
     "db": {
         "dialect": "mysql|sqlite|postgres|mssql",
         "host": "localhost",
@@ -8,20 +13,24 @@
         "password": "password",
         "storage": "path/to/database.sqlite (only for sqlite)"
     },
-    "web": {
-        "protocol": "http|https|proxy",
-        "domain": "yourdomain.example.com",
-        "port": 8080,
-        "cookieSecret": "super sekrit",
-        "auth": {
-            "twitter": {
+    "oauth": [
+        {
+            "id": "twitter",
+            "name": "Twitter",
+            "package": "passport-twitter",
+            "options": {
                 "consumerKey": "the key",
                 "consumerSecret": "the sekrit"
-            },
-            "githup": {
-                "clientID": "the id",
+            }
+        },
+        {
+            "id": "github",
+            "name": "Github",
+            "package": "passport-github",
+            "options": {
+                "clientID": "the key",
                 "clientSecret": "the sekrit"
             }
         }
-    }
+    ]
 }

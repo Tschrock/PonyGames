@@ -12,7 +12,7 @@ block content
                 a.card(href=`/developers/${CurrentUser.developerId}`)
                     .card-body
                         h4= CurrentUser.developer.name
-                        p= CurrentUser.developer.shortDescription
+                        p= CurrentUser.developer.summary
             else
                 a.card(href=`#`)
                     .card-body

@@ -1,19 +1,20 @@
 extends ../_layout/main
 include ../_components/svgplaceholder
 
+block header
+    +svgplaceholder-underlay(10,3).banner
+        h1 Discover. Pony. Games.
+
 block content
-    .card-grid
-        each project in (projects || [])
-            a.card(href=`/projects/${project.id}`)
-                +svgplaceholder(16,9)(class="card-img-top")
-                .card-body
-                    h4= project.name
-                    p= project.shortDescription
-                    .badges
-                        each tag in project.tags || []
-                            .badge.badge-secondary.badge-pill= tag.key
-                        .badge.badge-primary= `id:${project.id}`
-        else
-            a.card(href="#")
-                .card-body
-                    p.mb-1 No Results
+    .container
+        h1 Games
+        .card-grid
+            each project in (projects || [])
+                a.card(href=`/projects/${project.id}`)
+                    +svgplaceholder(5,7)(class="card-img-top")
+                    .card-body
+                        h1= project.name
+            else
+                a.card(href="#")
+                    .card-body
+                        p.mb-1 No Results

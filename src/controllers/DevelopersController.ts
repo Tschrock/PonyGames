@@ -3,22 +3,18 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-'use strict';
 
-// tslint:disable:prefer-function-over-method
+import { Router, Get, HttpError } from "cp3-express-decorators";
+import { Request, Response, NextFunction } from "express";
 
-import { Controller, Get, Render, QueryParams, Param, Post, Delete, Put, Patch } from "routing-controllers";
+import { paginate } from "../lib/FindHelper";
 
-import { Developer } from '../models/Developer';
-
-import { IPaginateOptions } from "../lib/FindHelper";
-import { Team } from "../models/Team";
+import { Developer } from "../models/Developer";
 import { TeamMember } from "../models/TeamMember";
-import DevelopersJsonController from "./api/v1/DevelopersJsonController";
+import { Team } from "../models/Team";
 
 /** The Developer Controller */
-@Controller()
-export default class DeveloperController {
+export class DevelopersController extends Router {
 
     // ================= //
     //       Pages       //
@@ -29,19 +25,38 @@ export default class DeveloperController {
      * Shows Developers, paginated and sorted by name.
      */
     @Get("/")
-    @Render("developers/index")
-    public async showAllDevelopers(@QueryParams() queryParams: IPaginateOptions) {
-        return DevelopersJsonController.getAll(queryParams).then(developers => ({ developers }));
+    public async showAllDevelopers(req: Request, res: Response, next: NextFunction) {
+
+        const developers = await Developer.findAll({
+            include: [{ model: TeamMember, include: [Team] }],
+            order: [['name', 'ASC']],
+            ...paginate(req.query)
+        });
+
+        res.format({
+            html: () => res.render('developers/index', { developers })
+        });
+
     }
 
     /**
      * Project Developer Page
      * Shows the details for a Developer.
      */
-    @Get("/:id(\\d+)")
-    @Render("developers/details")
-    public async showDeveloper(@Param('id') developerId: number) {
-        return DevelopersJsonController.getOne(developerId).then(developer => ({ developer }));
+    @Get("/:developerId(\\d+)")
+    public async showDeveloper(req: Request, res: Response, next: NextFunction) {
+
+        const developer = await Developer.findById(
+            +req.params['developerId'],
+            { include: [{ model: TeamMember, include: [Team] }]}
+        );
+
+        if (!developer) return next(new HttpError(404, "That Developer does not exist."));
+        
+        res.format({
+            html: () => res.render('developers/details', { developer })
+        });
+
     }
 
     /**
@@ -49,19 +64,35 @@ export default class DeveloperController {
      * Shows a form to create a new Developer.
      */
     @Get("/new")
-    @Render("developers/new")
-    public newDeveloper() {
-        return { };
+    public newDeveloper(req: Request, res: Response, next: NextFunction) {
+
+        if (!req.user) res.redirect('/login');
+        if (!req.user.can('create', Developer)) return next(new HttpError(403, "You do not have permission to create a Developer."));
+
+        res.format({
+            html: () => res.render('developers/new')
+        });
+
     }
 
     /**
      * Edit Developer Page
      * Shows a form to edit a Developer.
      */
-    @Get("/:id(\\d+)/edit")
-    @Render("developers/edit")
-    public async editDeveloper(@Param('id') developerId: number) {
-        return DevelopersJsonController.getOne(developerId).then(developer => ({ developer }));
+    @Get("/:developerId(\\d+)/edit")
+    public async editDeveloper(req: Request, res: Response, next: NextFunction) {
+
+        if (!req.user) return res.redirect('/login');
+
+        const developer = await Developer.findById( +req.params['developerId'] );
+        
+        if (!developer) return next(new HttpError(404, "That Developer does not exist."))
+        if (!req.user.can('edit', developer)) return next(new HttpError(403, "You do not have permission to edit this Developer."));
+
+        res.format({
+            html: () => res.render('developers/edit', { developer })
+        });
+
     }
 
 }

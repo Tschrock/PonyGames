@@ -6,8 +6,8 @@ block content
             label(for="projectName") Project Name
             input#projectName.form-control(type="text", name="name", placeholder="My Cool Project", value=project.name)
         .form-group
-            label(for="projectShortDescription") Short Description
-            textarea#projectShortDescription.form-control(name="shortDescription", rows="3")= project.shortDescription
+            label(for="projectSummary") Short Description
+            textarea#projectSummary.form-control(name="summary", rows="3")= project.summary
         .form-group
             label(for="projectDescription") Full Description
             textarea#projectDescription.form-control(name="description", rows="10")= project.description

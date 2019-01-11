@@ -1,0 +1,235 @@
+h1, h2, h3,
+h4, h5, h6 {
+    @extend %headings !optional;
+}
+
+/* Variables
+-------------------------------------------------- */
+$brand-fg: #FF2966;
+$brand-bg: #16212E;
+$brand-bg-dark: #0F1421;
+
+$fg-primary: white;
+$fg-muted: #7D7D7D;
+
+$text-family: 'Work Sans', sans-serif;
+
+
+/* HTML Overrides
+-------------------------------------------------- */
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; height: 100%; }
+
+
+/* Flexbox
+-------------------------------------------------- */
+.flex {
+    display: flex;
+}
+.flex-col {
+    flex-direction: column;
+}
+.flex-center {
+    align-items: center;
+    justify-content: center;
+}
+.flex-grow {
+    flex: 1;
+}
+.flex-wrap {
+    flex-wrap: wrap;
+}
+
+
+/* Card Grid
+-------------------------------------------------- */
+.card-grid {
+    margin: 10px;
+    display: grid;
+    grid-template-columns: repeat( auto-fill, minmax(275px, 1fr) );
+    grid-gap: 70px;
+}
+.card-grid > .card {
+    width: 100%;
+    width: 275px;
+    margin: 0 auto;
+}
+
+/* Linkable cards
+-------------------------------------------------- */
+a.card,
+a.card:hover,
+a.card:active,
+a.card:visited {
+    text-decoration: inherit;
+    color: inherit;
+}
+
+
+/* Responsive extras
+-------------------------------------------------- */
+
+/* Mobile view */
+@media screen and (max-width: 500px) {
+    .card-grid {
+        grid-template-columns: repeat( auto-fill, minmax(200px, 1fr) );
+    }
+}
+
+
+/* Theming
+-------------------------------------------------- */
+
+// Main Layout 
+body {
+    color: $fg-primary;
+    background-color: $brand-bg;
+    font-family: $text-family;
+}
+
+.header {
+    background-color: $brand-bg-dark;
+
+    nav {
+        padding: 0 12px;
+        text-align: center;
+
+        z-index: 100;
+        position: relative;
+        box-shadow: 0px 0px 6px 3px rgba(0,0,0,1);
+
+        input {
+            width: 325px;
+        }
+    }
+}
+
+.banner {
+    padding: 50px 20%;
+
+    h1 {
+        color: white;
+        background-color: $brand-bg-dark;
+        font-size: 120px;
+        display: inline;
+        font-weight: 800;
+        text-transform: uppercase;
+        background-color: $brand-bg-dark;
+        word-spacing: 100vw;
+        line-height: 100px;
+        padding: 0 20px;
+    }
+}
+
+.container {
+    padding: 90px 20%;
+
+    h1 {
+        font-size: 32px;
+        margin-bottom: 12px;
+    }
+}
+
+section {
+    margin-bottom: 50px;
+}
+
+.footer {
+    padding: 25px;
+    text-align: center;
+    background-color: $brand-bg-dark;
+
+    h1 {
+        color: white;
+        font-size: 50px;
+        font-weight: 800;
+        margin-top: 20px;
+        margin-bottom: 60px;
+    }
+
+    input {
+        width: 325px;
+        margin-bottom: 20px;
+    }
+
+}
+
+.subfooter {
+    padding: 18px;
+    text-align: center;
+    color: $fg-muted;
+    background-color: $brand-bg;
+}
+
+// Navigation
+.logo-text {
+    color: white;
+}
+nav a {
+    font-size: 18px;
+    text-transform: uppercase;
+    display: inline-block;
+    padding: 15px 30px;
+    margin: 0 15px;
+}
+nav a.active,
+nav a:hover {
+    color: white;
+    background-color: $brand-fg;
+}
+
+// Headers
+%headings {
+    margin: 0;
+    font-weight: 300;
+    text-transform: uppercase;
+    color: $brand-fg;
+}
+
+// Links
+a {
+    color: $brand-fg;
+    text-decoration: none;
+}
+
+// Inputs
+input {
+    border: none;
+    padding: 8px 14px;
+    color: #C2C2C2;
+    background-color: #354251;
+    
+    &::placeholder {
+        color: #C2C2C2;
+    }
+
+    &.input-sm {
+        font-size: 14px;
+        padding: 6px 13px;
+    }
+
+}
+
+// Cards
+.card {
+    background-color: $brand-bg-dark;
+    box-shadow: 0px 3px 6px 0px rgba(0,0,0,1);
+    
+    .card-header {
+        padding: 12px;
+        
+        h1 {
+            font-size: 24px;
+            margin: 0;
+        }
+    }
+
+    .card-body {
+        padding: 12px;
+    }
+
+    %headings {
+        color: white;
+    }
+}

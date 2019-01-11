@@ -3,111 +3,63 @@
 * License, v. 2.0. If a copy of the MPL was not distributed with this
 * file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
-'use strict';
 
-// tslint:disable:prefer-function-over-method
+import { Router, Get, Post, Delete, Put, Patch, HttpError, ParseJson, ValidateCsrf } from "cp3-express-decorators";
+import { Request, Response, NextFunction } from "express";
 
-import { JsonController, Get, QueryParams, Param, Post, Delete, Put, Patch, Body, UseAfter, Params } from "routing-controllers";
-
-import { IPaginateOptions, paginate } from "../../../lib/FindHelper";
+import { paginate } from "../../../lib/FindHelper";
 import { validate } from "../../../lib/ValidationHelper";
 
 import { TeamMember } from "../../../models/TeamMember";
 import { Team } from "../../../models/Team";
 import { Developer } from "../../../models/Developer";
 
-import { JsonErrorHandler } from "./JsonErrorHandler";
 import { NewTeamMember } from "./params/NewTeamMember";
+
+import { TeamsJsonController } from "./TeamsJsonController";
+import { DevelopersJsonController } from "./DevelopersJsonController";
 
 interface IFilterOptions {
     teamId?: number;
     developerId?: number;
 }
 
-/** TeamMembersJsonController */
-@JsonController()
-@UseAfter(JsonErrorHandler)
-export default class TeamMembersJsonController {
+/**
+ * The controller for the v1 TeamMembers API.
+ */
+export class TeamMembersJsonController extends Router {
 
-    // ============================== //
-    //       Controller Methods       //
-    // ============================== //
+    // ========================== //
+    //      JSON Formatting       //
+    // ========================== //
 
-    /**
-     * Gets all TeamMembers.
-     * @param pageOptions Options for paginating the results.
-     */
-    public static getAll(pageOptions: IPaginateOptions & IFilterOptions): PromiseLike<TeamMember[]> {
-        
-        const filter: IFilterOptions = {};
-        if(pageOptions.developerId) filter.developerId = pageOptions.developerId;
-        if(pageOptions.teamId) filter.teamId = pageOptions.teamId;
-        
-        return TeamMember
-            .findAll({
-                include: [Team, Developer],
-                order: [['name', 'ASC']],
-                where: filter,
-                ...paginate(pageOptions)
-            });
-
+    public static getShortJsonObject(teamMember: TeamMember) {
+        return {
+            id: teamMember.id,
+            roles: teamMember.roles,
+            team: teamMember.team ? TeamsJsonController.getShortJsonObject(teamMember.team) : null,
+            developer: teamMember.developer ? DevelopersJsonController.getShortJsonObject(teamMember.developer) : null
+        };
     }
 
-    /**
-     * Gets a single TeamMember.
-     * @param id The TeamMember's id.
-     */
-    public static getOne(id: number): PromiseLike<TeamMember> {
-
-        return TeamMember.findById(
-            id,
-            {
-                include: [Team, Developer],
-            }
-        );
-
+    public static getMediumJsonObject(teamMember: TeamMember) {
+        return {
+            id: teamMember.id,
+            roles: teamMember.roles,
+            team: teamMember.team ? TeamsJsonController.getMediumJsonObject(teamMember.team) : null,
+            developer: teamMember.developer ? DevelopersJsonController.getMediumJsonObject(teamMember.developer) : null
+        };
     }
 
-    /**
-     * Creates a new TeamMember.
-     * @param newTeamMember The new TeamMember.
-     */
-    public static createOne(newTeamMember: NewTeamMember): PromiseLike<TeamMember> {
-        newTeamMember = Object.assign(new NewTeamMember(), newTeamMember);
-        return validate(newTeamMember)
-            .then(_ => {
-                console.log(newTeamMember);
-                const { ...newTeamMemberProps } = newTeamMember;
-                return TeamMember
-                    .create(newTeamMemberProps) as PromiseLike<TeamMember>;
-            });
-    }
-
-    /**
-     * Edits a TeamMember.
-     * @param id The TeamMember's id.
-     * @param editTeamMember The edited TeamMember.
-     */
-    public static editOne(id: number, editTeamMember: Partial<NewTeamMember>): PromiseLike<TeamMember> {
-        editTeamMember = Object.assign(new NewTeamMember(), editTeamMember);
-        return validate(editTeamMember)
-            .then(_ => {
-                console.log(editTeamMember);
-                const { ...editTeamMemberProps } = editTeamMember;
-                return TeamMember
-                    .findById(id)
-                    .then(teamMember => (teamMember as TeamMember).update(editTeamMemberProps)) as PromiseLike<TeamMember>;
-            });
-    }
-
-    /**
-     * Deletes a TeamMember.
-     * @param id The TeamMember's id.
-     */
-    public static deleteOne(id: number): PromiseLike<void> {
-
-        return TeamMember.findById(id).then(teamMember => (teamMember as TeamMember).destroy());
-
+    public static getFullJsonObject(teamMember: TeamMember) {
+        return {
+            id: teamMember.id,
+            roles: teamMember.roles,
+            createdAt: teamMember.createdAt,
+            updatedAt: teamMember.updatedAt,
+            team: teamMember.team ? TeamsJsonController.getMediumJsonObject(teamMember.team) : null,
+            developer: teamMember.developer ? DevelopersJsonController.getMediumJsonObject(teamMember.developer) : null
+        };
     }
 
     // ========================== //
@@ -123,22 +75,28 @@ export default class TeamMembersJsonController {
      *
      */
     @Get("/")
-    public getTeamMembers(@Params() routeParams: IPaginateOptions & IFilterOptions, @QueryParams() queryParams: IPaginateOptions & IFilterOptions) {
-        return TeamMembersJsonController.getAll({ ...routeParams, ...queryParams }).then(teamMembers => teamMembers.map(p => ({
-            id: p.id,
-            createdAt: p.createdAt,
-            updatedAt: p.updatedAt,
-            team: {
-                id: p.team.id,
-                name: p.team.name,
-                shortDescription: p.team.shortDescription,
-            },
-            developer: {
-                id: p.developer.id,
-                name: p.developer.name,
-                shortDescription: p.developer.shortDescription,
-            },
-        })));
+    public async getTeamMembers(req: Request, res: Response, next: NextFunction) {
+
+        const params = { ...req.params, ...req.query };
+
+        const filter: IFilterOptions = {};
+        if (params.developerId) filter.developerId = +params.developerId;
+        if (params.teamId) filter.teamId = +params.teamId;
+
+        const members = await TeamMember.findAll({
+            include: [Team, Developer],
+            order: [['name', 'ASC']],
+            where: filter,
+            ...paginate(params)
+        });
+
+        const membersJSON = members.map(TeamMembersJsonController.getMediumJsonObject);
+
+
+        res.format({
+            json: () => res.json(membersJSON)
+        });
+
     }
 
     /**
@@ -150,28 +108,21 @@ export default class TeamMembersJsonController {
      *
      */
     @Get("/:teamMemberId(\\d+)")
-    public getTeamMember(@Param('teamMemberId') teamMemberId: number) {
-        return TeamMembersJsonController.getOne(teamMemberId).then(p => ({
-            id: p.id,
-            createdAt: p.createdAt,
-            updatedAt: p.updatedAt,
-            team: {
-                id: p.team.id,
-                name: p.team.name,
-                shortDescription: p.team.shortDescription,
-                description: p.team.description,
-                createdAt: p.team.createdAt,
-                updatedAt: p.team.updatedAt,
-            },
-            developer: {
-                id: p.developer.id,
-                name: p.developer.name,
-                shortDescription: p.developer.shortDescription,
-                description: p.developer.description,
-                createdAt: p.developer.createdAt,
-                updatedAt: p.developer.updatedAt,
-            },
-        }));
+    public async getTeamMember(req: Request, res: Response, next: NextFunction) {
+
+        const member = await TeamMember.findById(
+            +req.params['teamMemberId'],
+            { include: [Team, Developer] }
+        );
+
+        if (!member) return next(new HttpError(404, "That TeamMember does not exist."));
+
+        const memberJSON = TeamMembersJsonController.getFullJsonObject(member);
+
+        res.format({
+            json: () => res.json(memberJSON)
+        });
+
     }
 
     /**
@@ -183,12 +134,25 @@ export default class TeamMembersJsonController {
      *
      */
     @Post("/")
-    public createTeamMember(
-        @Params() route: NewTeamMember,
-        @Body() body: NewTeamMember,
-        @QueryParams() query: NewTeamMember,
-    ) {
-        return TeamMembersJsonController.createOne({...route, ...query, ...body});
+    @ParseJson()
+    @ValidateCsrf()
+    public async createTeamMember(req: Request, res: Response, next: NextFunction) {
+
+        if (!req.user) return next(new HttpError(401, "Unauthorized"));
+        if (!req.user.can('create', TeamMember)) return next(new HttpError(403, "You do not have permission to create a TeamMember."));
+
+        const newMemberData = Object.assign(new NewTeamMember(), req.body);
+
+        await validate(newMemberData);
+
+        const member = await TeamMember.create({ ...newMemberData });
+
+        const memberJSON = TeamMembersJsonController.getFullJsonObject(member);
+
+        res.format({
+            json: () => res.json(memberJSON)
+        });
+
     }
 
     /**
@@ -204,12 +168,29 @@ export default class TeamMembersJsonController {
     @Post("/:teamMemberId(\\d+)")
     @Put("/:teamMemberId(\\d+)")
     @Patch("/:teamMemberId(\\d+)")
-    public updateTeamMember(
-        @Param('teamMemberId') teamMemberId: number,
-        @Body() body: NewTeamMember,
-        @QueryParams() query: NewTeamMember,
-    ) {
-        return TeamMembersJsonController.editOne(teamMemberId, {...query, ...body});
+    @ParseJson()
+    @ValidateCsrf()
+    public async updateTeamMember(req: Request, res: Response, next: NextFunction) {
+
+        if (!req.user) return next(new HttpError(401, "Unauthorized"));
+
+        const member = await TeamMember.findById(+req.params['teamMemberId']);
+
+        if (!member) return next(new HttpError(404, "That TeamMember does not exist."));
+        if (!req.user.can('edit', member)) return next(new HttpError(403, "You do not have permission to edit this TeamMember."));
+
+        const newMemberData = Object.assign(new NewTeamMember(), req.body);
+
+        await validate(newMemberData);
+
+        const editedMember = await member.update({ ...newMemberData });
+
+        const memberJSON = TeamMembersJsonController.getFullJsonObject(editedMember);
+
+        res.format({
+            json: () => res.json(memberJSON)
+        });
+    
     }
 
     /**
@@ -223,8 +204,21 @@ export default class TeamMembersJsonController {
      */
     @Delete("/:teamMemberId(\\d+)")
     @Post("/:teamMemberId(\\d+)/delete")
-    public deleteTeamMember(@Param('teamMemberId') teamMemberId: number) {
-        return TeamMembersJsonController.deleteOne(teamMemberId);
+    @ParseJson()
+    @ValidateCsrf()
+    public async deleteTeamMember(req: Request, res: Response, next: NextFunction) {
+
+        if (!req.user) return next(new HttpError(401, "Unauthorized"));
+
+        const member = await TeamMember.findById(+req.params['teamMemberId']);
+
+        if (!member) return next(new HttpError(404, "That TeamMember does not exist."));
+        if (!req.user.can('delete', member)) return next(new HttpError(403, "You do not have permission to delete this Team Member."));
+
+        await member.destroy();
+
+        res.status(204).send();
+
     }
 
 }

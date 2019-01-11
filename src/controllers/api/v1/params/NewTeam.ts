@@ -4,7 +4,6 @@
 * file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
-'use strict';
 
 import { MaxLength, IsString, IsNotEmpty } from "class-validator";
 
@@ -22,7 +21,7 @@ export class NewTeam {
     /** A short description for the Team */
     @MaxLength(ENTITY_SHORT_DESCRIPTION_MAX_LENGTH, { message: "Short Description must be less than $constraint1 characters." })
     @IsString({ message: "Short Description must be a string." })
-    public shortDescription!: string;
+    public summary!: string;
 
     /** A full description for the Team */
     @IsString({ message: "Description must be a string." })

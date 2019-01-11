@@ -3,19 +3,18 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-'use strict';
 
 /* tslint:disable:no-implicit-dependencies no-magic-numbers*/
 
 import * as faker from 'faker';
 import * as _ from 'lodash';
 
-import { Team } from './models/Team';
-import { Project } from './models/Project';
-import { Developer } from './models/Developer';
-import { TeamMember } from './models/TeamMember';
-import { Tag } from './models/Tag';
-import { ProjectTag } from './models/ProjectTag';
+import { Team } from './src/models/Team';
+import { Project } from './src/models/Project';
+import { Developer } from './src/models/Developer';
+import { TeamMember } from './src/models/TeamMember';
+import { Tag } from './src/models/Tag';
+import { ProjectTag } from './src/models/ProjectTag';
 
 /**
  * Gets a random set of tags.
@@ -62,13 +61,13 @@ export async function loadTestData() {
 
         const teams = await createArr(20, t => Team.create({
             name: faker.company.companyName(),
-            shortDescription: faker.company.catchPhrase(),
+            summary: faker.company.catchPhrase(),
             description: faker.lorem.paragraphs(3)
         }));
 
         const projects = await createArr(teams.length, i => Project.create({
             name: faker.commerce.productName(),
-            shortDescription: faker.company.catchPhrase(),
+            summary: faker.company.catchPhrase(),
             description: faker.lorem.paragraphs(3),
             teamId: teams[i].id
         }));
@@ -83,7 +82,7 @@ export async function loadTestData() {
 
         const developers = await createArr(teams.length * 4, i => Developer.create({
             name: faker.name.findName(),
-            shortDescription: faker.company.catchPhrase(),
+            summary: faker.company.catchPhrase(),
             description: faker.lorem.paragraphs(2)
         }));
 

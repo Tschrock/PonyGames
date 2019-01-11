@@ -3,12 +3,11 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-'use strict';
 
-import { ISequelizeConfig } from 'sequelize-typescript';
 import yargs = require('yargs');
 
-import { IOauthConfig } from './Auth/OAuthManager';
+import { IDatabaseOptions } from '../services/DatabaseService';
+import { IStrategyProviderOptions } from '../services/AuthService';
 
 
 export interface IWebConfig {
@@ -18,7 +17,7 @@ export interface IWebConfig {
 }
 
 export interface IConfig extends Partial<yargs.Arguments> {
-    db: ISequelizeConfig;
     web: IWebConfig;
-    oauth: IOauthConfig[];
+    db: IDatabaseOptions;
+    oauth: IStrategyProviderOptions[];
 }

@@ -3,22 +3,20 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-'use strict';
 
-// tslint:disable:prefer-function-over-method
+import { Router, Get, HttpError } from "cp3-express-decorators";
+import { Request, Response, NextFunction } from "express";
 
-import { Controller, Get, Render, QueryParams, Param } from "routing-controllers";
+import { paginate } from "../lib/FindHelper";
 
 import { Project } from '../models/Project';
 import { Tag } from '../models/Tag';
-
-import { IPaginateOptions } from "../lib/FindHelper";
 import { Team } from "../models/Team";
-import ProjectsJsonController from "./api/v1/ProjectsJsonController";
+import { FileGroup } from "../models/FileGroup";
+import { File } from "../models/File";
 
 /** The Project Controller */
-@Controller()
-export default class ProjectsController {
+export class ProjectsController extends Router {
 
     // ================= //
     //       Pages       //
@@ -29,10 +27,17 @@ export default class ProjectsController {
      * Shows projects with their tags, paginated and sorted by name.
      */
     @Get("/")
-    @Render("projects/index")
-    public async showAllProjects(@QueryParams() queryParams: IPaginateOptions) {
+    public async showAllProjects(req: Request, res: Response, next: NextFunction) {
 
-        return ProjectsJsonController.getAll(queryParams).then(projects => ({ projects }));
+        const projects = await Project.findAll({
+            include: [Tag],
+            order: [['name', 'ASC'], ['tags', 'key', 'DESC']],
+            ...paginate(req.query)
+        });
+
+        res.format({
+            html: () => res.render('projects/index', { projects })
+        });
 
     }
 
@@ -40,11 +45,19 @@ export default class ProjectsController {
      * Project Details Page
      * Shows the details for a project.
      */
-    @Get("/:id(\\d+)")
-    @Render("projects/details")
-    public async showProject(@Param('id') projectId: number) {
+    @Get("/:projectId(\\d+)")
+    public async showProject(req: Request, res: Response, next: NextFunction) {
 
-        return ProjectsJsonController.getOne(projectId).then(project => ({ project }));
+        const project = await Project.findById(
+            +req.params['projectId'],
+            { include: [Tag, Team, { model: FileGroup, include: [File] }] }
+        );
+
+        if (!project) return next(new HttpError(404, "That Project does not exist."));
+
+        res.format({
+            html: () => res.render('projects/details', { project })
+        });
 
     }
 
@@ -53,16 +66,30 @@ export default class ProjectsController {
      * Shows a form to create a new project.
      */
     @Get("/new")
-    @Render("projects/new")
-    public async newProject() {
+    public async newProject(req: Request, res: Response, next: NextFunction) {
 
-        // Get and return all available teams and tags.
-        return Promise
-            .all([
-                Team.findAll(),
-                Tag.findAll()
-            ])
-            .then(([teams, tags]) => ({ teams, tags }));
+        if (!req.user) res.redirect('/login');
+        if (!req.user.can('create', Project)) return next(new HttpError(403, "You do not have permission to create a Project."));
+
+        var project: Project | null = null;
+        if("copy" in req.query) {
+            try {
+                project = await Project.findById(+req.query["copy"], { include: [Tag, Team] });
+            }
+            catch(e) {
+                // noop
+            }
+        }
+        if(project === null) project = new Project();
+
+        const [teams, tags] = await Promise.all([
+            Team.findAll(),
+            Tag.findAll()
+        ]);
+
+        res.format({
+            html: () => res.render('projects/new', { teams, tags, project })
+        });
 
     }
 
@@ -70,18 +97,23 @@ export default class ProjectsController {
      * Edit Project Page
      * Shows a form to edit a project.
      */
-    @Get("/:id(\\d+)/edit")
-    @Render("projects/edit")
-    public async editProject(@Param('id') projectId: number) {
+    @Get("/:projectId(\\d+)/edit")
+    public async editProject(req: Request, res: Response, next: NextFunction) {
+        
+        if (!req.user) return res.redirect('/login');
 
-        // Get and return the specified project and all available teams and tags.
-        return Promise
-            .all([
-                Project.findById(projectId, { include: [Tag, Team] }),
-                Team.findAll(),
-                Tag.findAll()
-            ])
-            .then(([project, teams, tags]) => ({ project, teams, tags }));
+        const [project, teams, tags] = await Promise.all([
+            Project.findById(+req.params['projectId'], { include: [Tag, Team] }),
+            Team.findAll(),
+            Tag.findAll()
+        ]);
+        
+        if (!project) return next(new HttpError(404, "That Project does not exist."))
+        if (!req.user.can('edit', project)) return next(new HttpError(403, "You do not have permission to edit this Project."));
+
+        res.format({
+            html: () => res.render('projects/edit', { project, teams, tags })
+        });
 
     }
 

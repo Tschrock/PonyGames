@@ -4,7 +4,7 @@ include ../_components/entityActions
 
 block content
     h1= project.name
-    p= project.shortDescription
+    p= project.summary
     p= project.description
 
     section
@@ -18,7 +18,7 @@ block content
         a.card(href=`/teams/${project.teamId}`)
             .card-body
                 h4= project.team.name
-                p= project.team.shortDescription
+                p= project.team.summary
 
     section
         h2 Gallery

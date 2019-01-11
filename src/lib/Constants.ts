@@ -4,7 +4,6 @@
 * file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
-'use strict';
 
 /** If the current environment is a development environment */
 export const isDev = process.env.NODE_ENV !== 'production';

@@ -3,64 +3,93 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-'use strict';
 
-// tslint:disable:prefer-function-over-method
+import { Router, Get, HttpError } from "cp3-express-decorators";
+import { Request, Response, NextFunction } from "express";
 
-import { Controller, Get, Render, QueryParams, Param } from "routing-controllers";
+import { paginate } from "../lib/FindHelper";
 
 import { Team } from '../models/Team';
+import { TeamMember } from "../models/TeamMember";
+import { Developer } from "../models/Developer";
+import { Project } from "../models/Project";
 
-import { IPaginateOptions } from "../lib/FindHelper";
-import TeamsJsonController from "./api/v1/TeamsJsonController";
-
-/** The Team Controller */
-@Controller()
-export default class TeamsController {
-
-    // ================= //
-    //       Pages       //
-    // ================= //
+/** The Teams Controller */
+export class TeamsController extends Router {
 
     /**
      * Teams Index Page
-     * Shows teams, paginated and sorted by name.
+     * Shows a list of Teams.
      */
     @Get("/")
-    @Render("teams/index")
-    public async showAllTeams(@QueryParams() queryParams: IPaginateOptions) {
-        return TeamsJsonController.getAll(queryParams).then(teams => ({ teams }));
+    public async getTeamsIndex(req: Request, res: Response, next: NextFunction) {
+
+        const teams = await Team.findAll({
+            include: [Project, { model: TeamMember, include: [Developer] }],
+            order: [['name', 'ASC']],
+            ...paginate(req.query)
+        });
+        
+        res.format({
+            html: () => res.render('teams/index', { teams })
+        });
+
     }
 
     /**
      * Team Details Page
-     * Shows the details for a Team.
+     * Shows details about a Team.
      */
-    @Get("/:id(\\d+)")
-    @Render("teams/details")
-    public async showTeam(@Param('id') teamId: number) {
-        return TeamsJsonController.getOne(teamId).then(team => ({ team }));
+    @Get("/:teamId(\\d+)")
+    public async getTeamDetail(req: Request, res: Response, next: NextFunction) {
+
+        const team = await Team.findById(
+            +req.params['teamId'],
+            { include: [Project, { model: TeamMember, include: [Developer] }] }
+        );
+
+        if (!team) return next(new HttpError(404, "That Team does not exist."));
+        
+        res.format({
+            html: () => res.render('teams/details', { team })
+        });
+
     }
 
     /**
      * New Team Page
-     * Shows a form to create a new Team.
+     * Shows a form to create a Team.
      */
     @Get("/new")
-    @Render("teams/new")
-    public newTeam() {
-        return { };
+    public async getNewTeam(req: Request, res: Response, next: NextFunction) {
+    
+        if (!req.user) res.redirect('/login');
+        if (!req.user.can('create', Team)) return next(new HttpError(403, "You do not have permission to create a Team."));
+
+        res.format({
+            html: () => res.render('teams/new')
+        });
+    
     }
 
     /**
      * Edit Team Page
      * Shows a form to edit a Team.
      */
-    @Get("/:id(\\d+)/edit")
-    @Render("teams/edit")
-    public async editTeam(@Param('id') teamId: number) {
-        return Team.findById(teamId, { include: []}).then(team => ({ team }));
-    }
+    @Get("/:teamId(\\d+)/edit")
+    public async getEditTeam(req: Request, res: Response, next: NextFunction) {
+        
+        if (!req.user) return res.redirect('/login');
 
+        const team = await Team.findById( +req.params['teamId'] );
+        
+        if (!team) return next(new HttpError(404, "That Team does not exist."));
+        if (!req.user.can('edit', team)) return next(new HttpError(403, "You do not have permission to edit this Team."));
+
+        res.format({
+            html: () => res.render('teams/edit', { team })
+        });
+
+    }
 
 }

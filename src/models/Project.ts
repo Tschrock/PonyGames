@@ -3,7 +3,6 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-'use strict';
 
 import { Sequelize, Table, Column, Model, AllowNull, ForeignKey, BelongsTo, BelongsToMany, HasMany, NotEmpty } from 'sequelize-typescript';
 
@@ -30,7 +29,7 @@ export class Project extends Model<Project> {
 
     /** A short description of the Project. */
     @Column(Sequelize.STRING(ENTITY_SHORT_DESCRIPTION_MAX_LENGTH))
-    public shortDescription!: string;
+    public summary!: string;
 
     /** A long description for the Project. */
     @Column(Sequelize.TEXT)

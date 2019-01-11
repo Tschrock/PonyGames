@@ -4,10 +4,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-'use strict';
 
 import { validate as originalValidate, ValidatorOptions } from "class-validator";
-import { HttpError } from "./HttpError";
+import { HttpError } from "cp3-express-decorators";
 
 /**
  * Validates an object.

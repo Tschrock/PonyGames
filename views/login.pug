@@ -1,7 +1,7 @@
 extends _layout/main
 
 block content
-    a(href="/login/twitter") Sign in with Twitter
-    br
-    br
-    a(href="/login/github") Sign in with GitHub
+    for provider in providers
+        a(href=`/auth/${provider.id}`) Sign in with #{provider.name}
+        br
+        br

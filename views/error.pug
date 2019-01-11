@@ -1,13 +1,13 @@
 extends _layout/main
 
 block content
-    h1= statusCode
-    h2= errorData.message
-    if errorData.data
-        pre= JSON.stringify(errorData.data)
-    if errorData.stack
-        pre= errorData.stack
-    - var cb = errorData.causedBy
+    h1= httpError.statusCode
+    h2= httpError.message
+    if httpError.data
+        pre= JSON.stringify(httpError.data)
+    if httpError.stack
+        pre= httpError.stack
+    - var cb = httpError.causedBy
     while !!cb
         h2 Caused By:
         h3= cb.message
