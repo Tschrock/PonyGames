@@ -1,5 +1,7 @@
 /* Variables
 -------------------------------------------------- */
+/* Variables
+-------------------------------------------------- */
 /* HTML Overrides
 -------------------------------------------------- */
 * {
@@ -10,6 +12,41 @@ html, body {
   margin: 0;
   padding: 0;
   height: 100%;
+}
+
+h1, h2, h3,
+h4, h5, h6 {
+  margin: 0;
+  font-weight: 400;
+  text-transform: uppercase;
+  color: #026eb7;
+}
+
+a {
+  color: #026eb7;
+  text-decoration: none;
+}
+
+input {
+  border: none;
+  padding: 8px 14px;
+  color: #C2C2C2;
+  background-color: #354251;
+}
+input::placeholder {
+  color: #C2C2C2;
+}
+input.input-sm {
+  font-size: 14px;
+  padding: 6px 13px;
+}
+
+pre {
+  background-color: white;
+  overflow: auto;
+  padding: 10px;
+  border: solid black 2px;
+  text-align: left;
 }
 
 /* Flexbox
@@ -38,20 +75,16 @@ html, body {
 /* Card Grid
 -------------------------------------------------- */
 .card-grid {
-  margin: 10px;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(275px, 1fr));
-  grid-gap: 70px;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  grid-gap: 20px;
 }
 
 .card-grid > .card {
   width: 100%;
-  width: 275px;
   margin: 0 auto;
 }
 
-/* Linkable cards
--------------------------------------------------- */
 a.card,
 a.card:hover,
 a.card:active,
@@ -60,54 +93,115 @@ a.card:visited {
   color: inherit;
 }
 
-/* Responsive extras
+/* Other Utils
 -------------------------------------------------- */
-/* Mobile view */
-@media screen and (max-width: 500px) {
-  .card-grid {
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  }
+.text-center {
+  text-align: center;
 }
-/* Theming
+
+.extrabold {
+  font-weight: 800;
+}
+
+/* Theming: Mobile-first layout
 -------------------------------------------------- */
 body {
-  color: white;
-  background-color: #16212E;
+  color: black;
+  background-color: white;
   font-family: "Work Sans", sans-serif;
 }
 
-.header {
-  background-color: #0F1421;
+nav a {
+  font-size: 18px;
+  text-transform: uppercase;
+  display: inline-block;
+  padding: 15px 30px;
+  margin: 0 15px;
 }
-.header nav {
-  padding: 0 12px;
-  text-align: center;
+nav a.active, nav a:hover {
+  color: black;
+  background-color: #026eb7;
+}
+
+header {
+  background-color: black;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   z-index: 100;
   position: relative;
   box-shadow: 0px 0px 6px 3px black;
 }
-.header nav input {
+header .navbar-header {
+  width: 100%;
+  padding: 0 12px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+header .navbar-brand {
+  display: flex;
+  align-items: center;
+  font-size: 24px;
+  text-transform: uppercase;
+  padding: 5px 10px;
+  width: 200px;
+}
+header .logo-text {
+  color: white;
+  font-size: 22px;
+  line-height: 0.9em;
+}
+header .navbar-content {
+  width: 100%;
+  padding: 10px 12px;
+  display: none;
+  flex-direction: column;
+  flex: 1;
+  text-align: center;
+}
+header .navbar-content.active {
+  display: flex;
+}
+header .navbar-content nav {
+  display: flex;
+  flex-direction: column;
+  margin: 10px 0;
+}
+header .navbar-content input {
   width: 325px;
+  margin: 10px 0;
+}
+
+.navbar-toggle {
+  border: none;
+  padding: 0;
+  margin: 0 0 0 auto;
+  color: black;
+  background-color: transparent;
+  font-size: 24px;
+  cursor: pointer;
 }
 
 .banner {
-  padding: 50px 20%;
+  padding: 50px 20px;
+  min-height: 230px;
 }
 .banner h1 {
   color: white;
-  background-color: #0F1421;
-  font-size: 120px;
+  background-color: black;
+  font-size: 40px;
   display: inline;
   font-weight: 800;
   text-transform: uppercase;
-  background-color: #0F1421;
-  word-spacing: 100vw;
-  line-height: 100px;
-  padding: 0 20px;
+  background-color: black;
+  line-height: 1em;
+  padding: 0;
 }
 
 .container {
-  padding: 90px 20%;
+  padding: 50px 20px;
+  overflow: hidden;
 }
 .container h1 {
   font-size: 32px;
@@ -121,7 +215,7 @@ section {
 .footer {
   padding: 25px;
   text-align: center;
-  background-color: #0F1421;
+  background-color: black;
 }
 .footer h1 {
   color: white;
@@ -139,63 +233,21 @@ section {
   padding: 18px;
   text-align: center;
   color: #7D7D7D;
-  background-color: #16212E;
+  background-color: white;
 }
-
-.logo-text {
-  color: white;
-}
-
-nav a {
-  font-size: 18px;
-  text-transform: uppercase;
-  display: inline-block;
-  padding: 15px 30px;
-  margin: 0 15px;
-}
-
-nav a.active,
-nav a:hover {
-  color: white;
-  background-color: #FF2966;
-}
-
-h1, h2, h3,
-h4, h5, h6 {
-  margin: 0;
-  font-weight: 300;
-  text-transform: uppercase;
-  color: #FF2966;
-}
-
-a {
-  color: #FF2966;
-  text-decoration: none;
-}
-
-input {
-  border: none;
-  padding: 8px 14px;
-  color: #C2C2C2;
-  background-color: #354251;
-}
-input::placeholder {
-  color: #C2C2C2;
-}
-input.input-sm {
-  font-size: 14px;
-  padding: 6px 13px;
+.subfooter a {
+  color: #ddd;
 }
 
 .card {
-  background-color: #0F1421;
+  background-color: black;
   box-shadow: 0px 3px 6px 0px black;
 }
 .card .card-header {
   padding: 12px;
 }
 .card .card-header h1 {
-  font-size: 24px;
+  font-size: 18px;
   margin: 0;
 }
 .card .card-body {
@@ -204,6 +256,84 @@ input.input-sm {
 .card h1, .card h2, .card h3,
 .card h4, .card h5, .card h6 {
   color: white;
+}
+
+/* Theming: Tablet overrides
+-------------------------------------------------- */
+@media all and (min-width: 600px) {
+  .card-grid {
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    grid-gap: 50px;
+  }
+
+  .card-grid > .card {
+    max-width: 350px;
+  }
+
+  .container {
+    padding: 60px 40px;
+  }
+
+  .banner {
+    padding: 50px 40px;
+    min-height: 300px;
+  }
+  .banner h1 {
+    font-size: 80px;
+  }
+}
+/* Theming: Desktop overrides
+-------------------------------------------------- */
+@media all and (min-width: 1200px) {
+  .card-grid {
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    grid-gap: 70px;
+  }
+
+  .card-grid > .card {
+    max-width: none;
+  }
+
+  .card .card-header h1 {
+    font-size: 24px;
+  }
+
+  header {
+    flex-direction: row;
+  }
+  header .navbar-content {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0 12px;
+  }
+  header .navbar-content nav {
+    flex-direction: row;
+    justify-content: center;
+    margin: 0;
+  }
+  header .navbar-content input {
+    margin: 0;
+  }
+  header .navbar-header {
+    width: auto;
+  }
+
+  .navbar-toggle {
+    display: none;
+  }
+
+  .container {
+    padding: 90px 24%;
+  }
+
+  .banner {
+    padding: 50px 24%;
+    min-height: 400px;
+  }
+  .banner h1 {
+    font-size: 120px;
+  }
 }
 
 /*# sourceMappingURL=theme.css.map */

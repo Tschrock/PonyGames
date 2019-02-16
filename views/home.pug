@@ -1,9 +1,32 @@
 extends ./_layout/main
 include ./_components/svgplaceholder
+include ./_components/meta
+
+block head
+    // Meta
+    +meta-page-opengraph-type("website")
+    +meta-page-twitter-card-type("summary")
+
+    +meta-page-title("Pony.Games")
+    +meta-page-description("Discover dozens of fangames made by the MLP community.")
+    +meta-page-canonical-url("https://beta.pony.games/")
+    +meta-page-author-name("CyberPon3")
+    +meta-page-author-twitter-handle("@CyberPon3")
+    +meta-page-author-twitter-id("787535265447325698")
+    +meta-page-publish-date("2019-01-10")
+    +meta-page-update-date("2019-01-10")
+    +meta-page-locale("en_US")
+    +meta-page-image-url("https://beta.pony.games/icon.png")
+    +meta-page-image-mime("image/png")
+    +meta-page-image-height("500")
+    +meta-page-image-width("500")
+    +meta-page-image-alt("Logo")
+    
+    
 
 block header
     +svgplaceholder-underlay(10,3).banner
-        h1 Pony.Games
+        //- h1 &nbsp;DISCORVER.&nbsp;<br>&nbsp;PONY.&nbsp;<br>&nbsp;GAMES.&nbsp;
 
 block content
     .container
@@ -12,9 +35,10 @@ block content
                 h1 Featured Game
                 .card
                     div(class="card-img-top")
-                        +svgplaceholder(10,1)
+                        +svgplaceholder(10,2)
                     .card-header
                         h1= featuredProject.name
+                a.
         section
             h1 Games
             .card-grid

@@ -1,18 +1,19 @@
 extends _layout/main
 
 block content
-    h1= httpError.statusCode
-    h2= httpError.message
-    if httpError.data
-        pre= JSON.stringify(httpError.data)
-    if httpError.stack
-        pre= httpError.stack
-    - var cb = httpError.causedBy
-    while !!cb
-        h2 Caused By:
-        h3= cb.message
-        if cb.data
-            pre= JSON.stringify(cb.data)
-        if cb.stack
-            pre= cb.stack
-        - var cb = cb.causedBy
+    .container.text-center
+        h1= httpError.statusCode
+        h2= httpError.message
+        if httpError.data
+            pre= JSON.stringify(httpError.data)
+        if httpError.stack
+            pre= httpError.stack
+        - var cb = httpError.causedBy
+        while !!cb
+            h2 Caused By:
+            h3= cb.message
+            if cb.data
+                pre= JSON.stringify(cb.data)
+            if cb.stack
+                pre= cb.stack
+            - var cb = cb.causedBy

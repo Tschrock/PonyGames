@@ -4,6 +4,32 @@
 * file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
+
+function DoToggle(evt: Event) {
+    if(evt.currentTarget && evt.currentTarget instanceof HTMLElement) {
+
+        const selector = evt.currentTarget.dataset.target;
+        if (selector) {
+
+            const target = document.querySelector(selector);
+            if (target) {
+
+                target.classList.toggle("active");
+
+            }
+        }
+    }
+}
+
+// On document load
+document.addEventListener('DOMContentLoaded', () => {
+
+    // Register toggles
+    document.querySelectorAll('.js-toggle').forEach(el => el.addEventListener('click', DoToggle));
+
+});
+
+
 /*----------- #notjquery -----------*/
 const $ = (x: string) => document.querySelector(x);
 const $$ = (x: string) => document.querySelectorAll(x);
@@ -24,7 +50,7 @@ function closest(el: HTMLElement, selector: string) {
     var next: HTMLElement | null = el;
     while (next = next.parentElement) if (next.matches(selector)) return next;
     return null;
-  }
+}
 /*----------- HTTP Helpers -----------*/
 
 /**

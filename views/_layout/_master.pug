@@ -1,24 +1,31 @@
 include ../_components/fa
 include ../_components/navItem
 include ../_components/style
+include ../_components/meta
 
 doctype html
 html(lang="en")
     head
+        // Master Template Head
         // Meta
         meta(charset="UTF-8")
         meta(name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no")
+
+        +meta-site-title("Pony.Games")
+        +meta-site-twitter-handle("@PonyDotGames")
+        +meta-site-twitter-id("1082875594306715649")
+        +meta-site-opensearch("Pony.Games", "https://pony.games/opensearch.xml")
+        +meta-page-theme-color("#16212E")
         
         // Icons
         link(rel="shortcut icon" type="image/x-icon" href="/favicon.ico")
         link(rel="icon" type="image/png" href="/favicon.png")
 
         // Other
-        title= title || "Pony Games"
+        title= title || "Pony.Games"
 
         // Google Web Fonts CSS
-        +style("https://fonts.googleapis.com/css?family=Work+Sans:400,900")
-
+        +style("https://fonts.googleapis.com/css?family=Work+Sans:400,800")
 
         // FontAwesome CSS
         +style("https://use.fontawesome.com/releases/v5.2.0/css/all.css")(
@@ -29,37 +36,31 @@ html(lang="en")
         // Theme CSS
         +style("/styles/theme.css")
 
-        // jQuery
-        script(
-            defer
-            src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-            crossorigin="anonymous"
-        )
-
         // Main JS
         script(defer src="/scripts/main.js")
 
+        // Page Template Head
         block head
 
     body.flex.flex-col
 
-        header.header
-            nav.flex.flex-center
+        header
+            .navbar-header
                 a.navbar-brand(href="/")
-                    span.logo-text Pony Games
-
-                .flex-grow
+                    img(src="/Pony.Games2.svg" height="45")
+                button.navbar-toggle.js-toggle(type="button" data-target="#navbar-content")
+                    +fas.fa-bars()
+            .navbar-content#navbar-content
+                nav.flex-grow
                     a.active(href="/") Home
-                    a(href="/About") About Project
+                    a(href="/About") About
                     a(href="/Contact") Contact
 
                 form(role="search")
                     input.input-sm(type="search", id="search-header", name="q" placeholder="search" aria-label="Search")
-            block header
-
 
         main.flex-grow
+            block header
             block layout
 
         footer
@@ -68,6 +69,6 @@ html(lang="en")
                 input.input-sm(type="search", id="search-footer", name="q" placeholder="search" aria-label="Search")
                 nav
                     a(href="/") Home
-                    a(href="/About") About Project
+                    a(href="/About") About
                     a(href="/Contact") Contact
-            .subfooter Designed by Szymon "SiMonk0" Furjan
+            .subfooter Designed by <a href="https://www.deviantart.com/simonk0">Szymon "SiMonk0" Furjan</a>. Built by <a href="https://twitter.com/CyberPon3">CyberPon3</a>.
