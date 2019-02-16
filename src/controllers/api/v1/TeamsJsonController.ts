@@ -100,7 +100,7 @@ export class TeamsJsonController extends Router {
     @Get("/:teamId(\\d+)")
     public async getTeam(req: Request, res: Response, next: NextFunction) {
 
-        const team = await Team.findById(
+        const team = await Team.findByPk(
             +req.params['teamId'],
             { include: [Project, { model: TeamMember, include: [Developer] }] }
         );
@@ -163,7 +163,7 @@ export class TeamsJsonController extends Router {
 
         if (!req.user) return next(new HttpError(401, "Unauthorized"));
 
-        const team = await Team.findById(+req.params['teamId']);
+        const team = await Team.findByPk(+req.params['teamId']);
 
         if (!team) return next(new HttpError(404, "That Team does not exist."));
         if (!req.user.can('edit', team)) return next(new HttpError(403, "You do not have permission to edit this Team."));
@@ -199,7 +199,7 @@ export class TeamsJsonController extends Router {
 
         if (!req.user) return next(new HttpError(401, "Unauthorized"));
 
-        const team = await Team.findById(+req.params['teamId']);
+        const team = await Team.findByPk(+req.params['teamId']);
 
         if (!team) return next(new HttpError(404, "That Team does not exist."));
         if (!req.user.can('delete', team)) return next(new HttpError(403, "You do not have permission to delete this Team."));

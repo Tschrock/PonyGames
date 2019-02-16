@@ -104,7 +104,7 @@ export class ProjectsJsonController extends Router {
                 console.log(editProject);
                 const { tagIds, ...editProjectProps } = editProject;
                 return Project
-                    .findById(id)
+                    .findByPk(id)
                     .then(project => (project as Project).update(editProjectProps))
                     .then(project => tagIds ? project.$set('tags', tagIds) : project) as PromiseLike<Project>;
             });
@@ -116,7 +116,7 @@ export class ProjectsJsonController extends Router {
      */
     public static deleteOne(id: number): PromiseLike<void> {
 
-        return Project.findById(id).then(project => (project as Project).destroy());
+        return Project.findByPk(id).then(project => (project as Project).destroy());
 
     }
 
@@ -160,7 +160,7 @@ export class ProjectsJsonController extends Router {
     @Get("/:projectId(\\d+)")
     public async getProject(req: Request, res: Response, next: NextFunction) {
 
-        const project = await Project.findById(
+        const project = await Project.findByPk(
             +req.params['projectId'],
             { include: [Tag, Team, { model: FileGroup, include: [File] }] }
         );
@@ -226,7 +226,7 @@ export class ProjectsJsonController extends Router {
 
         if (!req.user) return next(new HttpError(401, "Unauthorized"));
 
-        const project = await Project.findById(+req.params['projectId']);
+        const project = await Project.findByPk(+req.params['projectId']);
 
         if (!project) return next(new HttpError(404, "That Project does not exist."));
         if (!req.user.can('edit', Project)) return next(new HttpError(403, "You do not have permission to edit this Project."));
@@ -265,7 +265,7 @@ export class ProjectsJsonController extends Router {
 
         if (!req.user) return next(new HttpError(401, "Unauthorized"));
 
-        const project = await Project.findById(+req.params['projectId']);
+        const project = await Project.findByPk(+req.params['projectId']);
 
         if (!project) return next(new HttpError(404, "That Project does not exist."));
         if (!req.user.can('edit', Project)) return next(new HttpError(403, "You do not have permission to edit this Project."));

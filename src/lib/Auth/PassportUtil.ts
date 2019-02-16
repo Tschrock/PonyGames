@@ -57,7 +57,7 @@ export function serializeUser(user: User, onDone: SerializeDone) {
  */
 export function deserializeUser(id: number, onDone: DeserializeDone) {
     Promise2Callback<User>(
-        User.findById(id, { rejectOnEmpty: true, include: [UserSocialProfile] }) as PromiseLike<User> as Promise<User>,
+        User.findByPk(id, { rejectOnEmpty: true, include: [UserSocialProfile] }) as PromiseLike<User> as Promise<User>,
         onDone
     ).catch();
 }

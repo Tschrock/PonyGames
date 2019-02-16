@@ -63,7 +63,7 @@ export class TeamMemberController extends Router {
         if (!req.user) return res.redirect('/login');
 
         const [teammember, teams, developers] = await Promise.all([
-            TeamMember.findById(+req.params["teamMemberId"]),
+            TeamMember.findByPk(+req.params["teamMemberId"]),
             Team.findAll(),
             Developer.findAll(),
         ]);

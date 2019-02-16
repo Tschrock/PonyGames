@@ -59,7 +59,7 @@ describe('Auth/Db Utilities', () => {
         };
 
         it('Should have saved the correct updates to the database.', async () => {
-            const profile = await UserSocialProfile.findById(socialProfile.id);
+            const profile = await UserSocialProfile.findByPk(socialProfile.id);
             checkPropertyValues(profile, expectedSocialProfile);
         });
 

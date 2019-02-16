@@ -83,7 +83,7 @@ export class DevelopersJsonController extends Router {
      */
     public static async getOne(id: number): Promise<Developer | null> {
 
-        return Developer.findById(id, { include: this.DefaultInclude });
+        return Developer.findByPk(id, { include: this.DefaultInclude });
 
     }
 
@@ -113,7 +113,7 @@ export class DevelopersJsonController extends Router {
                 console.log(editDeveloper);
                 const { ...editDeveloperProps } = editDeveloper;
                 return Developer
-                    .findById(id)
+                    .findByPk(id)
                     .then(developer => (developer as Developer).update(editDeveloperProps)) as PromiseLike<Developer>;
             });
     }
@@ -124,7 +124,7 @@ export class DevelopersJsonController extends Router {
      */
     public static deleteOne(id: number): PromiseLike<void> {
 
-        return Developer.findById(id).then(developer => (developer as Developer).destroy());
+        return Developer.findByPk(id).then(developer => (developer as Developer).destroy());
 
     }
 

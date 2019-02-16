@@ -48,7 +48,7 @@ export class ProjectsController extends Router {
     @Get("/:projectId(\\d+)")
     public async showProject(req: Request, res: Response, next: NextFunction) {
 
-        const project = await Project.findById(
+        const project = await Project.findByPk(
             +req.params['projectId'],
             { include: [Tag, Team, { model: FileGroup, include: [File] }] }
         );
@@ -74,7 +74,7 @@ export class ProjectsController extends Router {
         var project: Project | null = null;
         if("copy" in req.query) {
             try {
-                project = await Project.findById(+req.query["copy"], { include: [Tag, Team] });
+                project = await Project.findByPk(+req.query["copy"], { include: [Tag, Team] });
             }
             catch(e) {
                 // noop
@@ -103,7 +103,7 @@ export class ProjectsController extends Router {
         if (!req.user) return res.redirect('/login');
 
         const [project, teams, tags] = await Promise.all([
-            Project.findById(+req.params['projectId'], { include: [Tag, Team] }),
+            Project.findByPk(+req.params['projectId'], { include: [Tag, Team] }),
             Team.findAll(),
             Tag.findAll()
         ]);

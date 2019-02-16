@@ -46,7 +46,7 @@ export class DevelopersController extends Router {
     @Get("/:developerId(\\d+)")
     public async showDeveloper(req: Request, res: Response, next: NextFunction) {
 
-        const developer = await Developer.findById(
+        const developer = await Developer.findByPk(
             +req.params['developerId'],
             { include: [{ model: TeamMember, include: [Team] }]}
         );
@@ -84,7 +84,7 @@ export class DevelopersController extends Router {
 
         if (!req.user) return res.redirect('/login');
 
-        const developer = await Developer.findById( +req.params['developerId'] );
+        const developer = await Developer.findByPk( +req.params['developerId'] );
         
         if (!developer) return next(new HttpError(404, "That Developer does not exist."))
         if (!req.user.can('edit', developer)) return next(new HttpError(403, "You do not have permission to edit this Developer."));

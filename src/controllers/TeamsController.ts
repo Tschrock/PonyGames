@@ -43,7 +43,7 @@ export class TeamsController extends Router {
     @Get("/:teamId(\\d+)")
     public async getTeamDetail(req: Request, res: Response, next: NextFunction) {
 
-        const team = await Team.findById(
+        const team = await Team.findByPk(
             +req.params['teamId'],
             { include: [Project, { model: TeamMember, include: [Developer] }] }
         );
@@ -81,7 +81,7 @@ export class TeamsController extends Router {
         
         if (!req.user) return res.redirect('/login');
 
-        const team = await Team.findById( +req.params['teamId'] );
+        const team = await Team.findByPk( +req.params['teamId'] );
         
         if (!team) return next(new HttpError(404, "That Team does not exist."));
         if (!req.user.can('edit', team)) return next(new HttpError(403, "You do not have permission to edit this Team."));
