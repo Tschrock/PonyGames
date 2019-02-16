@@ -71,6 +71,18 @@ export function doConfig(): IConfig {
                 describe: "The secret key for cookie storage.",
                 type: 'string'
             },
+            'storage.applicationKeyId': {
+                describe: "The secret key for file storage.",
+                type: 'string'
+            },
+            'storage.applicationKey': {
+                describe: "The id of the secret key for file storage.",
+                type: 'string'
+            },
+            'storage.bucketId': {
+                describe: "The id of the bucket to save files in.",
+                type: 'string'
+            },
             'oauth.twitter.consumerKey': {
                 describe: "The consumer key for twitter auth.",
                 type: 'string'

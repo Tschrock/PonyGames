@@ -16,8 +16,15 @@ export interface IWebConfig {
     cookieSecret: string;
 }
 
+export interface IStorageConfig {
+    applicationKeyId: string;
+    applicationKey: string;
+    bucketId: string;
+}
+
 export interface IConfig extends Partial<yargs.Arguments> {
     web: IWebConfig;
     db: IDatabaseOptions;
+    storage: IStorageConfig;
     oauth: IStrategyProviderOptions[];
 }

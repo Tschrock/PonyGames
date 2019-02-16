@@ -13,6 +13,11 @@
         "password": "password",
         "storage": "path/to/database.sqlite (only for sqlite)"
     },
+    "storage": {
+        "applicationKeyId": "the key id",
+        "applicationKey": "the key",
+        "bucketId": "the bucket id"
+    },
     "oauth": [
         {
             "id": "twitter",
