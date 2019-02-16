@@ -1,0 +1,229 @@
+openapi: 3.0.0
+info:
+  title: Pony.Games API
+  description: API documantation for https://pony.games
+  version: 0.0.1
+servers:
+  - url: https://pony.games/api/v1
+    description: Production server
+  - url: https://beta.pony.games/api/v1
+    description: Testing server
+paths:
+  /file:
+    post:
+      summary: Creates a new file.
+      description: Creates a new file placeholder and returns the information needed to upload it.
+      tags: [Files]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: MyReallyCoolPicture.png
+                mimetype:
+                  type: string
+                  example: image/png
+                hash:
+                  type: string
+                  example: ed6d46616710d47d1aed3c00bbcd15ec39ce0c5d
+                lastmodified:
+                  type: string
+                  format: date-time
+      responses:
+        '200':
+          description: The upload information
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  uploadtoken:
+                    description: The upload token for the file. *Make sure to keep this safe, it will not be given to you again!*
+                    type: string
+                    example: iF4rBt8qWMVL/4ZE27ihC/hFeKnGxjWt1N9D79a2ckA=
+                  uploadsettings:
+                    $ref: '#/components/schemas/UploadSettings'
+        '401':
+          description: You must be logged in to create a file.
+        '403':
+          description: You don't have permission to create a file.
+  /file/{fileid}:
+    get:
+      summary: Gets a file.
+      description: Gets the details of a file.
+      tags: [Files]
+      parameters:
+        - in: path
+          required: true
+          name: fileid
+          description: The id of the file.
+          schema:
+            type: integer
+            minimum: 0
+            example: 12345
+      responses:
+        '200':
+          description: The file
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/File'
+        '401':
+          description: You must be logged in to view this file.
+        '403':
+          description: You don't have permission to view this file.
+        '404':
+          description: The file you requested does not exist.
+components:
+  schemas:
+    File:
+      type: object
+      description: An upload ticket.
+      properties:
+        id:
+          description: The id.
+          type: integer
+          minimum: 0
+          example: 12345
+        filename:
+          description: The original filename.
+          type: string
+          example: MyFile.png
+        mimetype:
+          description: The declared mime type.
+          type: string
+          example: image/png
+        size:
+          description: The size in bytes.
+          type: number
+          nullable: true
+          minimum: 0
+          example: 6789
+        url:
+          description: "The url. **NOTE: Don't try to build the url yourself since it may change depending on the backend storage system.**"
+          type: string
+          nullable: true
+          format: uri
+          example: https://cdn.pony.games/file/7d69d2e2ed2c442a9d11f079124cdf20
+        displayname:
+          description: The display name.
+          type: string
+          nullable: true
+          example: My Cool File
+        version:
+          description: The version string.
+          type: string
+          nullable: true
+          example: v1.4-prealpha
+        versionorder:
+          description: The version order position.
+          type: integer
+          nullable: true
+          minimum: 0
+          example: 2
+        filegroupid:
+          description: The id of the group this file belongs to.
+          type: integer
+          nullable: true
+          minimum: 0
+          example: 12345
+        isavailable:
+          description: Whether or not the file is available for download.
+          type: boolean
+          example: false
+        unavailablereason:
+          description: The reason the file is not available for download.
+          type: string
+          nullable: true
+          example: Requested by owner
+        hashes:
+          description: A map of the hashes for the file.
+          type: object
+          additionalProperties:
+            type: string
+            nullable: true
+          properties:
+            md5:
+              type: string
+              deprecated: true
+            sha1:
+              type: string
+          example:
+            md5: 3f243ad43cc59598a73eeaa1979f2cf1
+            sha1: 9B1E78BCE2E296F82A97CB2BC714AE9CF1CE30C0
+            ...: ...
+        sourcelinks:
+          description: A list of original source links.
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
+        uploadstatus:
+          description: >
+            The upload status of the file:
+             * `PENDING` - The file has not been uploaded yet.
+             * `IN_PROGRESS` - The file is in the process of being uploaded.
+             * `CANCELED` - The file upload has been canceled.
+             * `COMPLETED` - The file is done uploading.
+          type: string
+          enum:
+           - PENDING
+           - IN_PROGRESS
+           - CANCELED
+           - COMPLETED
+        uploadstartedat:
+          type: string
+          format: date-time
+          nullable: true
+          example: "2017-07-21T17:32:28Z"
+        uploadfinishedat:
+          type: string
+          format: date-time
+          nullable: true
+          example: "2017-08-46T17:32:28Z"
+          
+    Link:
+      description: A link to an external site.
+      type: object
+      properties:
+        displayname:
+          description: The display name.
+          type: string
+          example: Project Website
+        url:
+          description: The url.
+          type: string
+          format: uri
+          example: https://mycoolgameproject.com/file1.png
+        isavailable:
+          description: Whether or not the link is still available.
+          type: boolean
+          example: false
+        unavailablereason:
+          description: The reason the link is not available.
+          type: string
+          example: Host died
+        alternatelink:
+          $ref: '#/components/schemas/Link'
+    UploadSettings:
+      type: object
+      description: File upload settings and restrictions.
+      properties:
+        maximumSingleUploadSize:
+          type: integer
+          minimum: 0
+        maximumMultipartUploadSize:
+          type: integer
+          minimum: 0
+        minimumPartSize:
+          type: integer
+          minimum: 0
+        maximumPartSize:
+          type: integer
+          minimum: 0
+        preferredPartSize:
+          type: integer
+          minimum: 0
