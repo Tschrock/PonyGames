@@ -1,0 +1,506 @@
+<head>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Work+Sans:400,800">
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-LRlmVvLKVApDVGuspQFnRQJjkv0P7/YFrw84YYQtmYG4nK8c+M+NlmYDCv0rKWpG"
+        crossorigin="anonymous">
+
+    <script src="https://cdn.jsdelivr.net/npm/rusha@0.8.13/dist/rusha.min.js" integrity="sha384-n+jnb3Vx3TJJIGj375B9Sch5A6aQO/Yrs2vRVKYs2rQRxJZVJVXrD0eVOU7H/wS0"
+        crossorigin="anonymous"></script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+
+        body {
+            color: white;
+            background-color: #16212E;
+            font-family: "Work Sans", sans-serif;
+            padding: 30px;
+        }
+
+        hr {
+            border-color: #0F1421;
+        }
+
+        .b2-uploader {
+            overflow: hidden;
+            display: inline-flex;
+            flex-direction: column;
+            width: 200px;
+            height: 150px;
+            background-color: #354251;
+            border: solid 2px #0F1421;
+            cursor: pointer;
+            padding: 20px;
+            color: #C2C2C2;
+            text-align: center;
+            align-items: stretch;
+            justify-content: center;
+            margin: 10px;
+            vertical-align: middle;
+            overflow-wrap: break-word;
+        }
+
+        .b2-uploader>* {
+            margin-bottom: 10px;
+        }
+
+        .b2-uploader input {
+            width: 0.1px;
+            height: 0.1px;
+            opacity: 0;
+            overflow: hidden;
+            position: absolute;
+            z-index: -1;
+        }
+
+        .b2-uploader progress {
+            width: 100%;
+            height: 20px;
+            margin-bottom: 5px;
+            border: 1px solid #fff;
+            -webkit-appearance: none;
+        }
+
+        .b2-uploader progress::-webkit-progress-bar {
+            background-color: #fff;
+        }
+
+        .b2-uploader progress::-webkit-progress-value {
+            background-color: #FF2966;
+        }
+
+        .b2-uploader progress::-moz-progress-bar {
+            background-color: #FF2966;
+        }
+
+        .b2-uploader progress::-ms-fill {
+            background-color: #FF2966;
+        }
+
+        .b2-uploader>.fa {
+            font-size: 36px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div style="height: 100px;"></div>
+
+    <label class="b2-uploader">
+        <i class="fa fa-file-upload"></i>
+        <span>Click or Drag to upload a file</span>
+    </label>
+
+    <label class="b2-uploader">
+        <span>Calculating checksum...</span>
+        <progress max="100" value="20"></progress>
+        <span>Your file name.txt</span>
+    </label>
+
+    <label class="b2-uploader">
+        <span>Uploading part 3 of 5...</span>
+        <progress max="100" value="70"></progress>
+        <span>Your file name.txt</span>
+    </label>
+
+    <label class="b2-uploader">
+        <span>Finalizing...</span>
+        <progress max="100"></progress>
+        <span>Your file name.txt</span>
+    </label>
+
+    <label class="b2-uploader">
+        <i class="fa fa-file"></i>
+        <span>Your file name.txt</span>
+    </label>
+
+    <label class="b2-uploader">
+        <i class="fa fa-file-exclamation"></i>
+        <span>There was an error uploading your file.</span>
+    </label>
+
+    <div style="height: 100px;"></div>
+
+    <hr />
+    <div id="fileUploader"></div>
+
+
+    <script src="scripts/sha1.js"></script>
+    <script>
+
+
+        class FileUploader {
+
+            constructor() {
+                this.apiBaseUrl = "/api/v1/files";
+            }
+
+            async uploadFile(file) {
+
+            }
+
+
+
+
+        }
+
+
+
+        function getSha1(blob) {
+            const hash = new SHA1();
+            hash.update(blob);
+            return hash.hex();
+        }
+
+        function trimMiddle(text, maxLen) {
+            if (text.length <= maxLen) return text;
+
+            const cutLen = maxLen - 3;
+            const sideLen = Math.floor(cutLen / 2);
+
+            return text.slice(0, sideLen) + "..." + text.slice(-sideLen);
+        }
+
+        const B2API_URL = "";
+
+        class B2API {
+            constructor(clientId, clientKey) {
+                this.clientId = clientId;
+                this.clientKey = clientKey;
+            }
+
+            async _postJson(url, authHeader, data = {}) {
+                return fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': authHeader,
+                        "Content-Type": "application/json",
+                        "Accept": "application/json"
+                    },
+                    body: JSON.stringify(data)
+                })
+            }
+
+            async authorizeAccount() {
+
+                const resp = await this._postJson(
+                    "https://api.backblazeb2.com/b2api/v2/b2_authorize_account",
+                    "Basic " + window.btoa(this.clientId + ":" + this.clientKey)
+                );
+
+                if (!resp.ok) throw new Error(resp.statusText);
+
+                const jsonResp = await resp.json();
+
+                this.accountId = jsonResp.accountId;
+                this.authorizationToken = jsonResp.authorizationToken;
+                this.apiUrl = jsonResp.apiUrl;
+                this.recommendedPartSize = jsonResp.recommendedPartSize;
+                this.absoluteMinimumPartSize = jsonResp.absoluteMinimumPartSize;
+
+                if (jsonResp.allowed) {
+                    this.capabilities = jsonResp.allowed.capabilities;
+                    this.bucketId = jsonResp.allowed.bucketId;
+                    this.bucketName = jsonResp.allowed.bucketName;
+                    this.namePrefix = jsonResp.allowed.namePrefix;
+                }
+            }
+
+            async startLargeFile(bucketId, fileName, contentType = "b2/x-auto", fileInfo = {}) {
+                if (!this.apiUrl) await this.authorizeAccount();
+                return this._postJson(`${this.apiUrl}/b2api/v2/b2_start_large_file`, this.authorizationToken, { bucketId, fileName, contentType, fileInfo });
+            }
+
+            async getUploadPartUrl(fileId) {
+                if (!this.apiUrl) await this.authorizeAccount();
+                return this._postJson(`${this.apiUrl}/b2api/v1/b2_get_upload_part_url`, this.authorizationToken, { fileId });
+            }
+
+            async uploadPart(uploadUrl, uploadAuthorization, partNumber, file, fileSHA) {
+                if (!this.apiUrl) await this.authorizeAccount();
+                return fetch(uploadUrl, {
+                    method: "POST",
+                    headers: {
+                        'Authorization': uploadAuthorization,
+                        "X-Bz-Part-Number": partNumber,
+                        "Accept": "application/json",
+                        "Content-Length": file.size,
+                        "X-Bz-Content-Sha1": fileSHA
+                    },
+                    body: file
+                })
+            }
+
+            async finishLargeFile(fileId, partSha1Array) {
+                if (!this.apiUrl) await this.authorizeAccount();
+                return this._postJson(`${this.apiUrl}/b2api/v1/b2_finish_large_file`, this.authorizationToken, { fileId, partSha1Array });
+            }
+
+
+            async uploadLargeFile(bucketId, file) {
+                if (!this.apiUrl) await this.authorizeAccount();
+
+                // Step 1: Get whole file SHA1
+                const hash = new SHA1();
+                await readFileAsChunksAsync(file, (chunk, startPosition) => hash.update(chunk));
+                const wholeFileHash = hash.hex();
+
+                const nameParts = file.name.split(".");
+                const fileExtention = nameParts > 1 ? "." + nameParts.pop() : "";
+
+                const fileName = wholeFileHash + fileExtention;
+
+                // Step 2: Start upload
+
+                const largeFileInfoResponse = await this.startLargeFile(bucketId, fileName, file.type, {
+                    'src_last_modified_millis': file.lastModified,
+                    'large_file_sha1': wholeFileHash,
+                    'original_filename': file.name
+                });
+
+                if (!largeFileInfoResponse.ok) throw new Error(largeFileInfoResponse.statusText);
+
+                const largeFileInfoJson = largeFileInfoResponse.json();
+
+
+                // Step 3: Upload each part
+                const getUploadUrlResponse = await this.getUploadPartUrl(largeFileInfoJson.fileId);
+
+                if (!getUploadUrlResponse.ok) throw new Error(getUploadUrlResponse.statusText);
+
+                const getUploadUrlJson = getUploadUrlResponse.json();
+
+                const partSHAs = [];
+
+                await readFileAsChunksAsync(file, async (chunk, startPosition) => {
+                    const partSHA = getSha1(chunk);
+                    partSHAs.push(partSHA)
+                    const uploadPartResponse = await this.uploadPart(getUploadUrlJson.uploadUrl, getUploadUrlJson.authorizationToken, partSHAs.length, chunk, partSHA);
+                    if (!uploadPartResponse.ok) throw new Error(uploadPartResponse.statusText);
+
+                }, this.recommendedPartSize);
+
+
+                // Step 4: Finish upload
+
+                const finishResponse = await this.finishLargeFile(largeFileInfoJson.fileId, partSHAs);
+                if (!finishResponse.ok) throw new Error(finishResponse.statusText);
+
+            }
+        }
+
+        class B2Uploader {
+            constructor(element) {
+
+                element.appendChild(this._buildUploader());
+
+            }
+
+            _buildUploader() {
+
+                // Root is a Label to allow clicking
+                this.root = document.createElement('label');
+                this.root.classList.add("b2-uploader");
+
+                // Add inner components
+                this.root.appendChild(this._buildFileInput());
+                this.root.appendChild(this._buildProgressText());
+                this.root.appendChild(this._buildProgressBar());
+                this.root.appendChild(this._buildIcon());
+                this.root.appendChild(this._buildInfoText());
+
+                // Add drag events
+                this.root.addEventListener("dragover", this._OnDragOver.bind(this));
+                this.root.addEventListener("dragenter", this._OnDragEnter.bind(this));
+                this.root.addEventListener("drop", this._OnDrop.bind(this));
+
+                // Setup initial view
+                this._showIcon("fa-file-upload");
+                this._showInfoText("Click or Drag to upload a file");
+                this._hideProgressBar();
+                this._hideProgressText();
+
+                return this.root;
+
+            }
+
+            _buildFileInput() {
+                this.inputElement = document.createElement('input');
+                this.inputElement.type = "file";
+                this.inputElement.addEventListener("change", this._OnChange.bind(this));
+                return this.inputElement;
+            }
+
+            _buildIcon() {
+                this.icon = document.createElement('i');
+                this.icon.classList.add("fa");
+                return this.icon;
+            }
+
+            _showIcon(...value) {
+                this.icon.style.display = "block";
+                this.icon.className = "";
+                this.icon.classList.add("fa", ...value);
+            }
+
+            _hideIcon() {
+                this.icon.style.display = "none";
+            }
+
+            _buildInfoText() {
+                return this.infoText = document.createElement('span');
+            }
+
+            _showInfoText(value) {
+                this.infoText.style.display = "block";
+                this.infoText.innerText = value;
+            }
+
+            _hideInfoText() {
+                this.infoText.style.display = "none";
+            }
+
+            _buildProgressBar() {
+                this.progressBar = document.createElement('progress');
+                this.progressBar.max = 100;
+                return this.progressBar;
+            }
+
+            _showProgressBar(value) {
+                this.progressBar.style.display = "block";
+                this.progressBar.value = value;
+            }
+
+            _hideProgressBar() {
+                this.progressBar.style.display = "none";
+            }
+
+            _buildProgressText() {
+                return this.progressText = document.createElement('span');
+            }
+
+            _showProgressText(value) {
+                this.progressText.style.display = "block";
+                this.progressText.innerText = value;
+            }
+
+            _hideProgressText() {
+                this.progressText.style.display = "none";
+            }
+
+            _showError(value) {
+                this._showIcon("fa-file-exclamation");
+                this._showInfoText(value);
+                this._hideProgressBar();
+                this._hideProgressText();
+            }
+
+            _OnDragEnter(evt) {
+                evt.stopPropagation();
+                evt.preventDefault();
+            }
+
+            _OnDragOver(evt) {
+                evt.stopPropagation();
+                evt.preventDefault();
+            }
+
+            _OnDrop(evt) {
+                evt.stopPropagation();
+                evt.preventDefault();
+                if (evt.dataTransfer && evt.dataTransfer.files) {
+                    this.handleFiles(evt.dataTransfer.files);
+                }
+                else {
+                    this._showError("Error: evt.dataTransfer.files does not exist.");
+                }
+            }
+
+            _OnChange(evt) {
+                if (evt.currentTarget && evt.currentTarget.files) {
+                    this.handleFiles(evt.currentTarget.files);
+                }
+                else {
+                    this._showError("Error: evt.currentTarget.files does not exist.");
+                }
+            }
+
+            async handleFiles(fileList) {
+                if (fileList.length == 0) {
+                    this._showError("Error: no file was selected.");
+                }
+                else if (fileList.length > 1) {
+                    this._showError("Error: more than one file was selected.");
+                }
+                else {
+                    const file = fileList[0];
+
+                    this._hideIcon();
+                    this._showProgressText("Calculating checksum...");
+                    this._showProgressBar(0);
+                    this._showInfoText(file.name);
+
+                    console.time();
+                    this._showProgressText("Rusha");
+                    const hash = Rusha.createHash();
+                    await readFileAsChunksAsync(file, (chunk, chunkStart) => {
+                        hash.update(chunk);
+                        this._showProgressBar(chunkStart / file.size * 100);
+                    })
+                    this._showProgressBar(100);
+                    console.log(hash.digest('hex'));
+                    console.timeEnd();
+
+                    console.time();
+                    this._showProgressText("Custom");
+                    const hash2 = new SHA1();
+                    await readFileAsChunksAsync(file, (chunk, chunkStart) => {
+                        hash2.update(chunk);
+                        this._showProgressBar(chunkStart / file.size * 100);
+                    })
+                    this._showProgressBar(100);
+                    console.log(hash2.hex());
+                    console.timeEnd();
+
+
+                    new B2API('00000000000000000000', '111111111111111111').uploadLargeFile('22222222222222222', file);
+
+                }
+            }
+        }
+
+        const uploader = new B2Uploader(document.getElementById("fileUploader"));
+
+        const CHUNK_SIZE = 1024 * 1024 * 10; // 10MB
+
+        async function readFileAsync(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.addEventListener('load', () => resolve(reader.result));
+                reader.readAsArrayBuffer(file);
+            });
+        }
+
+        async function readFileAsChunksAsync(file, onChunk, chunkSize = CHUNK_SIZE) {
+            let pointer = 0;
+            while (pointer < file.size) {
+                const chunk = file.slice(pointer, pointer + chunkSize);
+                await onChunk(await readFileAsync(chunk), pointer);
+                pointer += chunk.size;
+            }
+        }
+
+    </script>
+
+</body>
