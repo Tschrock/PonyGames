@@ -6,7 +6,7 @@
 
 import { IAmMiddleware } from "../services/ExpressService";
 import { Request, Response, NextFunction } from "express";
-import { HttpError } from "cp3-express-decorators";
+import { HttpError } from "../lib/cp3-express-decorators";
 
 export class NotFoundHandler implements IAmMiddleware {
 

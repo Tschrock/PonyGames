@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { Router, Get, HttpError } from "cp3-express-decorators";
+import { Router, Get, HttpError } from "../lib/cp3-express-decorators";
 import { Request, Response, NextFunction } from "express";
 
 import { paginate } from "../lib/FindHelper";

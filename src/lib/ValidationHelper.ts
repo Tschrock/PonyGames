@@ -6,7 +6,7 @@
 
 
 import { validate as originalValidate, ValidatorOptions } from "class-validator";
-import { HttpError } from "cp3-express-decorators";
+import { HttpError } from "../lib/cp3-express-decorators";
 
 /**
  * Validates an object.

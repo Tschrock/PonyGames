@@ -6,7 +6,7 @@
 
 
 
-import { Router, Get, Post, Delete, Put, Patch, UseBefore, UseAfter } from "cp3-express-decorators";
+import { Router, Get, Post, Delete, Put, Patch, UseBefore, UseAfter } from "../../../lib/cp3-express-decorators";
 import { Request, Response, NextFunction } from "express";
 
 import { IPaginateOptions, paginate } from "../../../lib/FindHelper";

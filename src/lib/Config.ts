@@ -98,6 +98,6 @@ export function doConfig(): IConfig {
         .alias('v', 'version')
 
         // Parse and return
-        .argv as IConfig;
+        .argv as unknown as IConfig;
 
 }

@@ -38,9 +38,9 @@ export class File extends Model<File> {
 
     // Display
 
-    /** A title for the file. */
+    /** A display name for the file. */
     @Column(Sequelize.STRING(255))
-    public title!: string;
+    public displayname!: string;
 
     /** The version of the file. */
     @Column(Sequelize.STRING(255))

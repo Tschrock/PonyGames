@@ -5,7 +5,7 @@
  */
 
 import { Request, Response, NextFunction } from "express";
-import { Router, Get } from "cp3-express-decorators";
+import { Router, Get } from "../lib/cp3-express-decorators";
 
 import { AuthService } from '../services/AuthService';
 

@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { IAmMiddleware } from "cp3-express-decorators";
+import { IAmMiddleware } from "../lib/cp3-express-decorators";
 import { Request, Response, NextFunction, RequestHandler } from "express";
 import { AuthService } from '../services';
 
