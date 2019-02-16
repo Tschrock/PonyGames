@@ -6,7 +6,7 @@
 
 import { Sequelize, Table, Column, Model, HasMany, BelongsToMany, ForeignKey, BelongsTo } from 'sequelize-typescript';
 
-import { FileUploadStatus } from 'src/lib/FileUploadStatus';
+import { FileUploadStatus } from '../lib/FileUploadStatus';
 
 import { Tag } from './Tag';
 import { FileTag } from './FileTag';

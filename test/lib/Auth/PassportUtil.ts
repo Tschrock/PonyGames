@@ -5,8 +5,8 @@
  */
 
 import { use, expect } from 'chai';
-import * as chaiAsPromised from 'chai-as-promised';
-import * as faker from 'faker';
+import chaiAsPromised from 'chai-as-promised';
+import faker from 'faker';
 import 'mocha';
 
 import { clearTestDB, TestDB } from '../../meta/DbUtils';
@@ -56,10 +56,10 @@ describe('Auth/Passport Utilities', () => {
 
         it('Should fail an incomplete profile', () => {
             const { provider, id, username, displayName } = socialTestData[0].passport
-            expect(PassportUtil.checkProfileData.bind(PassportUtil, { id, username, displayName })).to.throw('Social profile is missing a provider.');
-            expect(PassportUtil.checkProfileData.bind(PassportUtil, { provider, username, displayName })).to.throw('Social profile is missing an Id.');
-            expect(PassportUtil.checkProfileData.bind(PassportUtil, { provider, id, displayName })).to.throw('Social profile is missing a Username.');
-            expect(PassportUtil.checkProfileData.bind(PassportUtil, { provider, id, username })).to.throw('Social profile is missing a Display Name.');
+            expect(PassportUtil.checkProfileData.bind(PassportUtil, { id, username, displayName } as Profile)).to.throw('Social profile is missing a provider.');
+            expect(PassportUtil.checkProfileData.bind(PassportUtil, { provider, username, displayName } as Profile)).to.throw('Social profile is missing an Id.');
+            expect(PassportUtil.checkProfileData.bind(PassportUtil, { provider, id, displayName } as Profile)).to.throw('Social profile is missing a Username.');
+            expect(PassportUtil.checkProfileData.bind(PassportUtil, { provider, id, username } as Profile)).to.throw('Social profile is missing a Display Name.');
         });
 
     });

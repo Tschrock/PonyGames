@@ -5,8 +5,8 @@
  */
 
 import { use, expect } from 'chai';
-import * as chaiAsPromised from 'chai-as-promised';
-import * as faker from 'faker';
+import chaiAsPromised from 'chai-as-promised';
+import faker from 'faker';
 import 'mocha';
 
 import { clearTestDB, TestDB } from '../../meta/DbUtils';

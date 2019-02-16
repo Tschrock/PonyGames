@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import {  expect } from 'chai';
+import { expect } from 'chai';
 
 export interface ITestData {
     [key: string]: any;

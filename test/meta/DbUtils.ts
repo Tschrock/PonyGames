@@ -6,8 +6,8 @@
 
 import { join as joinPath } from 'path';
 import { Sequelize } from 'sequelize-typescript';
-import * as debugBuilder from 'debug';
-import { loadTestData as ogLoadTestData } from '../../src/testData';
+import debugBuilder from 'debug';
+import { loadTestData as ogLoadTestData } from '../../testData';
 
 const debugDb = debugBuilder('test-db');
 
