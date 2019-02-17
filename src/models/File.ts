@@ -36,6 +36,10 @@ export class File extends Model<File> {
     @Column(Sequelize.INTEGER)
     public size!: number;
 
+    /** The time this file was last modified, if known. */
+    @Column
+    public last_modified_at!: Date
+
     // Display
 
     /** A display name for the file. */
@@ -72,15 +76,19 @@ export class File extends Model<File> {
     @Column(Sequelize.INTEGER)
     public uploadstatus!: FileUploadStatus;
 
-    /** The client upload token. */
+    /** The hash of the client upload token. */
     @Column(Sequelize.STRING(255))
-    public clientuploadtoken!: string;
+    public clientuploadtokenhash!: string;
 
-    /** The time this File started being uploaded. */
+    /** The client hash. Used to verify uploads. */
+    @Column(Sequelize.STRING(255))
+    public clienthash!: string;
+
+    /** The time this file started being uploaded. */
     @Column
     public upload_started_at!: Date
 
-    /** The time this File finished being uploaded. */
+    /** The time this file finished being uploaded. */
     @Column
     public upload_finished_at!: Date
 

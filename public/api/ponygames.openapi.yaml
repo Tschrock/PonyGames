@@ -11,28 +11,20 @@ servers:
 paths:
   /file:
     post:
+      operationId: createFile
       summary: Creates a new file.
-      description: Creates a new file placeholder and returns the information needed to upload it.
+      description: |
+        Creates a new file and returns the information needed to upload it's contents.
+        
+        - Files that do not have any content uploaded (`uploadstate` is `PENDING` or `CANCELED`) will be automatically pruned after 24 hrs.
+        - Files that only have partial content uploaded  (`uploadstate` is `IN_PROGRESS`) will be automatically pruned 24 hrs after their last update.
       tags: [Files]
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                  example: MyReallyCoolPicture.png
-                mimetype:
-                  type: string
-                  example: image/png
-                hash:
-                  type: string
-                  example: ed6d46616710d47d1aed3c00bbcd15ec39ce0c5d
-                lastmodified:
-                  type: string
-                  format: date-time
+              $ref: '#/components/schemas/File'
       responses:
         '200':
           description: The upload information
@@ -47,12 +39,23 @@ paths:
                     example: iF4rBt8qWMVL/4ZE27ihC/hFeKnGxjWt1N9D79a2ckA=
                   uploadsettings:
                     $ref: '#/components/schemas/UploadSettings'
+                  file:
+                    $ref: '#/components/schemas/File'
         '401':
-          description: You must be logged in to create a file.
+          description: UNAUTHORIZED - You must be logged in to create a file.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpError'
         '403':
-          description: You don't have permission to create a file.
+          description: FORBIDDEN - You don't have permission to create a file.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpError'
   /file/{fileid}:
     get:
+      operationId: getFile
       summary: Gets a file.
       description: Gets the details of a file.
       tags: [Files]
@@ -67,27 +70,375 @@ paths:
             example: 12345
       responses:
         '200':
-          description: The file
+          description: OK
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/File'
         '401':
-          description: You must be logged in to view this file.
+          description: UNAUTHORIZED - You must be logged in to view this file.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpError'
         '403':
-          description: You don't have permission to view this file.
+          description: FORBIDDEN - You don't have permission to view this file.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpError'
         '404':
-          description: The file you requested does not exist.
+          description: NOT FOUND - The file you requested does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpError'
+    put:
+      operationId: updateFile
+      summary: Updates a file.
+      description: Updates the details of a file.
+      tags: [Files]
+      parameters:
+        - in: path
+          required: true
+          name: fileid
+          description: The id of the file.
+          schema:
+            type: integer
+            minimum: 0
+            example: 12345
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/File'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/File'
+        '401':
+          description: UNAUTHORIZED - You must be logged in to update this file.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpError'
+        '403':
+          description: FORBIDDEN - You don't have permission to update this file.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpError'
+        '404':
+          description: NOT FOUND - The file you are trying to update does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpError'
+    delete:
+      operationId: deleteFile
+      summary: Deletes a file.
+      description: Permanantly deletes a file and removes it's content from storage.
+      tags: [Files]
+      parameters:
+        - in: path
+          required: true
+          name: fileid
+          description: The id of the file.
+          schema:
+            type: integer
+            minimum: 0
+            example: 12345
+      responses:
+        '204':
+          description: NO CONTENT
+        '401':
+          description: UNAUTHORIZED - You must be logged in to delete this file.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpError'
+        '403':
+          description: FORBIDDEN - You don't have permission to delete this file.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpError'
+        '404':
+          description: NOT FOUND - The file you are trying to delete does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpError'
+  /file/{fileid}/upload:
+    post:
+      operationId: uploadFile
+      summary: Uploads a whole file.
+      description: |
+        Uploads the entire contents of a file.
+        
+        - You can only upload content when the file's `uploadstate` is `PENDING` or `CANCELED`. Attempting to upload while in any other state will return a `409 CONFLICT`
+        - Attempting to upload a file larger than `uploadsettings.maximumSingleUploadSize` will return a  `413 PAYLOAD TOO LARGE`. You should upload it in multiple parts using `/uploadmultipart` instead.
+        - If part of the file has already been uploaded using `/uploadmultipart`, this endpoint will return a `409 CONFLICT`.
+      tags: [Files]
+      parameters:
+        - in: path
+          required: true
+          name: fileid
+          description: The id of the file.
+          schema:
+            type: integer
+            minimum: 0
+            example: 12345
+        - in: header
+          name: X-PG-UploadToken
+          description: The upload token for the file.
+          required: true
+          schema:
+            type: string
+            example: iF4rBt8qWMVL/4ZE27ihC/hFeKnGxjWt1N9D79a2ckA=
+        - in: header
+          name: Content-Length
+          description: The size of the file. You can alternatively set the `size` property when creating the file. If both are specified, the value here will be used.
+          schema:
+            type: integer
+            minimum: 0
+            example: 6845
+        - in: header
+          name: X-PG-UploadSha1
+          description: The sha1 of the file. You can alternatively set the `clienthash` property when creating the file. If both are specified, the value here will be used.
+          schema:
+            type: string
+            example: ed6d46616710d47d1aed3c00bbcd15ec39ce0c5d
+      requestBody:
+        content:
+          application/octet-stream:
+            schema:
+              type: string
+              format: binary
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/File'
+        '400':
+          description: BAD REQUEST
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpError'
+        '401':
+          description: UNAUTHORIZED - You must be logged in to upload to this file.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpError'
+        '403':
+          description: FORBIDDEN - You don't have permission to upload to this file.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpError'
+        '404':
+          description: NOT FOUND - The file you are trying to upload to does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpError'
+        '409':
+          description: CONFLICT - An upload is already in progress or the file has already been uploaded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpError'
+        '411':
+          description: LENGTH REQUIRED - You must specify the Content-Length of the file.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpError'
+        '413':
+          description: PAYLOAD TOO LARGE - The file is too large for this endpoint. Please use /uploadmultipart to upload large files in parts.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpError'
+  /file/{fileid}/upload-multipart:
+    post:
+      operationId: uploadFilePart
+      summary: Uploads part of a file.
+      description: |
+        Uploads part of the content for a file.
+        
+        - File parts must conform to the restrictions defined in the `uploadsettings` returned when creating a file.
+        - Parts must be numbered and uploaded sequentially. There is currently no support for uploading parts in parallel.
+      tags: [Files]
+      parameters:
+        - in: path
+          required: true
+          name: fileid
+          description: The id of the file.
+          schema:
+            type: integer
+            minimum: 0
+            example: 12345
+        - in: header
+          name: X-PG-UploadToken
+          description: The upload token for the file.
+          required: true
+          schema:
+            type: string
+            example: iF4rBt8qWMVL/4ZE27ihC/hFeKnGxjWt1N9D79a2ckA=
+        - in: header
+          name: X-PG-PartNumber
+          description: The part number of the file.
+          required: true
+          schema:
+            type: number
+            example: 1
+        - in: header
+          name: Content-Size
+          description: The size of the file part.
+          required: true
+          schema:
+            type: integer
+            minimum: 0
+            example: 6845
+        - in: header
+          name: X-PG-UploadSha1
+          description: The sha1 of the file part.
+          required: true
+          schema:
+            type: string
+            example: ed6d46616710d47d1aed3c00bbcd15ec39ce0c5d
+      requestBody:
+        content:
+          application/octet-stream:
+            schema:
+              type: string
+              format: binary
+      responses:
+        '204':
+          description: OK
+        '401':
+          description: UNAUTHORIZED - You must be logged in to upload to this file.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpError'
+        '403':
+          description: FORBIDDEN - You don't have permission to upload to this file.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpError'
+        '404':
+          description: NOT FOUND - The file you are trying to upload to does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpError'
+        '409':
+          description: CONFLICT - An upload is already in progress or the file has already been uploaded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpError'
+        '411':
+          description: LENGTH REQUIRED - You must specify the Content-Length of the file.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpError'
+        '413':
+          description: PAYLOAD TOO LARGE - The part is too large. Please upload the file in smaller parts.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpError'
+  /file/{fileid}/finish-multipart:
+    post:
+      operationId: finishMultipartUpload
+      summary: Finishes a multi-part upload.
+      description: Finishes a multi-part upload.
+      tags: [Files]
+      parameters:
+        - in: path
+          required: true
+          name: fileid
+          description: The id of the file.
+          schema:
+            type: integer
+            minimum: 0
+            example: 12345
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                uploadtoken:
+                  description: The upload token for the file.
+                  type: string
+                  example: iF4rBt8qWMVL/4ZE27ihC/hFeKnGxjWt1N9D79a2ckA=
+                parthashes:
+                  description: An array of hex SHA1 checksums of the parts of the file.
+                  type: array
+                  items:
+                    type: string
+                  example:
+                   - ed6d46616710d47d1aed3c00bbcd15ec39ce0c5d
+                   - 9B1E78BCE2E296F82A97CB2BC714AE9CF1CE30C0
+                   - ...
+                  
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/File'
+        '401':
+          description: UNAUTHORIZED - You must be logged in to update this file.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpError'
+        '403':
+          description: FORBIDDEN - You don't have permission to update this file.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpError'
+        '404':
+          description: NOT FOUND - The file you are trying to update does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpError'
+        '409':
+          description: CONFLICT - The upload has not been started or is already finished.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpError'
 components:
   schemas:
     File:
       type: object
-      description: An upload ticket.
+      description: A file.
       properties:
         id:
           description: The id.
           type: integer
           minimum: 0
+          readOnly: true
           example: 12345
         filename:
           description: The original filename.
@@ -97,17 +448,26 @@ components:
           description: The declared mime type.
           type: string
           example: image/png
+        clienthash:
+          description: The client's sha1 hash of the file. Used to verify the uploaded file. *Can only be changed when the `uploadstatus` is `PENDING` or `CANCELED`*
+          type: string
+          example: ed6d46616710d47d1aed3c00bbcd15ec39ce0c5d
+        lastmodifiedat:
+          description: The lastmodified timestamp of the file, if known.
+          type: string
+          format: date-time
         size:
-          description: The size in bytes.
+          description: The size in bytes. *Can only be changed when the `uploadstatus` is `PENDING` or `CANCELED`.*
           type: number
           nullable: true
           minimum: 0
           example: 6789
         url:
-          description: "The url. **NOTE: Don't try to build the url yourself since it may change depending on the backend storage system.**"
+          description: The url. *Don't try to build the url yourself since it may change depending on the backend storage system.*
           type: string
           nullable: true
           format: uri
+          readOnly: true
           example: https://cdn.pony.games/file/7d69d2e2ed2c442a9d11f079124cdf20
         displayname:
           description: The display name.
@@ -120,7 +480,7 @@ components:
           nullable: true
           example: v1.4-prealpha
         versionorder:
-          description: The version order position.
+          description: The version order position. Order integrity will be maintained within the file's group, i.e. if a file in the group already has the same order all files in that group will be shifted to accomodate the new order.
           type: integer
           nullable: true
           minimum: 0
@@ -134,11 +494,13 @@ components:
         isavailable:
           description: Whether or not the file is available for download.
           type: boolean
+          readOnly: true
           example: false
         unavailablereason:
           description: The reason the file is not available for download.
           type: string
           nullable: true
+          readOnly: true
           example: Requested by owner
         hashes:
           description: A map of the hashes for the file.
@@ -152,6 +514,7 @@ components:
               deprecated: true
             sha1:
               type: string
+          readOnly: true
           example:
             md5: 3f243ad43cc59598a73eeaa1979f2cf1
             sha1: 9B1E78BCE2E296F82A97CB2BC714AE9CF1CE30C0
@@ -168,7 +531,10 @@ components:
              * `IN_PROGRESS` - The file is in the process of being uploaded.
              * `CANCELED` - The file upload has been canceled.
              * `COMPLETED` - The file is done uploading.
+            
+            Newly-created files will always start in the `PENDING` state.
           type: string
+          readOnly: true
           enum:
            - PENDING
            - IN_PROGRESS
@@ -178,12 +544,16 @@ components:
           type: string
           format: date-time
           nullable: true
+          readOnly: true
           example: "2017-07-21T17:32:28Z"
         uploadfinishedat:
           type: string
           format: date-time
+          readOnly: true
           nullable: true
           example: "2017-08-46T17:32:28Z"
+      required:
+        - filename
           
     Link:
       description: A link to an external site.
@@ -209,8 +579,8 @@ components:
         alternatelink:
           $ref: '#/components/schemas/Link'
     UploadSettings:
-      type: object
       description: File upload settings and restrictions.
+      type: object
       properties:
         maximumSingleUploadSize:
           type: integer
@@ -227,3 +597,14 @@ components:
         preferredPartSize:
           type: integer
           minimum: 0
+    HttpError:
+      description: An http error response.
+      type: object
+      properties:
+        statuscode:
+          type: integer
+        statusmessage:
+          type: string
+        details:
+          type: string
+        
