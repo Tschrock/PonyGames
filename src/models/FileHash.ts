@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { Table, Column, Model, ForeignKey, BelongsTo, HasMany } from 'sequelize-typescript';
+import { Table, Column, Model, ForeignKey, BelongsTo, HasMany, Sequelize } from 'sequelize-typescript';
 
 import { File } from './File';
 import { HashType } from './HashType';
@@ -35,8 +35,12 @@ export class FileHash extends Model<FileHash> {
     @BelongsTo(() => HashType)
     public hashType!: HashType;
 
-    /** The value of this hash. */
+    /** The hex value of this hash. */
     @Column
     public value!: string;
+
+    /** The serialized internal state of this hash. */
+    @Column(Sequelize.TEXT)
+    public currentState!: string;
 
 }
