@@ -1,0 +1,34 @@
+
+
+// Footer
+.footer {
+    padding: 25px;
+    text-align: center;
+    background-color: $brand-bg-dark;
+
+    h1 {
+        color: white;
+        font-size: 50px;
+        font-weight: 800;
+        margin-top: 20px;
+        margin-bottom: 60px;
+    }
+
+    input {
+        width: 325px;
+        margin-bottom: 20px;
+    }
+
+}
+
+// Subfooter
+.subfooter {
+    padding: 18px;
+    text-align: center;
+    color: $fg-muted;
+    background-color: $brand-bg;
+
+    a {
+        color: #ddd;
+    }
+}

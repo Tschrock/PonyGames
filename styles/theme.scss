@@ -1,0 +1,153 @@
+
+@import 'variables';
+@import 'flexbox';
+@import 'grid';
+@import 'cards';
+@import 'card-grid';
+@import 'util';
+
+
+h1, h2, h3,
+h4, h5, h6 {
+    @extend %headings !optional;
+}
+
+
+/* HTML Overrides
+-------------------------------------------------- */
+
+// Border Box Model
+* { box-sizing: border-box; }
+
+// Full body
+html, body { margin: 0; padding: 0; height: 100%; }
+
+// Headers
+%headings {
+    margin: 0 0 12px 0;
+    font-weight: 400;
+    text-transform: capitalize;
+    color: $fg-primary;
+}
+
+// Links
+a {
+    color: $brand-fg;
+    text-decoration: none;
+}
+
+@import 'input';
+
+pre {
+    background-color: lighten($color: $brand-bg, $amount: 8);
+    overflow: auto;
+    padding: 10px;
+    border: solid black 2px;
+    text-align: left;
+}
+
+/* Theming: Mobile-first layout
+-------------------------------------------------- */
+
+// Body
+body {
+    color: $fg-primary;
+    background-color: $brand-bg;
+    font-family: $text-family;
+}
+
+// Generic Navbar
+nav a {
+    font-size: 18px;
+    text-transform: uppercase;
+    display: inline-block;
+    padding: 15px 30px;
+    margin: 0 15px;
+    color: $fg-primary;
+
+    &.active,
+    &:hover {
+        color: $fg-primary;
+        background-color: $brand-fg;
+    }
+}
+
+@import 'header';
+
+// Navbar Toggle Button
+.navbar-toggle {
+    border: none;
+    padding: 0;
+    margin: 0 0 0 auto;
+    color: $fg-primary;
+    background-color: transparent;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+
+// Content container
+.container {
+    padding: 42px 20px;
+    // overflow: hidden;
+
+    h1 {
+        margin-bottom: 12px;
+    }
+}
+
+@import 'banner';
+@import 'footer';
+@import 'featurebox';
+
+
+
+/* Theming: Tablet overrides
+-------------------------------------------------- */
+
+@media all and (min-width: $breakpoint-mobile-max) {
+
+    .container {
+        padding: 60px 40px;
+    }
+
+}
+
+/* Theming: Desktop overrides
+-------------------------------------------------- */
+
+@media all and (min-width: $breakpoint-tablet-max) {
+
+    header {
+        flex-direction: row;
+
+        .navbar-content {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            padding: 0 12px;
+
+            nav {
+                flex-direction: row;
+                justify-content: center;
+                margin: 0;
+            }
+            input {
+                margin: 0;
+            }
+        }
+
+        .navbar-header {
+            width: auto;
+        }
+    }
+
+    .navbar-toggle {
+        display: none;
+    }
+
+    .container {
+        padding: 90px 22.1%;
+    }
+
+}

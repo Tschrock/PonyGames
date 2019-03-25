@@ -1,0 +1,36 @@
+extends ./_layouts/master
+include ./_components/svgplaceholder
+
+block main
+    if FeaturedProject && FeaturedProject.bannerImageUrl
+        div.banner(style=`background-image: url(${ FeaturedProject.bannerImageUrl})`)
+    else
+        +svgplaceholder-underlay(10,3).banner
+    if FeaturedProject
+        .featured-game
+            h1 Featured Game
+            .grid-col-2
+                a.card(href=FeaturedProject.link || `/projects/${FeaturedProject.id}`)
+                    if FeaturedProject.wideImageUrl
+                        img(src=FeaturedProject.wideImageUrl).card-img-top
+                    else
+                        +svgplaceholder(8,3).card-img-top
+                    .card-header
+                        h1= FeaturedProject.name
+                div!= FeaturedProject.description
+
+    .container
+        h1 Games
+        .card-grid
+            each project in (Projects || [])
+                a.card(href=project.link || `/projects/${project.id}`)
+                    if project.tallImageUrl
+                        img(src=project.tallImageUrl).card-img-top
+                    else
+                        +svgplaceholder(5,7).card-img-top
+                    .card-header
+                        h1= project.name
+            else
+                a.card(href="#")
+                    .card-body
+                        p.mb-1 No Results

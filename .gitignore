@@ -1,0 +1,14 @@
+/node_modules
+/config.json
+*.js
+*.sqlite
+*.sqlite3
+*.sqlite3-journal
+/.nyc_output
+/coverage
+/dist
+/.coveralls.yml
+/.old
+/.jekyll
+/public/images
+/public/styles

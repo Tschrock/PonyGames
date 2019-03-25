@@ -1,0 +1,18 @@
+
+input {
+    border: none;
+    padding: 8px 14px;
+    color: #C2C2C2;
+    background-color: transparent;
+    border: 1px solid #7D7D7D;
+    
+    &::placeholder {
+        color: #C2C2C2;
+    }
+
+    &.input-sm {
+        font-size: 14px;
+        padding: 6px 13px;
+    }
+
+}

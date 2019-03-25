@@ -1,0 +1,76 @@
+
+/* Link Cards
+-------------------------------------------------- */
+
+a.card,
+a.card:hover,
+a.card:active,
+a.card:visited {
+    text-decoration: inherit;
+    color: inherit;
+}
+
+/* Card Theme
+-------------------------------------------------- */
+.card {
+    
+    .card-img-top {
+        display: block;
+        margin-left: 4px;
+        margin-right: -4px;
+        position: relative;
+        width: 100%;
+    }
+
+    .card-header {
+        width: fit-content;
+        min-width: 60%;
+        max-width: 100%;
+        background: $brand-fg;
+        padding: 8px 12px;
+        margin-top: -27px;
+        margin-left: -4px;
+        margin-right: 4px;
+        text-transform: uppercase;
+        position: relative;
+        
+        h1 {
+            font-size: 16px;
+            margin: 0;
+        }
+    }
+
+    .card-body {
+        padding: 12px;
+    }
+
+    %headings {
+        color: white;
+        text-transform: uppercase;
+    }
+}
+
+
+/* Tablet overrides
+-------------------------------------------------- */
+@media all and (min-width: $breakpoint-mobile-max) {
+
+}
+
+
+/* Desktop overrides
+-------------------------------------------------- */
+@media all and (min-width: $breakpoint-tablet-max) {
+
+    .card {
+        .card-header {
+            padding: 16px 18px;
+            margin-top: -47px;
+
+            h1 {
+                font-size: 24px;
+            }
+        }
+    }
+
+}

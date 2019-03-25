@@ -1,0 +1,49 @@
+
+/* Card Grid
+-------------------------------------------------- */
+.card-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 11%;
+    row-gap: 50px;
+    padding: 2px 10px;
+}
+.card-grid > .card {
+    width: 100%;
+    margin: 0 auto;
+
+    .card-header {
+        width: 100%;
+    }
+
+}
+
+
+/* Tablet overrides
+-------------------------------------------------- */
+@media all and (min-width: $breakpoint-mobile-max) {
+
+    .card-grid {
+        grid-template-columns: 1fr 1fr 1fr;
+        column-gap: 6%;
+    }
+    .card-grid > .card {
+        max-width: 350px;
+    }
+
+}
+
+
+/* Desktop overrides
+-------------------------------------------------- */
+@media all and (min-width: $breakpoint-tablet-max) {
+
+    .card-grid {
+        grid-template-columns: 1fr 1fr 1fr;
+        column-gap: 11%;
+    }
+    .card-grid > .card {
+        max-width: none;
+    }
+
+}

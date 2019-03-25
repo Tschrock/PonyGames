@@ -1,0 +1,37 @@
+
+/* Base Mobile Theme
+-------------------------------------------------- */
+.featured-game {
+    position: relative;
+    background-color: $brand-bg-dark;
+    margin: 0;
+    padding: 45px 23px;
+}
+
+
+/* Tablet overrides
+-------------------------------------------------- */
+@media all and (min-width: $breakpoint-mobile-max) {
+    
+    .featured-game {
+        margin: -40px 40px 0;
+        padding: 30px 23px;
+        box-shadow: $boxshadow-shift-x $boxshadow-shift-y $boxshadow-blur 0px rgba(0,0,0,1);
+    }
+
+}
+
+/* Desktop overrides
+-------------------------------------------------- */
+@media all and (min-width: $breakpoint-tablet-max) {
+
+    .featured-game {
+        margin: -55px 18% 0;
+        padding: 50px 80px;
+
+        .grid-col-2 {
+            column-gap: 40px;
+        }
+
+    }
+}

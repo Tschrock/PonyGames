@@ -1,0 +1,40 @@
+include ../_components/style
+
+doctype html
+html(lang="en")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no")
+
+        title= title || "Pony.Games"
+
+        +style("https://fonts.googleapis.com/css?family=Work+Sans:400,800")
+        +style("https://use.fontawesome.com/releases/v5.2.0/css/all.css")(
+            integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ"
+            crossorigin="anonymous"
+        )
+        +style("/styles/theme.css")
+    body
+        header
+            .navbar-header
+                a.navbar-brand(href="/")
+                    img(src="/logo3.svg")
+            //-     button.navbar-toggle.js-toggle(type="button" data-target="#navbar-content")
+            //-         i.fas.fa-bars
+            //- .navbar-content
+            //-     nav
+            //-         a.active(href="/") Home
+            //-         a(href="/About") About
+            //-         a(href="/Contact") Contact
+            //-     form(role="search")
+            //-         input.input-sm(type="search" id="search-header" name="q" placeholder="search" aria-label="Search")
+        main
+            block main
+        footer
+            .footer
+                img(src="/logo3.svg" height="45")
+                //- nav
+                //-     a(href="/") Home
+                //-     a(href="/About") About
+                //-     a(href="/Contact") Contact
+            .subfooter Designed by <a href="https://www.deviantart.com/simonk0">Szymon "SiMonk0" Furjan</a>.<br>Built by <a href="https://twitter.com/CyberPon3">CyberPon3</a>.

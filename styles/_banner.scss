@@ -1,0 +1,50 @@
+
+/* Banner
+-------------------------------------------------- */
+.banner {
+    padding: 50px 20px;
+    min-height: 228px;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+
+    h1 {
+        color: white;
+        background-color: $brand-bg-dark;
+        font-size: 40px;
+        display: inline;
+        font-weight: 800;
+        text-transform: uppercase;
+        background-color: $brand-bg-dark;
+        line-height: 1em;
+        padding: 0;
+    }
+}
+
+/* Tablet overrides
+-------------------------------------------------- */
+
+@media all and (min-width: $breakpoint-mobile-max) {
+    .banner {
+        padding: 50px 40px;
+        min-height: 300px;
+
+        h1 {
+            font-size: 80px;
+        }
+    }
+}
+
+/* Desktop overrides
+-------------------------------------------------- */
+
+@media all and (min-width: $breakpoint-tablet-max) {
+    .banner {
+        padding: 50px 24%;
+        min-height: 400px;
+
+        h1 {
+            font-size: 120px;
+        }
+    }
+}
