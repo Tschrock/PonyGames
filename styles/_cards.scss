@@ -14,28 +14,30 @@ a.card:visited {
 -------------------------------------------------- */
 .card {
     
+    position: relative;
+    height: fit-content;
+
     .card-img-top {
         display: block;
-        margin-left: 4px;
-        margin-right: -4px;
         position: relative;
         width: 100%;
     }
 
     .card-header {
-        width: fit-content;
-        min-width: 60%;
-        max-width: 100%;
-        background: $brand-fg;
+        background: linear-gradient(#00000000, #00000000, $brand-fg);
         padding: 8px 12px;
-        margin-top: -27px;
-        margin-left: -4px;
-        margin-right: 4px;
         text-transform: uppercase;
-        position: relative;
+        position: absolute;
+        bottom: 0;
+        top: 0;
+        left: 0;
+        right: 0;
+        vertical-align: bottom;
+        display: flex;
+        align-items: flex-end;
         
         h1 {
-            font-size: 16px;
+            font-size: 17px;
             margin: 0;
         }
     }
@@ -53,22 +55,48 @@ a.card:visited {
 
 /* Tablet overrides
 -------------------------------------------------- */
-@media all and (min-width: $breakpoint-mobile-max) {
-
-}
-
-
-/* Desktop overrides
--------------------------------------------------- */
-@media all and (min-width: $breakpoint-tablet-max) {
+@media all and (min-width: $breakpoint-tablet-min) {
 
     .card {
         .card-header {
             padding: 16px 18px;
-            margin-top: -47px;
 
             h1 {
-                font-size: 24px;
+                font-size: 18px;
+            }
+        }
+    }
+
+}
+
+
+/* laptop overrides
+-------------------------------------------------- */
+@media all and (min-width: $breakpoint-laptop-min) {
+
+    .card {
+        .card-header {
+            padding: 14px 16px;
+
+            h1 {
+                font-size: 20px;
+            }
+        }
+    }
+
+}
+
+
+/* desktop overrides
+-------------------------------------------------- */
+@media all and (min-width: $breakpoint-desktop-min) {
+
+    .card {
+        .card-header {
+            padding: 16px 18px;
+
+            h1 {
+                font-size: 22px;
             }
         }
     }

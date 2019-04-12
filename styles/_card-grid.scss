@@ -21,7 +21,7 @@
 
 /* Tablet overrides
 -------------------------------------------------- */
-@media all and (min-width: $breakpoint-mobile-max) {
+@media all and (min-width: $breakpoint-tablet-min) {
 
     .card-grid {
         grid-template-columns: 1fr 1fr 1fr;
@@ -34,9 +34,24 @@
 }
 
 
+/* Laptop overrides
+-------------------------------------------------- */
+@media all and (min-width: $breakpoint-laptop-min) {
+
+    .card-grid {
+        grid-template-columns: 1fr 1fr 1fr;
+        column-gap: 8%;
+    }
+    .card-grid > .card {
+        max-width: none;
+    }
+
+}
+
+
 /* Desktop overrides
 -------------------------------------------------- */
-@media all and (min-width: $breakpoint-tablet-max) {
+@media all and (min-width: $breakpoint-desktop-min) {
 
     .card-grid {
         grid-template-columns: 1fr 1fr 1fr;
