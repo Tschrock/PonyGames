@@ -1,5 +1,33 @@
 extends ./_layouts/master
 include ./_components/svgplaceholder
+include ./_components/meta
+
+
+block head
+    // Meta
+    +meta-site-title("Pony.Games")
+    +meta-site-twitter-handle("@PonyDotGames")
+    +meta-site-twitter-id("1082875594306715649")
+    //+meta-site-opensearch("Pony.Games", "https://pony.games/opensearch.xml")
+    +meta-page-theme-color("#16212E")
+
+    +meta-page-opengraph-type("website")
+    +meta-page-twitter-card-type("summary")
+
+    +meta-page-title("Pony.Games")
+    +meta-page-description("Discover dozens of fangames made by the MLP community.")
+    +meta-page-canonical-url("https://beta.pony.games/")
+    +meta-page-author-name("CyberPon3")
+    +meta-page-author-twitter-handle("@CyberPon3")
+    +meta-page-author-twitter-id("787535265447325698")
+    +meta-page-publish-date("2019-01-10")
+    +meta-page-update-date("2019-01-10")
+    +meta-page-locale("en_US")
+    +meta-page-image-url("https://beta.pony.games/icon.png")
+    +meta-page-image-mime("image/png")
+    +meta-page-image-height("500")
+    +meta-page-image-width("500")
+    +meta-page-image-alt("Logo")
 
 block main
     if FeaturedProject && FeaturedProject.bannerImageUrl

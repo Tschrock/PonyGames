@@ -1,0 +1,122 @@
+
+mixin meta-site-title(val)
+    meta(property="og:site_name" content=val)
+
+mixin meta-site-twitter-handle(val)
+    meta(name="twitter:site" content=val)
+
+mixin meta-site-twitter-id(val)
+    meta(name="twitter:site:id" content=val)
+
+mixin meta-site-opensearch(name, val)
+    link(title=name rel="search" type="application/opensearchdescription+xml" href=val)
+
+mixin meta-page-canonical-url(val)
+    meta(property="og:url" content=val)
+    link(rel="canonical" href=val)
+
+mixin meta-page-title(val)
+    meta(name="twitter:title" content=val)
+    meta(property="og:title" content=val)
+
+mixin meta-page-description(val)
+    meta(name="description" content=val)
+    meta(name="twiter:description" content=val)
+    meta(property="og:description" content=val)
+
+mixin meta-page-author-name(val)
+    meta(name="author" content=val)
+
+mixin meta-page-author-twitter-handle(val)
+    meta(name="twitter:creator" content=val)
+
+mixin meta-page-author-twitter-id(val)
+    meta(name="twitter:creator:id" content=val)
+
+mixin meta-page-publish-date(val)
+    meta(name="pubdate" content=val)
+
+mixin meta-page-update-date(val)
+    meta(property="og:updated_time" content=val)
+
+mixin meta-page-locale(val)
+    meta(property="og:locale" content=val)
+
+mixin meta-page-related-url(val)
+    meta(property="og:see_also" content=val)
+
+mixin meta-page-opengraph-type(val)
+    meta(property="og:type" content=val)
+
+mixin meta-page-twitter-card-type(val)
+    meta(name="twitter:card" content=val)
+
+mixin meta-page-image-url(val)
+    meta(name="twitter:image" content=val)
+    meta(property="og:image" content=val)
+    meta(property="og:image:url" content=val)
+    meta(property="og:image:secure_url" content=val)
+
+mixin meta-page-image-mime(val)
+    meta(property="og:image:type" content=val)
+
+mixin meta-page-image-height(val)
+    meta(property="og:image:height" content=val)
+
+mixin meta-page-image-width(val)
+    meta(property="og:image:width" content=val)
+
+mixin meta-page-image-alt(val)
+    meta(name="twitter:image:alt" content=val)
+    meta(property="og:image:alt" content=val)
+
+mixin meta-page-app-iphone-name(val)
+    meta(property="twitter:app:name:iphone" content=val)
+
+mixin meta-page-app-ipad-name(val)
+    meta(property="twitter:app:name:ipad" content=val)
+
+mixin meta-page-app-android-name(val)
+    meta(property="twitter:app:name:googleplay" content=val)
+
+mixin meta-page-app-iphone-id(val)
+    meta(property="twitter:app:id:iphone" content=val)
+
+mixin meta-page-app-ipad-id(val)
+    meta(property="twitter:app:id:ipad" content=val)
+
+mixin meta-page-app-android-id(val)
+    meta(property="twitter:app:id:googleplay" content=val)
+
+mixin meta-page-app-facebook-id(val)
+    meta(property="fb:app_id" content=val)
+
+mixin meta-page-app-iphone-deeplink(val)
+    meta(property="twitter:app:url:iphone" content=val)
+
+mixin meta-page-app-ipad-deeplink(val)
+    meta(property="twitter:app:url:ipad" content=val)
+
+mixin meta-page-app-android-deeplink(val)
+    meta(property="twitter:app:url:googleplay" content=val)
+
+mixin meta-page-app-country(val)
+    meta(property="twitter:app:country" content=val)
+
+mixin meta-page-theme-color(val)
+    meta(name="theme-color" content=val)
+
+mixin meta-page-win8-tile-color(val)
+    meta(name="msapplication-TileColor" content=val)
+
+mixin meta-page-win8-tile-image-url(val)
+    meta(name="msapplication-TileImage" content=val)
+
+mixin meta-page-facebook-admin-ids(val)
+    meta(property="fb:admins" content=val)
+
+mixin meta-page-facebook-user-id(val)
+    meta(property="fb:profile_id" content=val)
+
+mixin meta-page-facebook-page-ids(val)
+    meta(property="fb:pages" content=val)
