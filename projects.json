@@ -2,7 +2,7 @@
     {
         "id": 1,
         "name": "Pony Club",
-        "tallImageUrl": "/images/1.png",
+        "tallImageUrl": "/images/tall/1.png",
         "link": "http://ponyclub.manequest.net"
     },
     {
@@ -13,7 +13,7 @@
     {
         "id": 3,
         "name": "Twilight Escape",
-        "tallImageUrl": "/images/3.png",
+        "tallImageUrl": "/images/tall/3.png",
         "link": "https://timeshield.neocities.org"
     },
     {
@@ -27,7 +27,7 @@
     {
         "id": 5,
         "name": "Stonicorn",
-        "tallImageUrl": "/images/5.png",
+        "tallImageUrl": "/images/tall/5.png",
         "link": "http://www.stonicorn.com"
     },
     {
@@ -43,7 +43,7 @@
     {
         "id": 8,
         "name": "PonyVRville",
-        "tallImageUrl": "/images/8.png",
+        "tallImageUrl": "/images/tall/8.png",
         "link": "http://www.kaitouace.com/vr"
     },
     {
@@ -55,72 +55,84 @@
     {
         "id": 10,
         "name": "PonyAge: Chronicles",
-        "tallImageUrl": "/images/10.png",
+        "tallImageUrl": "/images/tall/10.png",
         "link": "https://ponyage.com"
     },
     {
         "id": 11,
         "name": "NIA: Path of Light",
-        "tallImageUrl": "/images/11.png",
+        "tallImageUrl": "/images/tall/11.png",
         "link": "https://steamcommunity.com/sharedfiles/filedetails/?id=493357702"
     },
     {
         "id": 12,
         "name": "My Silent Ville",
-        "tallImageUrl": "/images/12.png",
+        "tallImageUrl": "/images/tall/12.png",
         "link": "https://thekaminakat.tumblr.com/post/166622943206/my-silent-ville-mlp-fangame"
     },
     {
         "id": 13,
         "name": "My Little Investigations",
-        "tallImageUrl": "/images/13.png",
+        "tallImageUrl": "/images/tall/13.png",
         "link": "http://www.equestriandreamers.com/"
     },
     {
         "id": 14,
         "name": "Mega Pony",
-        "tallImageUrl": "/images/14.png",
+        "tallImageUrl": "/images/tall/14.png",
         "link": "https://www.mobygames.com/game/mega-pony"
     },
     {
         "id": 15,
         "name": "Luna Game 3D",
-        "tallImageUrl": "/images/15.png",
+        "tallImageUrl": "/images/tall/15.png",
         "link": "https://gamejolt.com/games/luna-game-3D/168956"
     },
     {
         "id": 16,
         "name": "Legends of Equestria",
-        "tallImageUrl": "/images/16.png",
+        "tallImageUrl": "/images/tall/16.png",
         "link": "https://www.legendsofequestria.com/"
     },
     {
         "id": 17,
-        "name": "HorseGAME"
+        "name": "HorseGAME",
+        "tallImageUrl": "/images/tall/17.png",
+        "link": "http://equidev.net/"
     },
     {
         "id": 18,
-        "name": "FoE: Remains"
+        "name": "FoE: Remains",
+        "tallImageUrl": "/images/tall/18.png",
+        "link": "http://foe.ucoz.org/"
     },
     {
         "id": 19,
-        "name": "Daydreaming Derpi"
+        "name": "Daydreaming Derpy",
+        "tallImageUrl": "/images/tall/19.png",
+        "link": "https://rpgmaker.net/games/9424/"
     },
     {
         "id": 20,
-        "name": "Besti"
+        "name": "Besti",
+        "tallImageUrl": "/images/tall/20.png",
+        "link": "https://besti.love/",
+        "hidden": true
     },
     {
         "id": 21,
-        "name": "Ashes of Equestria"
+        "name": "Ashes of Equestria",
+        "link": "https://theovermare.com/"
     },
     {
         "id": 22,
-        "name": "Ambient.White"
+        "name": "Ambient.White",
+        "link": "http://albdifferent.com/"
     },
     {
         "id": 23,
-        "name": "Super Pony All-stars"
+        "name": "Super Pony All-stars",
+        "link": "https://www.deviantart.com/botchos/art/Title-Screen-556641811"
     },
     {
         "id": 24,
@@ -141,10 +153,6 @@
     {
         "id": 28,
         "name": "Everfree Outpost"
-    },
-    {
-        "id": 29,
-        "name": "Pony Club"
     },
     {
         "id": 30,

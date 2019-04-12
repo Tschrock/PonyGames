@@ -9,7 +9,7 @@ import path from 'path';
 import express, { Request, Response } from 'express';
 import sass from 'node-sass-middleware';
 
-const port = 8080;
+const port = process.env.PORT || 8080;
 const debug = true;
 
 // Create the Express app
