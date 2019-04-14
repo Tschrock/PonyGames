@@ -2,9 +2,12 @@
 
 // Footer
 .footer {
-    padding: 25px;
+    padding-top: 50px;
+    padding-bottom: 60px;
+    padding-left: 5%;
+    padding-right: 5%;
     text-align: center;
-    background-color: $brand-bg-dark;
+    background: $brand-bg-dark bottom/contain no-repeat url(/images/background/bg2.png);
 
     h1 {
         color: white;
@@ -31,4 +34,57 @@
     a {
         color: #ddd;
     }
+}
+
+.footer-info-box {
+    padding: 40px 40px 20px 40px;
+    text-align: left;
+}
+
+
+/* Tablet overrides
+-------------------------------------------------- */
+@media all and (min-width: $breakpoint-tablet-min) {
+
+    .footer-info-box {
+        padding: 20px 20px 5px 20px;
+    }
+
+    .footer {
+        padding-left: 10%;
+        padding-right: 10%;
+    }
+
+}
+
+
+/* Laptop overrides
+-------------------------------------------------- */
+@media all and (min-width: $breakpoint-laptop-min) {
+
+    .footer-info-box {
+        padding: 45px 30px 20px 30px;
+    }
+
+    .footer {
+        padding-left: 15%;
+        padding-right: 15%;
+    }
+
+}
+
+
+/* Desktop overrides
+-------------------------------------------------- */
+@media all and (min-width: $breakpoint-desktop-min) {
+
+    .footer-info-box {
+        padding: 45px 30px 20px 30px;
+    }
+
+    .footer {
+        padding-left: 20%;
+        padding-right: 20%;
+    }
+
 }

@@ -1,0 +1,36 @@
+
+.twitter-timeline-rendered {
+    padding: 30px 30px 20px 30px !important; 
+}
+
+/* Tablet overrides
+-------------------------------------------------- */
+@media all and (min-width: $breakpoint-tablet-min) {
+
+    .twitter-timeline-rendered {
+        padding: 10px 10px 5px 10px !important; 
+    }
+
+}
+
+
+/* Laptop overrides
+-------------------------------------------------- */
+@media all and (min-width: $breakpoint-laptop-min) {
+
+    .twitter-timeline-rendered {
+        padding: 30px 30px 20px 30px !important; 
+    }
+
+}
+
+
+/* Desktop overrides
+-------------------------------------------------- */
+@media all and (min-width: $breakpoint-desktop-min) {
+
+    .twitter-timeline-rendered {
+        padding: 30px 30px 20px 30px !important; 
+    }
+
+}

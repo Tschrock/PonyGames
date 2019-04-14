@@ -37,7 +37,7 @@ block main
     if FeaturedProject
         .featured-game
             h1 Featured Game
-            .grid-col-2
+            .grid-col-2-desktop
                 a.card(href=FeaturedProject.link || `/projects/${FeaturedProject.id}`)
                     if FeaturedProject.wideImageUrl
                         img(src=FeaturedProject.wideImageUrl).card-img-top

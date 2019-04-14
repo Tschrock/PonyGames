@@ -96,8 +96,26 @@ nav a {
     }
 }
 
+.iconlinklist {
+    margin-top: 20px;
+    .iconlink {
+        display: inline-block;
+        margin-right: 20px;
+    }
+}
+
+a.iconlink,
+a.iconlink:hover,
+a.iconlink:active,
+a.iconlink:visited {
+    font-size: 1.8em;
+    color: inherit;
+}
+
 @import 'banner';
+@import 'main';
 @import 'footer';
+@import 'twitter';
 @import 'featurebox';
 
 

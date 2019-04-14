@@ -1,0 +1,37 @@
+main {
+    background: bottom/contain no-repeat url(/images/background/bg1.png);
+    padding-bottom: 200px;
+}
+
+
+/* Tablet overrides
+-------------------------------------------------- */
+@media all and (min-width: $breakpoint-tablet-min) {
+
+    main {
+        padding-bottom: 300px;
+    }
+
+}
+
+
+/* Laptop overrides
+-------------------------------------------------- */
+@media all and (min-width: $breakpoint-laptop-min) {
+
+    main {
+        padding-bottom: 300px;
+    }
+
+}
+
+
+/* Desktop overrides
+-------------------------------------------------- */
+@media all and (min-width: $breakpoint-desktop-min) {
+
+    main {
+        padding-bottom: 400px;
+    }
+
+}
