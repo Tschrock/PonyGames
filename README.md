@@ -29,11 +29,11 @@ Pony.Games
 
 <!-- Link References -->
 
-[website-badge]: https://img.shields.io/website-up-down-green-red/https/beta.pony.games.svg?label=🌐%20website
-[website-link]: https://beta.pony.games
+[website-badge]: https://img.shields.io/website-up-down-green-red/https/pony.games.svg?label=🌐%20website
+[website-link]: https://pony.games
 
 [discord-badge]: https://img.shields.io/discord/489433294509703170.svg?logo=discord
-[discord-link]: https://discord.gg/kt8zutU
+[discord-link]: https://chat.pony.games
 
 [version-badge]: https://img.shields.io/github/package-json/v/tschrock/ponygames.svg?label=version
 [version-link]: https://github.com/Tschrock/PonyGames
