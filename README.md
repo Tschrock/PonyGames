@@ -1,11 +1,8 @@
 <div align="center">
 
-![logo](public/favicon-x5.png)
+![logo](public/logo3.svg)
 
-Pony.Games
-==========
-
-**An archive site for mlp-themed fangames.**
+----------
 
 [![Website][website-badge]][website-link]
 [![Discord][discord-badge]][discord-link]
