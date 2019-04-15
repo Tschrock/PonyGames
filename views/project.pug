@@ -7,8 +7,8 @@ block main
         .project-heading
             img(src=Project.squareImageUrl||Project.tallImageUrl)
             .project-heading-content
-                h1= Project.name
-                p= Project.team
+                h1.project-name= Project.name
+                h2.project-team= Project.team
                 .project-tags
                     each tag in Project.tags || []
                         .project-tag= tag

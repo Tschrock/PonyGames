@@ -1,0 +1,40 @@
+.project-container {
+    background-color: $brand-bg-dark;
+    margin-top: 300px;
+    margin-bottom: 300px;
+    margin-left: 20%;
+    margin-right: 20%;
+
+    padding: 0 70px 50px 70px;
+    
+}
+
+.project-heading {
+    display: grid;
+    grid-template-columns: 20% 80%;
+
+    font-size: 1.2em;
+
+    img {
+        display: block;
+        width: 100%;
+        margin-top: -50%;
+    }
+
+    h1,h2,h3,h4,h5,h6 {
+        text-transform: uppercase;   
+    }
+}
+
+.project-heading-content {
+    padding: 20px;
+}
+
+.project-name {
+    font-size: 49px;
+    margin: 0;
+}
+.project-team {
+    font-size: 18px;
+    margin: 0;
+}
