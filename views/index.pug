@@ -38,7 +38,7 @@ block main
         .featured-game
             h1 Featured Game
             .grid-col-2-desktop
-                a.card(href=FeaturedProject.link || `/projects/${FeaturedProject.id}`)
+                a.card(href=`/project/${FeaturedProject.id}`)
                     if FeaturedProject.wideImageUrl
                         img(src=FeaturedProject.wideImageUrl).card-img-top
                     else
@@ -51,7 +51,7 @@ block main
         h1 Games
         .card-grid
             each project in (Projects || [])
-                a.card(href=project.link || `/projects/${project.id}`)
+                a.card(href=`/project/${project.id}`)
                     if project.tallImageUrl
                         img(src=project.tallImageUrl).card-img-top
                     else

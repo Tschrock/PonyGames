@@ -45,5 +45,19 @@ app.get( "/", (req: Request, res: Response) => {
     })
 });
 
+// Projects
+app.get( "/project/:id", (req: Request, res: Response) => {
+    const projectId = Number.parseInt(req.params["id"]);
+    const project = projects.find(p => p.id === projectId)
+    if(project) {
+        res.format({
+            'html': () => res.render('project', { Project: project })
+        })
+    }
+    else {
+        res.sendStatus(404);
+    }
+});
+
 // Start listening
 app.listen(port);
