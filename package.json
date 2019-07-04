@@ -1,49 +1,49 @@
 {
-    "name": "pony.games",
-    "version": "1.0.0",
-    "description": "An archive site for mlp-themed fangames.",
-    "main": "server.js",
-    "scripts": {
-        "start": "node server.js",
-        "build": "tsc",
-        "lint": "tslint --project .",
-        "test": "mocha",
-        "snyk-protect": "snyk protect",
-        "prepare": "npm run snyk-protect"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/Tschrock/PonyGames.git"
-    },
-    "author": {
-        "name": "CyberPon3",
-        "email": "cyber@code.horse",
-        "url": "https://cyberpon3.net"
-    },
-    "contributors": [
-        {
-            "name": "Eliot Partridge",
-            "email": "byte@code.horse",
-            "url": "https://code.horse"
-        }
-    ],
-    "license": "MPL-2.0",
-    "bugs": {
-        "url": "https://github.com/Tschrock/PonyGames/issues"
-    },
-    "homepage": "https://github.com/Tschrock/PonyGames#readme",
-    "devDependencies": {
-        "@types/express": "^4.16.1",
-        "@types/node": "^11.11.6",
-        "@types/node-sass-middleware": "0.0.31",
-        "typescript": "^3.3.4000"
-    },
-    "dependencies": {
-        "express": "^4.16.4",
-        "node-sass-middleware": "^0.11.0",
-        "pug": "^2.0.3",
-        "ts-node": "^8.0.3",
-        "snyk": "^1.189.0"
-    },
-    "snyk": true
+  "name": "pony.games",
+  "version": "1.0.0",
+  "description": "An archive site for mlp-themed fangames.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "build": "tsc",
+    "lint": "tslint --project .",
+    "test": "mocha",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Tschrock/PonyGames.git"
+  },
+  "author": {
+    "name": "CyberPon3",
+    "email": "cyber@code.horse",
+    "url": "https://cyberpon3.net"
+  },
+  "contributors": [
+    {
+      "name": "Eliot Partridge",
+      "email": "byte@code.horse",
+      "url": "https://code.horse"
+    }
+  ],
+  "license": "MPL-2.0",
+  "bugs": {
+    "url": "https://github.com/Tschrock/PonyGames/issues"
+  },
+  "homepage": "https://github.com/Tschrock/PonyGames#readme",
+  "devDependencies": {
+    "@types/express": "^4.16.1",
+    "@types/node": "^11.11.6",
+    "@types/node-sass-middleware": "0.0.31",
+    "typescript": "^3.3.4000"
+  },
+  "dependencies": {
+    "express": "^4.16.4",
+    "node-sass-middleware": "^0.11.0",
+    "pug": "^2.0.3",
+    "ts-node": "^8.0.3",
+    "snyk": "^1.192.0"
+  },
+  "snyk": true
 }
