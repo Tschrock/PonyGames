@@ -9,10 +9,14 @@
 			"request": "launch",
 			"name": "Build and Run",
 			"preLaunchTask": "npm: build",
-			"program": "${workspaceFolder}/dist/index.js",
+			"program": "${workspaceFolder}/dist/server/server.js",
 			"console": "internalConsole",
             "internalConsoleOptions": "openOnSessionStart",
-            "useWSL": true
+            "serverReadyAction": {
+                "pattern": "listening on port ([0-9]+)",
+                "uriFormat": "http://localhost:%s",
+                "action": "openExternally"
+            }
 		}
 	]
 }
