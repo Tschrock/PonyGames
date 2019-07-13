@@ -34,7 +34,9 @@
   },
   "homepage": "https://github.com/Tschrock/PonyGames#readme",
   "devDependencies": {
+    "@types/bluebird": "^3.5.27",
     "@types/browserify": "^12.0.36",
+    "@types/convict": "^4.2.1",
     "@types/express": "^4.17.0",
     "@types/express-session": "^1.15.13",
     "@types/gulp": "^4.0.6",
@@ -46,6 +48,7 @@
     "@types/jquery": "^3.3.30",
     "@types/node": "^12.6.2",
     "@types/node-sass-middleware": "0.0.31",
+    "@types/validator": "^10.11.1",
     "@types/vinyl-source-stream": "0.0.30",
     "browserify": "^16.3.0",
     "del": "^5.0.0",
@@ -67,12 +70,21 @@
     "vinyl-source-stream": "^2.0.0"
   },
   "dependencies": {
+    "convict": "^5.0.0",
     "express": "^4.17.1",
     "express-session": "^1.16.2",
     "pug": "^2.0.4",
     "sequelize": "^5.10.0",
-    "sequelize-typescript": "^0.6.11",
+    "sequelize-typescript": "^1.0.0-beta.3",
     "snyk": "^1.193.1"
+  },
+  "optionalDependencies": {
+    "mariadb": "^2.0.5",
+    "mysql2": "^1.6.1",
+    "pg": "^7.11.0",
+    "pg-hstore": "^2.3.3",
+    "sqlite3": "^4.0.9",
+    "tedious": "^6.2.0"
   },
   "snyk": true
 }

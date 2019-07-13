@@ -52,8 +52,8 @@ block main
         .card-grid
             each project in (Projects || [])
                 a.card(href=`/project/${project.id}`)
-                    if project.tallImageUrl
-                        img(src=project.tallImageUrl).card-img-top
+                    if project.image_url
+                        img(src=project.image_url).card-img-top
                     else
                         +svgplaceholder(5,7).card-img-top
                     .card-header
