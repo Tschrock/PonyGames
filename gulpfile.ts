@@ -5,7 +5,9 @@
  */
 'use strict';
 
-// tslint:disable:no-implicit-dependencies no-var-requires
+import { FSWatcher } from 'fs';
+
+// tslint:disable:no-implicit-dependencies
 import gulp from 'gulp';
 import glob from 'glob';
 import del from 'del';
@@ -21,7 +23,21 @@ import buffer from 'gulp-buffer';
 import gulp_sass from 'gulp-sass';
 import node_sass from 'node-sass';
 
+
+
 (gulp_sass as any).compiler = node_sass;
+
+const fsWatchers: { watcher: FSWatcher, callback: () => void }[] = [];
+
+process.on('SIGINT', function () {
+    fsWatchers.forEach(w => {
+        w.watcher.close();
+        w.callback();
+    });
+    process.exit();
+});
+
+
 
 export function clean() {
     return del("./dist");
@@ -73,6 +89,22 @@ export function sass() {
         .pipe(sourcemaps.write('.'))
         .pipe(gulp.dest('./dist/client/styles'));
 }
+
+export function watch_sass(callback: () => void) {
+    fsWatchers.push({ watcher: gulp.watch('./styles/**/*.scss', sass), callback });
+}
+
+export function watch_typescript_client(callback: () => void) {
+    fsWatchers.push({ watcher: gulp.watch(['./src/client/**/*.ts', './src/common/**/*.ts'], typescript_client), callback });
+}
+
+export function watch_typescript_server(callback: () => void) {
+    fsWatchers.push({ watcher: gulp.watch(['./src/server/**/*.ts', './src/common/**/*.ts'], typescript_server), callback });
+}
+
+export const watch_typescript = gulp.parallel(watch_typescript_client, watch_typescript_server);
+
+export const watch = gulp.parallel(watch_sass, watch_typescript);
 
 export const typescript = gulp.parallel(typescript_client, typescript_server);
 
