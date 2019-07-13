@@ -15,9 +15,9 @@ import browserify from 'browserify';
 import source from 'vinyl-source-stream';
 import terser from 'gulp-terser';
 import rename from 'gulp-rename';
-import filter from 'gulp-filter';
-const tsify = require('tsify');
-const buffer = require('gulp-buffer');
+import filter from 'gulp-filter'
+import tsify from 'tsify';
+import buffer from 'gulp-buffer';
 import gulp_sass from 'gulp-sass';
 import node_sass from 'node-sass';
 
@@ -46,7 +46,7 @@ export function typescript_client() {
         })
         .bundle()
         .pipe(source(bundleName + ".js"))
-        .pipe((buffer as {} as any)() as NodeJS.ReadWriteStream)
+        .pipe(buffer())
         .pipe(sourcemaps.init({ loadMaps: true }))
         .pipe(sourcemaps.write("."))
         .pipe(gulp.dest(distDir))
