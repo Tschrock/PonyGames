@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node dist/server/server.js",
     "build": "gulp",
-    "lint": "tslint --project .",
+    "watch": "gulp watch",
+    "lint": "gulp lint",
     "test": "snyk test && mocha",
     "snyk-protect": "snyk protect",
     "prepare": "npm run snyk-protect"
@@ -43,10 +44,10 @@
     "@types/gulp-sourcemaps": "0.0.32",
     "@types/gulp-terser": "^1.2.0",
     "@types/jquery": "^3.3.30",
-    "@types/node": "^12.0.12",
+    "@types/node": "^12.6.2",
     "@types/node-sass-middleware": "0.0.31",
     "@types/vinyl-source-stream": "0.0.30",
-    "browserify": "^16.2.3",
+    "browserify": "^16.3.0",
     "del": "^5.0.0",
     "gulp": "^4.0.2",
     "gulp-buffer": "0.0.2",
@@ -61,17 +62,17 @@
     "ts-node": "^8.3.0",
     "tsify": "^4.0.1",
     "tslint": "^5.18.0",
-    "typescript": "^3.5.2",
-    "typescript-tslint-plugin": "^0.5.3",
+    "typescript": "^3.5.3",
+    "typescript-tslint-plugin": "^0.5.4",
     "vinyl-source-stream": "^2.0.0"
   },
   "dependencies": {
     "express": "^4.17.1",
     "express-session": "^1.16.2",
     "pug": "^2.0.4",
-    "sequelize": "^5.9.2",
+    "sequelize": "^5.10.0",
     "sequelize-typescript": "^0.6.11",
-    "snyk": "^1.192.0"
+    "snyk": "^1.193.1"
   },
   "snyk": true
 }
