@@ -22,6 +22,9 @@ h4, h5, h6 {
 // Full body
 html, body { margin: 0; padding: 0; height: 100%; }
 
+html { overflow: hidden; }
+body { overflow: auto; }
+
 // Headers
 %headings {
     margin: 0 0 12px 0;
@@ -88,9 +91,6 @@ nav a {
 
 // Content container
 .container {
-    padding: 42px 20px;
-    // overflow: hidden;
-
     h1 {
         margin-bottom: 12px;
     }
@@ -119,18 +119,6 @@ a.iconlink:visited {
 @import 'featurebox';
 @import 'projectcontainer';
 
-
-
-/* Theming: Tablet overrides
--------------------------------------------------- */
-
-@media all and (min-width: $breakpoint-mobile-max) {
-
-    .container {
-        padding: 60px 40px;
-    }
-
-}
 
 /* Theming: Desktop overrides
 -------------------------------------------------- */
@@ -165,8 +153,30 @@ a.iconlink:visited {
         display: none;
     }
 
-    .container {
-        padding: 90px 22.1%;
-    }
+}
 
+
+
+.container {
+    padding: 20px 20px;
+}
+@media all and (min-width: $breakpoint-tablet-min) {
+    .container {
+        padding: 30px 4%;
+    }
+}
+@media all and (min-width: $breakpoint-laptop-min) {
+    .container {
+        padding: 40px 6%;
+    }
+}
+@media all and (min-width: $breakpoint-desktop-min) {
+    .container {
+        padding: 50px 10%;
+    }
+}
+@media all and (min-width: $breakpoint-desktop-max) {
+    .container {
+        padding: 60px 15%;
+    }
 }

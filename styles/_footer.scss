@@ -7,7 +7,8 @@
     padding-left: 5%;
     padding-right: 5%;
     text-align: center;
-    background: $brand-bg-dark bottom/contain no-repeat url(/images/background/bg2.png);
+    background-color: $brand-bg-dark;
+    // background: $brand-bg-dark bottom/contain no-repeat url(/images/background/bg2.png);
 
     h1 {
         color: white;
@@ -22,18 +23,6 @@
         margin-bottom: 20px;
     }
 
-}
-
-// Subfooter
-.subfooter {
-    padding: 18px;
-    text-align: center;
-    color: $fg-muted;
-    background-color: $brand-bg;
-
-    a {
-        color: #ddd;
-    }
 }
 
 .footer-info-box {

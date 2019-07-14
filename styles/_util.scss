@@ -11,3 +11,25 @@
     font-size: 1.05em;
     font-weight: 600;
 }
+
+.center-block {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.margin-b-0 { margin-bottom: 0; }
+.margin-b-1 { margin-bottom: $spacing * 0.3333; }
+.margin-b-2 { margin-bottom: $spacing * 0.6666; }
+.margin-b-3 { margin-bottom: $spacing; }
+.margin-b-4 { margin-bottom: $spacing * 1.3333; }
+.margin-b-5 { margin-bottom: $spacing * 1.6666; }
+.margin-b-6 { margin-bottom: $spacing * 2; }
+
+.margin-0 { margin: 0; }
+.margin-1 { margin: $spacing * 0.3333; }
+.margin-2 { margin: $spacing * 0.6666; }
+.margin-3 { margin: $spacing; }
+.margin-4 { margin: $spacing * 1.3333; }
+.margin-5 { margin: $spacing * 1.6666; }
+.margin-6 { margin: $spacing * 2; }

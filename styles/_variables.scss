@@ -3,14 +3,14 @@
 -------------------------------------------------- */
 $brand-fg: #199e91;
 $brand-bg: #1f1f1f;
-$brand-bg-dark: #131313;
+$brand-bg-dark: #101010;
 
 $fg-primary: white;
 $fg-muted: #7D7D7D;
 
 $text-family: 'Work Sans', sans-serif;
 
-$breakpoint-mobile-max: 800px;
+$breakpoint-mobile-max: 700px;
 
 $breakpoint-tablet-min: $breakpoint-mobile-max + 1;
 $breakpoint-tablet-max: 1200px;
@@ -19,7 +19,10 @@ $breakpoint-laptop-min: $breakpoint-tablet-max + 1;
 $breakpoint-laptop-max: 1600px;
 
 $breakpoint-desktop-min: $breakpoint-laptop-max + 1;
+$breakpoint-desktop-max: 2800px;
 
 $boxshadow-shift-x: 0px;
 $boxshadow-shift-y: 3px;
 $boxshadow-blur: 6px;
+
+$spacing: 2rem;

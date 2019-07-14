@@ -13,29 +13,39 @@ a.card:visited {
 /* Card Theme
 -------------------------------------------------- */
 .card {
-    
+
     position: relative;
-    height: fit-content;
+    display: flex;
+    flex-direction: column;
 
     .card-img-top {
-        display: block;
+        display: flex;
         position: relative;
         width: 100%;
+        align-items: center;
+        height: 100%;
     }
+        img {
+            max-height: 300px;
+            max-width: 100%;
+            display: block;
+        }
 
     .card-header {
-        background: linear-gradient(#00000000, #00000000, $brand-fg);
+        border-radius: 0.25rem;
+        // background: linear-gradient(#00000000, #00000000, $brand-fg);
+        // background: $brand-fg;
         padding: 8px 12px;
         text-transform: uppercase;
-        position: absolute;
-        bottom: 0;
-        top: 0;
-        left: 0;
-        right: 0;
-        vertical-align: bottom;
-        display: flex;
-        align-items: flex-end;
-        
+        // position: absolute;
+        // bottom: 0;
+        // top: 0;
+        // left: 0;
+        // right: 0;
+        vertical-align: top;
+
+        text-overflow: ellipsis;
+
         h1 {
             font-size: 17px;
             margin: 0;

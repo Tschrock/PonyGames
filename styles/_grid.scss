@@ -1,4 +1,45 @@
 
+
+.grid {
+    display: grid;
+    grid-template-columns: 1fr;
+}
+
+.grid-gap-1 { grid-gap: $spacing * 0.3333; }
+.grid-gap-2 { grid-gap: $spacing * 0.6666; }
+.grid-gap-3 { grid-gap: $spacing; }
+
+@media all and (min-width: $breakpoint-tablet-min) {
+    .grid-dynamic {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media all and (min-width: $breakpoint-laptop-min) {
+
+    .grid-2-md {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .grid-dynamic {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+}
+@media all and (min-width: $breakpoint-desktop-min) {
+    .grid-dynamic {
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+    }
+}
+@media all and (min-width: $breakpoint-desktop-max) {
+    .grid-dynamic {
+        grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    }
+}
+
+
+
+
+
 /* Grid
 -------------------------------------------------- */
 
@@ -19,7 +60,7 @@
 /* Tablet overrides
 -------------------------------------------------- */
 @media all and (min-width: $breakpoint-tablet-min) {
-    
+
     .grid-col-2 {
         grid-template-columns: 1fr 1fr;
     }
