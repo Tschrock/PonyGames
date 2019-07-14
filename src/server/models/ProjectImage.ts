@@ -7,17 +7,17 @@
 import { Table, Column, Model, ForeignKey, AllowNull } from 'sequelize-typescript';
 
 import { Project } from './Project';
-import { Link } from './Link';
+import { Image } from './Image';
 
 @Table
-export class ProjectLink extends Model<ProjectLink> {
+export class ProjectImage extends Model<ProjectImage> {
 
   @ForeignKey(() => Project)
   @AllowNull(false)
   @Column
   projectId!: number;
 
-  @ForeignKey(() => Link)
+  @ForeignKey(() => Image)
   @AllowNull(false)
   @Column
   linkId!: number;

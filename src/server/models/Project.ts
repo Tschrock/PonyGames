@@ -4,15 +4,20 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { Table, Column, Model, PrimaryKey, AllowNull, BelongsToMany } from 'sequelize-typescript';
+import { Table, Column, Model, PrimaryKey, AllowNull, BelongsToMany, AutoIncrement } from 'sequelize-typescript';
 
 import { Link } from './Link';
 import { ProjectLink } from './ProjectLink';
+
+import { Image } from './Image';
+import { ProjectImage } from './ProjectImage';
 
 @Table
 export class Project extends Model<Project> {
 
     @PrimaryKey
+    @AutoIncrement
+    @AllowNull(false)
     @Column
     id!: number;
 
@@ -26,7 +31,13 @@ export class Project extends Model<Project> {
     @Column
     image_url!: string;
 
+    @Column
+    description!: string;
+
     @BelongsToMany(() => Link, () => ProjectLink)
     links!: Link[];
+
+    @BelongsToMany(() => Image, () => ProjectImage)
+    images!: Image[];
 
 }

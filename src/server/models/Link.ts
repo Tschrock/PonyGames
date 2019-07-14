@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { Table, Column, Model, PrimaryKey, AllowNull, BelongsToMany } from 'sequelize-typescript';
+import { Table, Column, Model, PrimaryKey, AllowNull, BelongsToMany, AutoIncrement } from 'sequelize-typescript';
 
 import { Project } from './Project';
 import { ProjectLink } from './ProjectLink';
@@ -13,6 +13,8 @@ import { ProjectLink } from './ProjectLink';
 export class Link extends Model<Link> {
 
     @PrimaryKey
+    @AutoIncrement
+    @AllowNull(false)
     @Column
     id!: number;
 

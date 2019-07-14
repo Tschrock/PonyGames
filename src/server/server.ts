@@ -14,6 +14,8 @@ import { Config } from './Config';
 
 const projectsJson = require('../../projects.json');
 import { Project } from './models/Project';
+import { Image } from './models/Image';
+import { Link } from './models/Link';
 
 async function initDatabase() {
 
@@ -21,7 +23,11 @@ async function initDatabase() {
 
     await database.sync();
 
-    return Project.bulkCreate(projectsJson);
+    for(const projectJson of projectsJson) {
+        await Project.create(projectJson, { include: [ Image, Link ] });
+    }
+
+    return Project.findAll({ include: [ Image, Link ] });
 
 }
 
