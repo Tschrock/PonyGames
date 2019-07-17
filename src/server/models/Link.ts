@@ -4,19 +4,15 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { Table, Column, Model, PrimaryKey, AllowNull, BelongsToMany, AutoIncrement } from 'sequelize-typescript';
+import { Table, Column, AllowNull, BelongsToMany } from 'sequelize-typescript';
+
+import { PGModel } from '../PGModel';
 
 import { Project } from './Project';
 import { ProjectLink } from './ProjectLink';
 
 @Table
-export class Link extends Model<Link> {
-
-    @PrimaryKey
-    @AutoIncrement
-    @AllowNull(false)
-    @Column
-    id!: number;
+export class Link extends PGModel<Link> {
 
     @AllowNull(false)
     @Column

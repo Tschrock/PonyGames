@@ -1,0 +1,46 @@
+extends ../_layouts/master
+include ../_components/svgplaceholder
+include ../_components/meta
+
+
+block head
+    // Meta
+    +meta-site-title("Pony.Games")
+    +meta-site-twitter-handle("@PonyDotGames")
+    +meta-site-twitter-id("1082875594306715649")
+    //+meta-site-opensearch("Pony.Games", "https://pony.games/opensearch.xml")
+    +meta-page-theme-color("#16212E")
+
+    +meta-page-opengraph-type("game")
+    +meta-page-twitter-card-type("summary")
+
+    if Project
+        +meta-page-title(Project.name)
+        +meta-page-description(Project.description)
+        +meta-page-canonical-url(Project.url)
+        +meta-page-author-name(Project.team_name)
+        +meta-page-publish-date(Project.created_at)
+        +meta-page-update-date(Project.modified_at)
+        +meta-page-locale("en_US")
+        +meta-page-image-url("https://pony.games/icon.png")
+        +meta-page-image-mime("image/png")
+        +meta-page-image-height("500")
+        +meta-page-image-width("500")
+        +meta-page-image-alt("Logo")
+
+block main
+    .project-container
+        .project-heading
+            if Project.images && Project.images.length > 0
+                img(src=Project.images[0].url)
+            .project-heading-content
+                h1.project-name= Project.name
+                h2.project-team= Project.team_name
+                .project-tags
+                    each tag in Project.tags || []
+                        .project-tag= tag
+                .project-links
+                    each link in Project.links || []
+                        a(href=link.url title=link.name)
+                            i(class=link.iconclass aria-label=link.name)
+                = Project.description

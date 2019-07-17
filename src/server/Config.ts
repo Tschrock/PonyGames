@@ -7,7 +7,7 @@
 
 import convict from 'convict';
 
-const config = convict({
+export const Config = convict({
     env: {
         doc: "The application environment.",
         format: ["production", "development", "test"],
@@ -35,16 +35,41 @@ const config = convict({
         default: "postgres://ponygames@localhost:5432/ponygames",
         env: "DB",
         arg: "db"
+    },
+    twitter: {
+        consumerKey: {
+            doc: "The Consumer Key for your app.",
+            format: "*",
+            default: "",
+            env: "TWITTER_CLIENT_ID",
+            arg: "clientid",
+            sensitive: true
+        },
+        consumerSecret: {
+            doc: "The Consumer Secret for your app.",
+            format: "*",
+            default: "",
+            env: "TWITTER_CLIENT_SECRET",
+            arg: "clientsecret",
+            sensitive: true
+        },
+        callbackURL: {
+            doc: "The callback url for your app. Should be https://<yourdomain>/auth/twitter/callback",
+            format: "url",
+            default: "http://localhost:8080/auth/twitter/callback",
+            env: "TWITTER_CALLBACK_URL",
+            arg: "callbackurl"
+        }
     }
 });
 
 try {
-    config.loadFile("./config.json");
+    Config.loadFile("./config.json");
 }
 catch (error) {
     // Noop
 }
 
-config.validate({ allowed: 'strict' });
+Config.validate({ allowed: 'strict' });
 
-export const Config = config;
+export type Config = typeof Config;

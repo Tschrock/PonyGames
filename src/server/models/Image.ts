@@ -4,7 +4,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { Table, Column, Model, PrimaryKey, AllowNull, BelongsToMany, Unique, AutoIncrement } from 'sequelize-typescript';
+import { Table, Column, AllowNull, BelongsToMany } from 'sequelize-typescript';
+
+import { PGModel} from '../PGModel';
 
 import { Project } from './Project';
 import { ProjectImage } from './ProjectImage';
@@ -14,18 +16,7 @@ function slash(string: string) {
 }
 
 @Table
-export class Image extends Model<Image> {
-
-    @PrimaryKey
-    @AutoIncrement
-    @AllowNull(false)
-    @Column
-    id!: number;
-
-    @Unique
-    @AllowNull(false)
-    @Column
-    guid!: string;
+export class Image extends PGModel<Image> {
 
     @AllowNull(false)
     @Column
@@ -36,6 +27,12 @@ export class Image extends Model<Image> {
 
     @Column
     size!: number;
+
+    @Column
+    height!: number;
+
+    @Column
+    width!: number;
 
     @Column
     storage_prefix!: string;
@@ -53,7 +50,7 @@ export class Image extends Model<Image> {
     projects!: Project[];
 
     public get url() {
-        return `${this.storage_server}/${slash(this.storage_bucket)}${slash(this.storage_prefix)}${this.guid}.${this.extension}`
+        return `${this.storage_server}/${slash(this.storage_bucket)}${slash(this.storage_prefix)}${this.guid}.${this.extension}`;
     }
 
 }

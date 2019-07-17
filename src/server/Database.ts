@@ -4,9 +4,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import path from 'path';
-
 import { Sequelize } from 'sequelize-typescript';
+
+import * as Models from './models';
 
 export class Database {
 
@@ -15,7 +15,7 @@ export class Database {
     constructor(connectionUri: string) {
 
         this.sequelize = new Sequelize(connectionUri, {
-            modelPaths: [path.join(__dirname, "models")]
+            models: Object.values(Models)
         });
 
     }
@@ -26,6 +26,16 @@ export class Database {
 
     public async authenticate() {
         return this.sequelize.authenticate();
+    }
+
+    public async loadProjectsFromJson(projectsJson: any) {
+
+        for(const projectJson of projectsJson) {
+            await Models.Project.create(projectJson, { include: [ Models.Image, Models.Link ] });
+        }
+
+        return Models.Project.findAll({ include: [ Models.Image, Models.Link ] });
+
     }
 
 }

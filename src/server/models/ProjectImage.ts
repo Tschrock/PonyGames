@@ -20,6 +20,6 @@ export class ProjectImage extends Model<ProjectImage> {
   @ForeignKey(() => Image)
   @AllowNull(false)
   @Column
-  linkId!: number;
+  imageId!: number;
 
 }

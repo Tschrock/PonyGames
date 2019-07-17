@@ -1,6 +1,6 @@
-extends ./_layouts/master
-include ./_components/svgplaceholder
-include ./_components/meta
+extends ../_layouts/master
+include ../_components/svgplaceholder
+include ../_components/meta
 
 
 block head
@@ -30,15 +30,33 @@ block head
     +meta-page-image-alt("Logo")
 
 block main
-    if CurrentUser
-        h3= `Welcome, ${CurrentUser.name}!`
+    if FeaturedProject
+        if FeaturedProject.bannerImageUrl
+            div.banner(style=`background-image: url(${ FeaturedProject.bannerImageUrl})`)
+        else
+            +svgplaceholder-underlay(1000,300).banner
+        .featured-game
+            h1 Featured Game
+            .grid.grid-2-md.grid-gap-3
+                div
+                    a.card(href=`/project/${FeaturedProject.id}`)
+                        if FeaturedProject.wideImageUrl
+                            img(src=FeaturedProject.wideImageUrl).card-img-top
+                        else
+                            +svgplaceholder(1920,1080).card-img-top
+                div!= FeaturedProject.description
+
     .container.grid.grid-dynamic.grid-gap-2
         each project in (Projects || [])
             .card.flex.flex-column.flex-center
-                a(href=project.url)
-                    if project.images && project.images.length > 0
+                if project.images && project.images.length > 0
+                    a(href=`/project/${project.id}`)
                         img(src=project.images[0].url)
-                    else
+                else if project.image_url
+                    a(href=`/project/${project.id}`)
+                        img(src=project.image_url)
+                else
+                    a(href=`/project/${project.id}`)
                         +svgplaceholder(1920,1080)
                 div.card-header= project.name
         else
