@@ -71,14 +71,21 @@ export class App {
         this.authenticator = new Authenticator() as unknown as Authenticator<RequestHandler, RequestHandler>;
         this.authenticator.serializeUser(serializeUser);
         this.authenticator.deserializeUser(deserializeUser);
-        this.authenticator.use(new TwitterStrategy({
-            ...Config.get('twitter')
-        }, verifyUser));
 
         this.app.use(this.authenticator.initialize());
         this.app.use(this.authenticator.session());
-        this.app.get('/auth/twitter', this.authenticator.authenticate('twitter'));
-        this.app.get('/auth/twitter/callback', this.authenticator.authenticate('twitter', { failureRedirect: '/', successRedirect: '/'}));
+
+        if(Config.get('twitter').consumerKey) {
+
+            this.authenticator.use(new TwitterStrategy({
+                ...Config.get('twitter')
+            }, verifyUser));
+
+            this.app.get('/auth/twitter', this.authenticator.authenticate('twitter'));
+            this.app.get('/auth/twitter/callback', this.authenticator.authenticate('twitter', { failureRedirect: '/', successRedirect: '/'}));
+
+        }
+
 
         // Extras
         this.app.use((req: Request, res: Response, next: NextFunction) => {
