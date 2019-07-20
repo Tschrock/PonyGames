@@ -32,7 +32,7 @@ export const Config = convict({
     db: {
         doc: "The full uri for the database. For example: postgres://user:pass@example.com:5432/dbname",
         format: "*",
-        default: "postgres://ponygames@localhost:5432/ponygames",
+        default: "sqlite://localhost/ponygames.sqlite",
         env: "DB",
         arg: "db"
     },
