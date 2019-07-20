@@ -9,7 +9,11 @@ import { Table, Column, Model, ForeignKey, AllowNull } from 'sequelize-typescrip
 import { Project } from './Project';
 import { Link } from './Link';
 
-@Table
+@Table({
+  timestamps: true,
+  paranoid: true,
+  underscored: true
+})
 export class ProjectLink extends Model<ProjectLink> {
 
   @ForeignKey(() => Project)

@@ -7,5 +7,4 @@
  // @index: export * from ${relpath};
  export * from "./ImagesApiV1Controller";
  export * from "./ProjectsApiV1Controller";
- export * from "./models";
  // /index

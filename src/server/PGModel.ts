@@ -43,8 +43,8 @@ export class PGModel<T extends PGModel<T>> extends Model<T> {
     @Column
     deletedAt!: Date;
 
-    public userCan(user: UserAccount, action: string) {
-        return user.external_id === "787535265447325698";
+    public async checkUserPermission(user: UserAccount, action: string): Promise<boolean> {
+        return user && user.externalId === "787535265447325698";
     }
 
 }

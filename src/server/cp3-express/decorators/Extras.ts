@@ -9,12 +9,13 @@ import { randomBytes, timingSafeEqual } from 'crypto';
 
 import { Request, Response, NextFunction } from 'express';
 import { json as buildJsonParser } from 'body-parser';
+import { Unauthorized, BadRequest } from 'http-errors';
 
 import { Use } from './Use';
 
 export function doRequireUser(req: Request, res: Response, next: NextFunction) {
     if (req.user) next();
-    else throw new Error("Unauthorized");
+    else throw new Unauthorized();
 }
 
 export function doGenerateCsrf(req: Request, res: Response, next: NextFunction) {
@@ -30,7 +31,7 @@ export function doValidateCsrf(req: Request, res: Response, next: NextFunction) 
     const sessToken = getCsrfFrom(req.session);
     const bodyToken = getCsrfFrom(req.body);
     if(sessToken !== null && bodyToken !== null && timingSafeEqual(Buffer.from(sessToken, 'utf8'), Buffer.from(bodyToken, 'utf8'))) next();
-    else throw new Error("Invalid CSRF Token");
+    else throw new BadRequest("Invalid CSRF Token");
 }
 
 export const doParseJson = buildJsonParser({ verify: (req, res, buf) => {

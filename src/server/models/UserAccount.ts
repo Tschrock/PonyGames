@@ -5,7 +5,7 @@
  */
 'use strict';
 
-import { Table, Column, Model, AllowNull, Unique } from 'sequelize-typescript';
+import { Table, Column, AllowNull, Unique } from 'sequelize-typescript';
 
 import { Constructor } from '../Utils';
 import { PGModel } from '../PGModel';
@@ -20,7 +20,7 @@ export class UserAccount extends PGModel<UserAccount> {
     @Unique
     @AllowNull(false)
     @Column
-    public external_id!: string;
+    public externalId!: string;
 
     /** The Account's Name. */
     @AllowNull(false)
@@ -35,15 +35,15 @@ export class UserAccount extends PGModel<UserAccount> {
     /** The Account's Auth Token. */
     @AllowNull(false)
     @Column
-    public auth_token!: string;
+    public authToken!: string;
 
     /** The Account's Refresh Token. */
     @AllowNull(false)
     @Column
-    public refresh_token!: string;
+    public refreshToken!: string;
 
-    public hasPermission<TModel extends PGModel<TModel>>(action: string, model: () => TModel): boolean {
-        return this.external_id === "787535265447325698";
+    public async checkEntityPermission<TModel extends PGModel<TModel>>(action: string, model: Constructor<TModel>, entity?: TModel): Promise<boolean> {
+        return this.externalId === "787535265447325698";
     }
 
 }

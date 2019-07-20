@@ -35,7 +35,7 @@ block main
                 img(src=Project.images[0].url)
             .project-heading-content
                 h1.project-name= Project.name
-                h2.project-team= Project.team_name
+                h2.project-team= Project.teamName
                 .project-tags
                     each tag in Project.tags || []
                         .project-tag= tag

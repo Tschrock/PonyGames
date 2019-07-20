@@ -8,7 +8,8 @@ import { App } from './App';
 import { Config } from './Config';
 import { Database } from './Database';
 
-const projectsJson = require('../../projects.json');
+
+const projectsJson = require('../../projects.json'); // tslint:disable-line:no-var-requires
 
 async function initServer() {
 

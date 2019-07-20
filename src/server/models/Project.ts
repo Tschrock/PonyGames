@@ -23,7 +23,7 @@ export class Project extends PGModel<Project> {
     name!: string;
 
     @Column
-    team_name!: string;
+    teamName!: string;
 
     @Column
     description!: string;

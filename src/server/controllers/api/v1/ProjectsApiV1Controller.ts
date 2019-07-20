@@ -4,9 +4,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { NotFound } from 'http-errors';
+import { NotFound, Forbidden, BadRequest } from 'http-errors';
 
-import { Controller, Router, Get, RenderJSON, RouteParam, QueryParam, Post, Patch, Put, Delete, RequireUser, ParseJson, ValidateCsrf, BodyParam } from '../../../cp3-express';
+import { Controller, Router, Get, RenderJSON, RouteParam, QueryParam, Post, Patch, Put, Delete, RequireUser, ParseJson, ValidateCsrf, BodyParam, CurrentUser } from '../../../cp3-express';
 
 import { Project, Image, Link, UserAccount } from '../../../models';
 import { Request, Response, NextFunction } from 'express';
@@ -15,13 +15,12 @@ import { Request, Response, NextFunction } from 'express';
 @RequireUser()
 export class ProjectsApiV1Controller extends Controller<ProjectsApiV1Controller> {
 
-    protected projectToJSON(project: Project) {
+    public static projectToJSON(project: Project) {
         return {
             Id: project.id,
+            Guid: project.guid,
             Name: project.name,
-            TeamName: project.team_name,
-            CreatedAt: project.createdAt,
-            UpdatedAt: project.updatedAt,
+            TeamName: project.teamName,
             Description: project.description,
             Images: project.images.map(image => ({
                 Id: image.id,
@@ -38,10 +37,13 @@ export class ProjectsApiV1Controller extends Controller<ProjectsApiV1Controller>
                 Id: link.id,
                 Url: link.url,
                 Name: link.name,
-                IconCssClass: link.icon_css_class,
+                IconCssClass: link.iconCssClass,
                 CreatedAt: link.createdAt,
                 UpdatedAt: link.updatedAt
-            }))
+            })),
+            Url: project.url,
+            CreatedAt: project.createdAt,
+            UpdatedAt: project.updatedAt,
         };
     }
 
@@ -60,7 +62,7 @@ export class ProjectsApiV1Controller extends Controller<ProjectsApiV1Controller>
             include: [Image, Link]
         });
 
-        const Results = Projects.map(p => this.projectToJSON(p));
+        const Results = Projects.map(p => ProjectsApiV1Controller.projectToJSON(p));
 
         return { Results, Count: Results.length, Offset: offset, Limit: limit, Total };
 
@@ -72,8 +74,11 @@ export class ProjectsApiV1Controller extends Controller<ProjectsApiV1Controller>
 
         const project = await Project.findByPk(projectId, { include: [Image, Link] });
 
-        if (project) return this.projectToJSON(project);
-        else throw new NotFound("That Project doesn't exist.");
+        if (!project) {
+            throw new NotFound("That Project doesn't exist.");
+        }
+
+        return ProjectsApiV1Controller.projectToJSON(project);
 
     }
 
@@ -82,14 +87,29 @@ export class ProjectsApiV1Controller extends Controller<ProjectsApiV1Controller>
     @ValidateCsrf()
     @RenderJSON()
     protected async createProject(
-        @CurrentUser currentUser: UserAccount,
+        @CurrentUser() currentUser: UserAccount,
         @BodyParam("Name") name: string,
         @BodyParam("TeamName") team_name: string,
         @BodyParam("Description") description: string,
     ) {
-        if(currentUser.hasPermission<Project>("create", Project)) {
 
+        if(!await currentUser.checkEntityPermission("create", Project)) {
+            throw new Forbidden("You don't have permission to create a new Project.");
         }
+
+        const newProject = Project.build({ name, team_name, description });
+
+        try {
+            await newProject.validate();
+        }
+        catch (validationErrors) {
+            throw new BadRequest((validationErrors as Error).toString());
+        }
+
+        const savedProject = await newProject.save();
+
+        return this.getProject(savedProject.id);
+
     }
 
     @Patch("/:id")
@@ -97,14 +117,45 @@ export class ProjectsApiV1Controller extends Controller<ProjectsApiV1Controller>
     @ParseJson()
     @ValidateCsrf()
     @RenderJSON()
-    protected async updateProject(req: Request, res: Response, next: NextFunction) {
+    protected async updateProject(
+        @RouteParam('id') projectId: number,
+        @CurrentUser() currentUser: UserAccount,
+        @BodyParam("Name") name: string,
+        @BodyParam("TeamName") team_name: string,
+        @BodyParam("Description") description: string,
+    ) {
+
+        const project = await Project.findByPk(projectId);
+
+        if(!project) {
+            throw new NotFound("That Project doesn't exist.");
+        }
+
+        if(!await project.checkUserPermission(currentUser, "edit")) {
+            throw new Forbidden("You don't have permission to edit this Project.");
+        }
+
+        if(name) project.name = name;
+        if(team_name) project.teamName = team_name;
+        if(description) project.description = description;
+
+        try {
+            await project.validate();
+        }
+        catch (validationErrors) {
+            throw new BadRequest((validationErrors as Error).toString());
+        }
+
+        const savedProject = await project.save();
+
+        return this.getProject(savedProject.id);
 
     }
 
     @Delete("/:id")
     @RenderJSON()
     protected async deleteProject() {
-
+        //
     }
 
     @Post("/:projectId/images")
@@ -112,13 +163,13 @@ export class ProjectsApiV1Controller extends Controller<ProjectsApiV1Controller>
     @ValidateCsrf()
     @RenderJSON()
     protected async createProjectImage() {
-
+        //
     }
 
     @Delete("/:projectId/images/:imageId")
     @RenderJSON()
     protected async deleteProjectImage() {
-
+        //
     }
 
     @Post("/:projectId/images")
@@ -126,7 +177,7 @@ export class ProjectsApiV1Controller extends Controller<ProjectsApiV1Controller>
     @ValidateCsrf()
     @RenderJSON()
     protected async createProjectLink() {
-
+        //
     }
 
     @Patch("/:id")
@@ -135,13 +186,13 @@ export class ProjectsApiV1Controller extends Controller<ProjectsApiV1Controller>
     @ValidateCsrf()
     @RenderJSON()
     protected async updateProjectLink(req: Request, res: Response, next: NextFunction) {
-
+        //
     }
 
     @Delete("/:projectId/images/:imageId")
     @RenderJSON()
     protected async deleteProjectLink() {
-
+        //
     }
 
 }

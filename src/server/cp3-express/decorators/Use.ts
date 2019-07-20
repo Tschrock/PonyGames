@@ -21,13 +21,14 @@ export function Use(...middleware: MixedArray<RequestHandler>): ClassDecorator &
         descriptor?: TypedPropertyDescriptor<T>
     ) => {
 
-        const prototype = typeof target === "function" ? target.prototype : target;
+        const metadataTarget = (typeof target === "function" ? target.prototype : target) as Object;
 
-        const middlewareList = getMetadataList<RequestHandler>(MetadataKeys.HANDLER_MIDDLEWARE, prototype, propertyKey);
+        const middlewareList = getMetadataList<RequestHandler>(MetadataKeys.HANDLER_MIDDLEWARE, metadataTarget, propertyKey);
 
         middlewareList.unshift(...flatten(middleware));
 
         return;
 
-    }
+    };
+
 }

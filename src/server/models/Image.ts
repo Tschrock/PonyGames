@@ -35,13 +35,13 @@ export class Image extends PGModel<Image> {
     width!: number;
 
     @Column
-    storage_prefix!: string;
+    storagePrefix!: string;
 
     @Column
-    storage_bucket!: string;
+    storageBucket!: string;
 
     @Column
-    storage_server!: string;
+    storageServer!: string;
 
     @Column
     filename!: string;
@@ -50,7 +50,7 @@ export class Image extends PGModel<Image> {
     projects!: Project[];
 
     public get url() {
-        return `${this.storage_server}/${slash(this.storage_bucket)}${slash(this.storage_prefix)}${this.guid}.${this.extension}`;
+        return `${this.storageServer}/${slash(this.storageBucket)}${slash(this.storagePrefix)}${this.guid}.${this.extension}`;
     }
 
 }

@@ -19,7 +19,7 @@ export class Link extends PGModel<Link> {
     name!: string;
 
     @Column
-    icon_css_class!: string;
+    iconCssClass!: string;
 
     @AllowNull(false)
     @Column

@@ -57,3 +57,9 @@ export function Next(): ParameterDecorator {
         return next;
     });
 }
+
+export function CurrentUser(): ParameterDecorator {
+    return TransformParameter((input, req, res, next) => {
+        return req.user;
+    });
+}
