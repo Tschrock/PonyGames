@@ -21,7 +21,27 @@
 </div>
 
 
-*boop*
+> A WIP site for archiving MLP-themed video games.
+
+## Table of Contents
+
+- [Maintainers](#maintainers)
+- [Contribute](#contribute)
+- [License](#license)
+
+## Maintainers
+
+**Project lead:** [CyberPon3](https://github.com/Tschrock)
+
+## Contribute
+
+**Issues, suggestions, or concerns?** [Submit a GitHub issue](https://github.com/Tschrock/PonyGames/issues/new)!
+
+**Want to add a feature?** We accept PRs!
+
+## License
+
+Copyright (c) Pony.Games Team. Licensed under [the MPL v2.0](/LICENSE).
 
 
 <!-- Link References -->
