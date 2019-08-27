@@ -28,6 +28,6 @@ labels: bug
 
 ## Environment
 
-**Browser/OS version:** [use https://www.whatismybrowser.com/ if you aren't usre]
+**Browser/OS version:** [use https://www.whatismybrowser.com/ if you aren't sure]
 
 **Node.js version:** [(only needed if you're running your own instance of the site)]
