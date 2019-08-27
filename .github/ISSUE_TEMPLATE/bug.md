@@ -1,6 +1,6 @@
 ---
 name: Bug report
-about: Use this if you've found an issue with the site. Incorrect game details should be reported in the details.
+about: Use this if you've found an issue with the site. Incorrect game details should be reported in the Discord.
 labels: bug
 ---
 
@@ -28,6 +28,6 @@ labels: bug
 
 ## Environment
 
-**Browser version:** [use https://www.whatismybrowser.com/ if you aren't usre]
+**Browser/OS version:** [use https://www.whatismybrowser.com/ if you aren't usre]
 
 **Node.js version:** [(only needed if you're running your own instance of the site)]
