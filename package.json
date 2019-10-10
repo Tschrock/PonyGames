@@ -83,7 +83,7 @@
     "express": "^4.17.1",
     "express-session": "^1.16.2",
     "http-errors": "^1.7.3",
-    "markdown-it": "^9.0.1",
+    "markdown-it": "^10.0.0",
     "passport": "^0.4.0",
     "passport-twitter": "^1.0.4",
     "pug": "^2.0.4",
